@@ -959,8 +959,8 @@ System.register("chunks:///_virtual/illustration-tab.ts", ['./rollupPluginModLoB
   };
 });
 
-System.register("chunks:///_virtual/illustration-view.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ui-view.ts', './illustration-tab.ts', './ui-manager.ts', './picture-item.ts', './game-data-manager.ts', './illustraion-item.ts', './config.ts', './game-data-type-define.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, Prefab, _decorator, instantiate, director, UIView, IllustrationTab, UIManager, PictureItem, GameDataManager, IllustraionItem, Config, SgState;
+System.register("chunks:///_virtual/illustration-view.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ui-view.ts', './illustration-tab.ts', './ui-manager.ts', './picture-item.ts', './game-data-manager.ts', './game-data-type-define.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, Prefab, _decorator, instantiate, director, UIView, IllustrationTab, UIManager, PictureItem, GameDataManager, SgState;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -982,10 +982,6 @@ System.register("chunks:///_virtual/illustration-view.ts", ['./rollupPluginModLo
       PictureItem = module.PictureItem;
     }, function (module) {
       GameDataManager = module.GameDataManager;
-    }, function (module) {
-      IllustraionItem = module.IllustraionItem;
-    }, function (module) {
-      Config = module.Config;
     }, function (module) {
       SgState = module.SgState;
     }],
@@ -1017,45 +1013,23 @@ System.register("chunks:///_virtual/illustration-view.ts", ['./rollupPluginModLo
         }
         onOpen(fromUI, ...args) {
           this.hideAccountLayout();
-          if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
-            let infoList = GameDataManager.instance.getSelectedPictureList(true);
-            for (let info of infoList) {
-              let node = instantiate(this.prfbItem);
-              let item = node.getComponent(PictureItem);
-              if (item) {
-                item.initWithInfo(info);
-                this.items.push(item);
-                this.itemContainer.addChild(node);
-              }
-            }
-          } else {
-            // todo: normal illustration
-            for (let i = 0; i < GameDataManager.instance.data.illustrationData.length; i++) {
-              const element = GameDataManager.instance.data.illustrationData[i];
-              let node = instantiate(this.prfbItem);
-              let item = node.getComponent(IllustraionItem);
-              if (item) {
-                item.init(element.url, element.data);
-                this.illustraionItems.push(item);
-                this.itemContainer.addChild(node);
-              }
+          let infoList = GameDataManager.instance.getSelectedPictureList(true);
+          for (let info of infoList) {
+            let node = instantiate(this.prfbItem);
+            let item = node.getComponent(PictureItem);
+            if (item) {
+              item.initWithInfo(info);
+              this.items.push(item);
+              this.itemContainer.addChild(node);
             }
           }
         }
         onTop(preID, ...args) {
           this.hideAccountLayout();
-          if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
+          if (GameDataManager.instance.sg.state === SgState.Started) {
             this.items.forEach(item => {
               item.updateUI();
             });
-          } else {
-            for (let i = 0; i < GameDataManager.instance.data.illustrationData.length; i++) {
-              const element = GameDataManager.instance.data.illustrationData[i];
-              let item = this.illustraionItems[i];
-              if (element && item) {
-                item.isFavorite = element.data.isFavorite;
-              }
-            }
           }
           this.updateScoreView(this.tabIdx);
         }
@@ -1083,12 +1057,8 @@ System.register("chunks:///_virtual/illustration-view.ts", ['./rollupPluginModLo
           switch (tabIdx) {
             case IllustrationTabIdx.All:
               {
-                if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
+                if (GameDataManager.instance.sg.state === SgState.Started) {
                   this.items.forEach(item => {
-                    item.node.active = true;
-                  });
-                } else {
-                  this.illustraionItems.forEach(item => {
                     item.node.active = true;
                   });
                 }
@@ -1103,26 +1073,17 @@ System.register("chunks:///_virtual/illustration-view.ts", ['./rollupPluginModLo
               break;
             case IllustrationTabIdx.Specail:
               {
-                if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
+                if (GameDataManager.instance.sg.state === SgState.Started) {
                   this.items.forEach(item => {
                     item.node.active = item.isSpecial;
                   });
-                } else {
-                  for (let i = 0; i < this.illustraionItems.length; i++) {
-                    let item = this.illustraionItems[i];
-                    item.node.active = i % 5 == 4;
-                  }
                 }
               }
               break;
             case IllustrationTabIdx.Favorite:
               {
-                if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
+                if (GameDataManager.instance.sg.state === SgState.Started) {
                   this.items.forEach(item => {
-                    item.node.active = item.isFavorite;
-                  });
-                } else {
-                  this.illustraionItems.forEach(item => {
                     item.node.active = item.isFavorite;
                   });
                 }
@@ -1321,8 +1282,8 @@ System.register("chunks:///_virtual/loading-sg-view.ts", ['./rollupPluginModLoBa
   };
 });
 
-System.register("chunks:///_virtual/paused-popup-sg.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './bridge-util.ts', './audio-manager.ts', './ui-manager.ts', './ui-view.ts', './game-constants.ts', './btn-toggle.ts', './ui-config.ts', './reward-manager.ts', './config.ts', './time-agent.ts', './game-data-manager.ts', './game-data-type-define.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, EditBox, _decorator, Label, director, BridgeUtil, VibrationEffect, AudioManager, UIManager, UIView, AudioUrl, GameEvent, ParamStage, BtnToggle, UIID, RewardManager, Config, TimeAgent, GameDataManager, SgState;
+System.register("chunks:///_virtual/paused-popup-sg.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './bridge-util.ts', './audio-manager.ts', './ui-manager.ts', './ui-view.ts', './game-constants.ts', './btn-toggle.ts', './ui-config.ts', './reward-manager.ts', './config.ts', './time-agent.ts', './game-data-manager.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, EditBox, _decorator, Label, director, BridgeUtil, VibrationEffect, AudioManager, UIManager, UIView, AudioUrl, GameEvent, ParamStage, BtnToggle, UIID, RewardManager, Config, TimeAgent, GameDataManager;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -1359,8 +1320,6 @@ System.register("chunks:///_virtual/paused-popup-sg.ts", ['./rollupPluginModLoBa
       TimeAgent = module.TimeAgent;
     }, function (module) {
       GameDataManager = module.GameDataManager;
-    }, function (module) {
-      SgState = module.SgState;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10;
@@ -1444,11 +1403,7 @@ System.register("chunks:///_virtual/paused-popup-sg.ts", ['./rollupPluginModLoBa
         onHomeBtn() {
           this.onClickBtn();
           UIManager.instance.closeAll();
-          if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
-            director.loadScene('map-sg');
-          } else {
-            director.loadScene('map');
-          }
+          director.loadScene('map-sg');
         }
         onContactBtn() {
           this.onClickBtn();

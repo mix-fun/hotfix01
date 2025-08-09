@@ -1602,8 +1602,8 @@ System.register("chunks:///_virtual/bridge-manager.ts", ['cc', './bridge-event.t
   };
 });
 
-System.register("chunks:///_virtual/bridge-util.ts", ['cc', './audio-manager.ts', './bridge-event.ts', './graph-manager.ts', './bridge-manager.ts', './config.ts', './game-data-manager.ts', './game-data-type-define.ts', './native-agent.ts'], function (exports) {
-  var cclegacy, native, sys, AudioManager, BridgeEvent, GraphManager, BridgeManager, Config, GameDataManager, SgState, NativeAgent;
+System.register("chunks:///_virtual/bridge-util.ts", ['cc', './audio-manager.ts', './bridge-event.ts', './graph-manager.ts', './bridge-manager.ts', './game-data-manager.ts', './game-data-type-define.ts', './native-agent.ts'], function (exports) {
+  var cclegacy, native, sys, AudioManager, BridgeEvent, GraphManager, BridgeManager, GameDataManager, SgState, NativeAgent;
   return {
     setters: [function (module) {
       cclegacy = module.cclegacy;
@@ -1617,8 +1617,6 @@ System.register("chunks:///_virtual/bridge-util.ts", ['cc', './audio-manager.ts'
       GraphManager = module.GraphManager;
     }, function (module) {
       BridgeManager = module.BridgeManager;
-    }, function (module) {
-      Config = module.Config;
     }, function (module) {
       GameDataManager = module.GameDataManager;
     }, function (module) {
@@ -1661,25 +1659,10 @@ System.register("chunks:///_virtual/bridge-util.ts", ['cc', './audio-manager.ts'
           if (!sys.isNative) {
             return Promise.resolve(false);
           }
-          if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
+          if (GameDataManager.instance.sg.state === SgState.Started) {
             return new Promise(resolve => {
               // start download graph
               GraphManager.instance.loadGraphToBase64(url).then(base64 => {
-                if (!base64) {
-                  console.log('saveToAlbum base64 is null');
-                  resolve(false);
-                  return;
-                }
-                BridgeManager.instance.setSaveToAlbumCallback(success => {
-                  resolve(success);
-                });
-                NativeAgent.dispatchEventToNative(BridgeEvent.on_save_album, base64);
-              });
-            });
-          } else {
-            console.log('saveToAlbum-local: ', url);
-            return new Promise(resolve => {
-              GraphManager.instance.loadLocalImageToBase64(url).then(base64 => {
                 if (!base64) {
                   console.log('saveToAlbum base64 is null');
                   resolve(false);
@@ -1985,8 +1968,8 @@ System.register("chunks:///_virtual/card-data.ts", ['cc', './card-constants.ts']
   };
 });
 
-System.register("chunks:///_virtual/card-dealer.ts", ['cc', './log-util.ts', './random-util.ts', './config.ts', './card-constants.ts', './card-data.ts', './game-data-manager.ts', './game-data-type-define.ts', './game-res-manager.ts'], function (exports) {
-  var cclegacy, LogUtil, RandomUtil, Config, CardSuit, CardData, GameDataManager, SgState, GameResManager;
+System.register("chunks:///_virtual/card-dealer.ts", ['cc', './log-util.ts', './random-util.ts', './card-constants.ts', './card-data.ts', './game-res-manager.ts'], function (exports) {
+  var cclegacy, LogUtil, RandomUtil, CardSuit, CardData, GameResManager;
   return {
     setters: [function (module) {
       cclegacy = module.cclegacy;
@@ -1995,15 +1978,9 @@ System.register("chunks:///_virtual/card-dealer.ts", ['cc', './log-util.ts', './
     }, function (module) {
       RandomUtil = module.RandomUtil;
     }, function (module) {
-      Config = module.Config;
-    }, function (module) {
       CardSuit = module.CardSuit;
     }, function (module) {
       CardData = module.CardData;
-    }, function (module) {
-      GameDataManager = module.GameDataManager;
-    }, function (module) {
-      SgState = module.SgState;
     }, function (module) {
       GameResManager = module.GameResManager;
     }],
@@ -2055,13 +2032,11 @@ System.register("chunks:///_virtual/card-dealer.ts", ['cc', './log-util.ts', './
 
           // special major cards 只出现在tableau中
           const temps = this._tableaus.slice(2);
-          if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
-            const specialMajor = 1;
-            RandomUtil.random(temps, specialMajor).forEach(cardsInLayout => {
-              const index = RandomUtil.random(1, cardsInLayout.length - 2);
-              cardsInLayout[index].setSpecialMajor(true);
-            });
-          }
+          const specialMajor = 1;
+          RandomUtil.random(temps, specialMajor).forEach(cardsInLayout => {
+            const index = RandomUtil.random(1, cardsInLayout.length - 2);
+            cardsInLayout[index].setSpecialMajor(true);
+          });
         }
       }
       exports('CardDealer', CardDealer);
@@ -3539,419 +3514,6 @@ System.register("chunks:///_virtual/celebrate-agent.ts", ['cc', './svg-util.ts',
   };
 });
 
-System.register("chunks:///_virtual/chapter-detail-view.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ui-view.ts', './chapter-picture-item.ts', './ui-manager.ts', './ui-config.ts', './game-data-manager.ts', './reward-manager.ts', './audio-manager.ts', './game-constants.ts', './bridge-util.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, Label, _decorator, director, UIOpacity, tween, UIView, ChapterPictureItem, UIManager, UIID, GameDataManager, RewardManager, AudioManager, AudioUrl, BridgeUtil, VibrationEffect;
-  return {
-    setters: [function (module) {
-      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
-      _initializerDefineProperty = module.initializerDefineProperty;
-    }, function (module) {
-      cclegacy = module.cclegacy;
-      Node = module.Node;
-      Label = module.Label;
-      _decorator = module._decorator;
-      director = module.director;
-      UIOpacity = module.UIOpacity;
-      tween = module.tween;
-    }, function (module) {
-      UIView = module.UIView;
-    }, function (module) {
-      ChapterPictureItem = module.ChapterPictureItem;
-    }, function (module) {
-      UIManager = module.UIManager;
-    }, function (module) {
-      UIID = module.UIID;
-    }, function (module) {
-      GameDataManager = module.GameDataManager;
-    }, function (module) {
-      RewardManager = module.RewardManager;
-    }, function (module) {
-      AudioManager = module.AudioManager;
-    }, function (module) {
-      AudioUrl = module.AudioUrl;
-    }, function (module) {
-      BridgeUtil = module.BridgeUtil;
-      VibrationEffect = module.VibrationEffect;
-    }],
-    execute: function () {
-      var _dec, _dec2, _dec3, _dec4, _class, _class2, _descriptor, _descriptor2, _descriptor3;
-      cclegacy._RF.push({}, "6a3calMKmdMZ5SAy2lX126n", "chapter-detail-view", undefined);
-      const {
-        ccclass,
-        property
-      } = _decorator;
-      let ChapterDetailView = exports('ChapterDetailView', (_dec = ccclass('ChapterDetailView'), _dec2 = property([ChapterPictureItem]), _dec3 = property(Node), _dec4 = property(Label), _dec(_class = (_class2 = class ChapterDetailView extends UIView {
-        constructor(...args) {
-          super(...args);
-          _initializerDefineProperty(this, "items", _descriptor, this);
-          _initializerDefineProperty(this, "lockCover", _descriptor2, this);
-          _initializerDefineProperty(this, "lblCost", _descriptor3, this);
-          this.chapterId = 0;
-        }
-        onOpen(fromUI, ...args) {
-          let accountLayout = director.getScene().getChildByPath('Canvas/midLayer/LayoutTokenAccount');
-          if (accountLayout) {
-            accountLayout.active = false;
-          }
-          let chapterId = args[0];
-          this.chapterId = chapterId;
-          let unlocked = GameDataManager.instance.data.chapterData.chapterUnlockedStates[chapterId];
-          if (unlocked) {
-            this.resetLockCover(false);
-          } else {
-            this.resetLockCover(true);
-          }
-          this.lblCost.string = `${RewardManager.instance.getConfig().sg.album_cost}`;
-          for (let i = 0; i < this.items.length; i++) {
-            let item = this.items[i];
-            item.initWithChapterId(chapterId, i);
-          }
-        }
-        onClose() {
-          GameDataManager.instance.saveData(true);
-        }
-        onCloseBtn() {
-          this.onClickBtn();
-          UIManager.instance.close(this);
-          UIManager.instance.open(UIID.ChapterView);
-        }
-        onUnlockBtn() {
-          this.onClickBtn();
-          let cost = RewardManager.instance.getConfig().sg.album_cost;
-          if (GameDataManager.instance.getFragment() < cost) {
-            UIManager.instance.showToast("Not enough fragments!");
-          } else {
-            let gdMgr = GameDataManager.instance;
-            gdMgr.addFragment(-cost);
-            gdMgr.data.chapterData.chapterUnlockedStates[this.chapterId] = true;
-            gdMgr.data.chapterData.curChapterId = this.chapterId + 1;
-            UIManager.instance.showToast("Unlocked Success!");
-            this.hideLockCover();
-          }
-        }
-        hideLockCover() {
-          let uiOpacity = this.lockCover.getComponent(UIOpacity);
-          uiOpacity.opacity = 255;
-          tween(uiOpacity).stop();
-          tween(uiOpacity).to(0.5, {
-            opacity: 0
-          }).call(() => {
-            this.lockCover.active = false;
-          }).start();
-        }
-        onClickItem(event, data) {
-          let idx = parseInt(data);
-          let item = this.items[idx];
-          UIManager.instance.open(UIID.PictureView, item.url);
-        }
-        resetLockCover(isLocked) {
-          this.lockCover.active = isLocked;
-          let uiOpacity = this.lockCover.getComponent(UIOpacity);
-          uiOpacity.opacity = 255;
-          tween(uiOpacity).stop();
-        }
-        onClickBtn() {
-          AudioManager.instance.playEffect(AudioUrl.BTN_CLICK);
-          BridgeUtil.vibrate(30, VibrationEffect.TICK);
-        }
-      }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "items", [_dec2], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return [];
-        }
-      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "lockCover", [_dec3], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "lblCost", [_dec4], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      })), _class2)) || _class));
-      cclegacy._RF.pop();
-    }
-  };
-});
-
-System.register("chunks:///_virtual/chapter-item.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './group-item.ts', './game-data-manager.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Label, Sprite, SpriteFrame, _decorator, Component, GroupItem, GameDataManager;
-  return {
-    setters: [function (module) {
-      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
-      _initializerDefineProperty = module.initializerDefineProperty;
-    }, function (module) {
-      cclegacy = module.cclegacy;
-      Label = module.Label;
-      Sprite = module.Sprite;
-      SpriteFrame = module.SpriteFrame;
-      _decorator = module._decorator;
-      Component = module.Component;
-    }, function (module) {
-      GroupItem = module.GroupItem;
-    }, function (module) {
-      GameDataManager = module.GameDataManager;
-    }],
-    execute: function () {
-      var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5;
-      cclegacy._RF.push({}, "77806q8FFhKBZgSx9s5W2PB", "chapter-item", undefined);
-      const {
-        ccclass,
-        property
-      } = _decorator;
-      const ChapterNameConfig = ['Consume Life', 'Small-Town Life', 'Cruise Ship', 'Exotic Scenery', 'Glacier Adventure'];
-      let ChapterItem = exports('ChapterItem', (_dec = ccclass('ChapterItem'), _dec2 = property(Label), _dec3 = property(Label), _dec4 = property(GroupItem), _dec5 = property(Sprite), _dec6 = property([SpriteFrame]), _dec(_class = (_class2 = class ChapterItem extends Component {
-        constructor(...args) {
-          super(...args);
-          _initializerDefineProperty(this, "lblChapterId", _descriptor, this);
-          _initializerDefineProperty(this, "lblChapterName", _descriptor2, this);
-          _initializerDefineProperty(this, "groupItem", _descriptor3, this);
-          _initializerDefineProperty(this, "sprPic", _descriptor4, this);
-          _initializerDefineProperty(this, "frames", _descriptor5, this);
-        }
-        initWithData(chapterType, id) {
-          let chapterData = GameDataManager.instance.data.chapterData;
-          this.lblChapterId.string = `Chapter ${id + 1}`;
-          this.groupItem.initWithData(chapterType, id);
-          if (GameDataManager.instance.data.chapterData.curChapterId < id) {
-            this.groupItem.node.active = false;
-          } else {
-            this.groupItem.node.active = true;
-          }
-          let unlocked = GameDataManager.instance.data.chapterData.chapterUnlockedStates[chapterType];
-          this.groupItem.isLocked = unlocked ? false : true;
-          this.lblChapterName.string = ChapterNameConfig[chapterType] ? ChapterNameConfig[chapterType] : "--";
-          this.sprPic.spriteFrame = this.frames[chapterType];
-        }
-      }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "lblChapterId", [_dec2], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "lblChapterName", [_dec3], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "groupItem", [_dec4], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, "sprPic", [_dec5], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, "frames", [_dec6], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return [];
-        }
-      })), _class2)) || _class));
-      cclegacy._RF.pop();
-    }
-  };
-});
-
-System.register("chunks:///_virtual/chapter-picture-item.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Sprite, SpriteFrame, _decorator, Component;
-  return {
-    setters: [function (module) {
-      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
-      _initializerDefineProperty = module.initializerDefineProperty;
-    }, function (module) {
-      cclegacy = module.cclegacy;
-      Sprite = module.Sprite;
-      SpriteFrame = module.SpriteFrame;
-      _decorator = module._decorator;
-      Component = module.Component;
-    }],
-    execute: function () {
-      var _dec, _dec2, _dec3, _class, _class2, _descriptor, _descriptor2;
-      cclegacy._RF.push({}, "395daRwLGBLzIq6VKfty5yZ", "chapter-picture-item", undefined);
-      const {
-        ccclass,
-        property
-      } = _decorator;
-      let ChapterPictureItem = exports('ChapterPictureItem', (_dec = ccclass('ChapterPictureItem'), _dec2 = property(Sprite), _dec3 = property([SpriteFrame]), _dec(_class = (_class2 = class ChapterPictureItem extends Component {
-        constructor(...args) {
-          super(...args);
-          _initializerDefineProperty(this, "sprPic", _descriptor, this);
-          _initializerDefineProperty(this, "frames", _descriptor2, this);
-          this.url = "";
-        }
-        initWithChapterId(chapterId, picId) {
-          this.sprPic.spriteFrame = this.frames[chapterId];
-          this.url = `textures/ui/chapter/${chapterId}/bg${picId}/spriteFrame`;
-        }
-      }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "sprPic", [_dec2], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "frames", [_dec3], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return [];
-        }
-      })), _class2)) || _class));
-      cclegacy._RF.pop();
-    }
-  };
-});
-
-System.register("chunks:///_virtual/chapter-view.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ui-view.ts', './ui-manager.ts', './ui-config.ts', './game-data-manager.ts', './audio-manager.ts', './game-constants.ts', './bridge-util.ts', './chapter-item.ts', './log-util.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, ProgressBar, _decorator, director, UITransform, Vec3, UIView, UIManager, UIID, GameDataManager, AudioManager, AudioUrl, BridgeUtil, VibrationEffect, ChapterItem, LogUtil;
-  return {
-    setters: [function (module) {
-      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
-      _initializerDefineProperty = module.initializerDefineProperty;
-    }, function (module) {
-      cclegacy = module.cclegacy;
-      Node = module.Node;
-      ProgressBar = module.ProgressBar;
-      _decorator = module._decorator;
-      director = module.director;
-      UITransform = module.UITransform;
-      Vec3 = module.Vec3;
-    }, function (module) {
-      UIView = module.UIView;
-    }, function (module) {
-      UIManager = module.UIManager;
-    }, function (module) {
-      UIID = module.UIID;
-    }, function (module) {
-      GameDataManager = module.GameDataManager;
-    }, function (module) {
-      AudioManager = module.AudioManager;
-    }, function (module) {
-      AudioUrl = module.AudioUrl;
-    }, function (module) {
-      BridgeUtil = module.BridgeUtil;
-      VibrationEffect = module.VibrationEffect;
-    }, function (module) {
-      ChapterItem = module.ChapterItem;
-    }, function (module) {
-      LogUtil = module.LogUtil;
-    }],
-    execute: function () {
-      var _dec, _dec2, _dec3, _dec4, _class, _class2, _descriptor, _descriptor2, _descriptor3;
-      cclegacy._RF.push({}, "f6fd1MyBVpCdLGTFZH1E8v1", "chapter-view", undefined);
-      const {
-        ccclass,
-        property
-      } = _decorator;
-      let ChapterView = exports('ChapterView', (_dec = ccclass('ChapterView'), _dec2 = property(Node), _dec3 = property([ChapterItem]), _dec4 = property(ProgressBar), _dec(_class = (_class2 = class ChapterView extends UIView {
-        constructor(...args) {
-          super(...args);
-          _initializerDefineProperty(this, "scrollViewContent", _descriptor, this);
-          _initializerDefineProperty(this, "items", _descriptor2, this);
-          _initializerDefineProperty(this, "progressBar", _descriptor3, this);
-          this.fromUI = 0;
-        }
-        onOpen(fromUI, ...args) {
-          this.fromUI = fromUI;
-          let accountLayout = director.getScene().getChildByPath('Canvas/midLayer/LayoutTokenAccount');
-          if (accountLayout) {
-            accountLayout.active = false;
-          }
-          this.updateChapterItems();
-          this.scheduleOnce(this.updateProgressBar);
-        }
-        onTop(preID, ...args) {
-          this.updateChapterItems();
-        }
-        updateChapterItems() {
-          let chapterData = GameDataManager.instance.data.chapterData;
-          for (let i = 0; i < chapterData.chapterList.length; i++) {
-            let chapterId = chapterData.chapterList[i];
-            let item = this.items[i];
-            item.initWithData(chapterId, i);
-          }
-        }
-        onCloseBtn() {
-          this.onClickBtn();
-          UIManager.instance.close(this);
-        }
-        onClickItem(event, data) {
-          let idx = parseInt(data);
-          let chapterId = GameDataManager.instance.data.chapterData.chapterList[idx];
-
-          // open chapterDetail view
-          UIManager.instance.close(this);
-          UIManager.instance.open(UIID.ChapterDetailView, chapterId);
-        }
-        onClickBtn() {
-          AudioManager.instance.playEffect(AudioUrl.BTN_CLICK);
-          BridgeUtil.vibrate(30, VibrationEffect.TICK);
-        }
-        updateProgressBar() {
-          let trsfBar = this.progressBar.node.getComponent(UITransform);
-          let height = this.scrollViewContent.getComponent(UITransform).height + 1000;
-          trsfBar.setContentSize(trsfBar.contentSize.width, height);
-          let curChapterItem = this.items[GameDataManager.instance.data.chapterData.curChapterId];
-          if (curChapterItem) {
-            let curGroupItem = curChapterItem.groupItem;
-            if (!curGroupItem) {
-              LogUtil.error('curGroupItem is null');
-              return;
-            }
-            let itemWpos = curGroupItem.node.parent.getComponent(UITransform).convertToWorldSpaceAR(curGroupItem.node.getPosition());
-            let startWpos = this.progressBar.node.getComponent(UITransform).convertToWorldSpaceAR(Vec3.ZERO);
-            let distance = startWpos.y - itemWpos.y;
-            this.progressBar.totalLength = height;
-            this.progressBar.progress = distance / height;
-          }
-        }
-      }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "scrollViewContent", [_dec2], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "items", [_dec3], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return [];
-        }
-      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "progressBar", [_dec4], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      })), _class2)) || _class));
-      cclegacy._RF.pop();
-    }
-  };
-});
-
 System.register("chunks:///_virtual/circular-mask.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
   var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, _decorator, Component, Graphics, Color, tween;
   return {
@@ -4283,8 +3845,8 @@ System.register("chunks:///_virtual/config-agent.ts", ['cc', './config.ts', './r
   };
 });
 
-System.register("chunks:///_virtual/config.ts", ['cc', './gm-manager.ts', './reward-manager.ts', './game-data-manager.ts', './game-data-type-define.ts', './report-agent.ts'], function (exports) {
-  var cclegacy, sys, director, GmManager, RewardManager, GameDataManager, SgState, ReportAgent, CustomReportEvent;
+System.register("chunks:///_virtual/config.ts", ['cc', './gm-manager.ts', './game-data-manager.ts', './report-agent.ts'], function (exports) {
+  var cclegacy, sys, director, GmManager, GameDataManager, ReportAgent, CustomReportEvent;
   return {
     setters: [function (module) {
       cclegacy = module.cclegacy;
@@ -4293,11 +3855,7 @@ System.register("chunks:///_virtual/config.ts", ['cc', './gm-manager.ts', './rew
     }, function (module) {
       GmManager = module.GmManager;
     }, function (module) {
-      RewardManager = module.RewardManager;
-    }, function (module) {
       GameDataManager = module.GameDataManager;
-    }, function (module) {
-      SgState = module.SgState;
     }, function (module) {
       ReportAgent = module.ReportAgent;
       CustomReportEvent = module.CustomReportEvent;
@@ -4320,21 +3878,13 @@ System.register("chunks:///_virtual/config.ts", ['cc', './gm-manager.ts', './rew
           }
         }
         static get ENABLE_WEB() {
-          const no_web_version = RewardManager.instance.getConfig().no_web_version || [];
-          return no_web_version.indexOf(this.GAME_VERSION) < 0 && this.getRFlag();
+          // const no_web_version = RewardManager.instance.getConfig().no_web_version || [];
+          // return no_web_version.indexOf(this.GAME_VERSION) < 0 && this.getRFlag();
+          return false;
         }
         static get FULL_MODE() {
           // return Config.INIT_FETCH_DATA && (this.R_FLAG || GameDataManager.instance.localData.lastRFlag || GmManager.instance.isStoreShow) && MountManager.instance.has(MountPoint.HasStore);
           return false;
-        }
-        static get ENABLE_SG() {
-          const no_sg_version = RewardManager.instance.getConfig().no_sg_version || [];
-          if (no_sg_version.indexOf(this.GAME_VERSION) >= 0) {
-            console.log(`ENABLE_SG: no_sg_version-false`);
-            return false;
-          }
-          console.log(`ENABLE_SG: RFlag-${this.getRFlag()} && isStart:${GameDataManager.instance.sg.state === SgState.Started}`);
-          return this.getRFlag();
         }
         static setRFlag(val) {
           if (this.firstSetFlagTime > 0 && val) {
@@ -12446,8 +11996,8 @@ System.register("chunks:///_virtual/game-data-type-define.ts", ['./rollupPluginM
   };
 });
 
-System.register("chunks:///_virtual/game-desk.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './card.ts', './game-res-manager.ts', './card-constants.ts', './card-dealer.ts', './flip-ctrl.ts', './ui-util.ts', './layout-tableau.ts', './animation-canvas.ts', './game-constants.ts', './audio-manager.ts', './tool-auto-prompt.ts', './tool-auto-solve.ts', './tool-magic.ts', './tool-undo.ts', './bridge-util.ts', './celebrate-agent.ts', './ui-manager.ts', './ui-config.ts', './reward-type-define.ts', './reward-manager.ts', './game-data-manager.ts', './card-render.ts', './log-util.ts', './report-agent.ts', './circular-mask.ts', './config.ts', './game-data-type-define.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, _decorator, Component, director, UITransform, Vec3, tween, UIOpacity, v3, Rect, CardArea, CardEvent, Card, GameResManager, CardConstants, CardSuit, CardPoint, CardDealer, FlipCtrl, FlipCtrlEvent, UIUtil, LayoutTableau, AnimationCanvas, GameState, GameEvent, ParamStage, ParamShowBtn, AudioUrl, GameConstants, StartLevelReportEvents, AudioManager, ToolAutoPrompt, ToolAutoSolve, ToolMagic, ToolUndo, BridgeUtil, VibrationEffect, CelebrateAgent, UIManager, UIID, ItemType, RewardManager, GameDataManager, CardRender, LogUtil, ReportAgent, CustomReportEvent, CircularMask, Config, SgState;
+System.register("chunks:///_virtual/game-desk.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './card.ts', './game-res-manager.ts', './card-constants.ts', './card-dealer.ts', './flip-ctrl.ts', './ui-util.ts', './layout-tableau.ts', './animation-canvas.ts', './game-constants.ts', './audio-manager.ts', './tool-auto-prompt.ts', './tool-auto-solve.ts', './tool-magic.ts', './tool-undo.ts', './bridge-util.ts', './celebrate-agent.ts', './ui-manager.ts', './ui-config.ts', './reward-type-define.ts', './reward-manager.ts', './game-data-manager.ts', './card-render.ts', './log-util.ts', './report-agent.ts', './circular-mask.ts', './game-data-type-define.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, _decorator, Component, director, UITransform, Vec3, tween, UIOpacity, v3, Rect, CardArea, CardEvent, Card, GameResManager, CardConstants, CardSuit, CardPoint, CardDealer, FlipCtrl, FlipCtrlEvent, UIUtil, LayoutTableau, AnimationCanvas, GameState, GameEvent, ParamStage, ParamShowBtn, AudioUrl, GameConstants, StartLevelReportEvents, AudioManager, ToolAutoPrompt, ToolAutoSolve, ToolMagic, ToolUndo, BridgeUtil, VibrationEffect, CelebrateAgent, UIManager, UIID, ItemType, RewardManager, GameDataManager, CardRender, LogUtil, ReportAgent, CustomReportEvent, CircularMask, SgState;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -12527,8 +12077,6 @@ System.register("chunks:///_virtual/game-desk.ts", ['./rollupPluginModLoBabelHel
       CustomReportEvent = module.CustomReportEvent;
     }, function (module) {
       CircularMask = module.CircularMask;
-    }, function (module) {
-      Config = module.Config;
     }, function (module) {
       SgState = module.SgState;
     }],
@@ -13096,50 +12644,7 @@ System.register("chunks:///_virtual/game-desk.ts", ['./rollupPluginModLoBabelHel
           return node.getComponent(Card).flip().then(() => {
             let cardComp = node.getComponent(Card);
             if (cardComp.isSpecialMajor) {
-              if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
-                // let isCached = GraphManager.instance.isCached(GameDataManager.instance.specialRewardInfo.url_B_s);
-                // if (!isCached) {
-                //     LogUtil.log(`special-reward-B-not cached yet333`);
-                //     let promisePreload = new Promise(async (resolve, reject) => {
-
-                //         let callback = (spr: SpriteFrame) => {
-                //             if (spr) {
-                //                 LogUtil.log(`special-reward-B-loading load complete 444`);
-                //                 setTimeout(() => {
-                //                     UIManager.instance.open(UIID.SpecialRewardPopup, {
-                //                         picInfo: Object.create(GameDataManager.instance.specialRewardInfo)
-                //                     });
-                //                 }, 100);
-                //                 resolve(true);
-                //             } else {
-                //                 if (sys.isBrowser) {
-                //                     setTimeout(() => {
-                //                         UIManager.instance.open(UIID.SpecialRewardPopup, {
-                //                             picInfo: Object.create(GameDataManager.instance.specialRewardInfo)
-                //                         });
-                //                     }, 100);
-                //                     resolve(true);
-                //                 } else {
-                //                     UIManager.instance.showToast(`Network error`);
-                //                     reject(false);
-                //                 }
-                //             }
-                //         }
-
-                //         MountManager.instance.notify(MountPoint.NativeNotifyGetShowPageFrame, {
-                //             info: GameDataManager.instance.specialRewardInfo,
-                //             type: 4,
-                //             onComplete: callback.bind(this)
-                //         });
-                //     });
-
-                //     UIManager.instance.open(UIID.Loading, {
-                //         promise: promisePreload
-                //     });
-                // } else {
-
-                // }
-
+              if (GameDataManager.instance.sg.state === SgState.Started) {
                 UIManager.instance.open(UIID.SpecialRewardPopup, {
                   picInfo: Object.create(GameDataManager.instance.specialRewardInfo)
                 });
@@ -14065,8 +13570,8 @@ System.register("chunks:///_virtual/gm-manager.ts", ['cc', './storage-manager.ts
   };
 });
 
-System.register("chunks:///_virtual/gm-view.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ui-view.ts', './gm-manager.ts', './game-data-manager.ts', './ui-manager.ts', './ui-config.ts', './mount-manager.ts', './mount-point.ts', './connect-agent.ts', './game-constants.ts', './time-agent.ts', './config.ts', './storage-manager.ts', './audio-manager.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, Toggle, Label, _decorator, director, sys, UIView, GmManager, GameDataManager, UIManager, UIID, MountManager, MountPoint, ConnectAgent, GameEvent, TimeAgent, Config, StorageManager, AudioManager;
+System.register("chunks:///_virtual/gm-view.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ui-view.ts', './gm-manager.ts', './game-data-manager.ts', './ui-manager.ts', './ui-config.ts', './mount-manager.ts', './mount-point.ts', './connect-agent.ts', './game-constants.ts', './time-agent.ts', './config.ts', './storage-manager.ts', './audio-manager.ts', './welcome-hf.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, Toggle, Label, _decorator, director, sys, UIView, GmManager, GameDataManager, UIManager, UIID, MountManager, MountPoint, ConnectAgent, GameEvent, TimeAgent, Config, StorageManager, AudioManager, HOT_UPDATE_TIME_COST;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -14105,6 +13610,8 @@ System.register("chunks:///_virtual/gm-view.ts", ['./rollupPluginModLoBabelHelpe
       StorageManager = module.StorageManager;
     }, function (module) {
       AudioManager = module.AudioManager;
+    }, function (module) {
+      HOT_UPDATE_TIME_COST = module.HOT_UPDATE_TIME_COST;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _dec12, _dec13, _dec14, _dec15, _dec16, _dec17, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14, _descriptor15, _descriptor16;
@@ -14127,7 +13634,7 @@ System.register("chunks:///_virtual/gm-view.ts", ['./rollupPluginModLoBabelHelpe
           _initializerDefineProperty(this, "lblSystem", _descriptor9, this);
           _initializerDefineProperty(this, "lblLangCode", _descriptor10, this);
           _initializerDefineProperty(this, "lblCountry", _descriptor11, this);
-          _initializerDefineProperty(this, "lblLocal", _descriptor12, this);
+          _initializerDefineProperty(this, "lblHfTimeCost", _descriptor12, this);
           _initializerDefineProperty(this, "lblSymbol", _descriptor13, this);
           _initializerDefineProperty(this, "lblCurrency", _descriptor14, this);
           _initializerDefineProperty(this, "lblPackage", _descriptor15, this);
@@ -14150,9 +13657,8 @@ System.register("chunks:///_virtual/gm-view.ts", ['./rollupPluginModLoBabelHelpe
           this.lblSystem.string = `system: ${sys.platform}`;
           this.lblLangCode.string = `langCode: ${Config.LANG_CODE}`;
           this.lblCountry.string = `country: ${Config.COUNTRY_CODE}`;
-          // this.lblLocal.string = 'local: ';
-          // this.lblSymbol.string = `currencySymbol: `;
-          // this.lblCurrency.string = `currency: `;
+          let hfTimeCost = sys.localStorage.getItem(HOT_UPDATE_TIME_COST);
+          this.lblHfTimeCost.string = `hfTimeCost: ${hfTimeCost ? hfTimeCost + 's' : 'no data'}`;
           this.lblPackage.string = `package: ${Config.PACKAGE}`;
           this.lblUrl.string = `apiUrl: ${Config.API_URL}`;
           this.addEventListeners();
@@ -14296,7 +13802,7 @@ System.register("chunks:///_virtual/gm-view.ts", ['./rollupPluginModLoBabelHelpe
         initializer: function () {
           return null;
         }
-      }), _descriptor12 = _applyDecoratedDescriptor(_class2.prototype, "lblLocal", [_dec13], {
+      }), _descriptor12 = _applyDecoratedDescriptor(_class2.prototype, "lblHfTimeCost", [_dec13], {
         configurable: true,
         enumerable: true,
         writable: true,
@@ -14595,6 +14101,11 @@ System.register("chunks:///_virtual/graph-manager.ts", ['cc', './log-util.ts', '
                 this.saveNativeCache(url, buffer);
                 resolve(true);
               } else {
+                try {
+                  this.saveWebCache(url, buffer);
+                } catch (error) {
+                  LogUtil.log('GraphManager', 'saveWebCache', error);
+                }
                 resolve(true);
               }
             });
@@ -14648,95 +14159,6 @@ System.register("chunks:///_virtual/graph-manager.ts", ['cc', './log-util.ts', '
       }
       exports('GraphManager', GraphManager);
       GraphManager._instance = void 0;
-      cclegacy._RF.pop();
-    }
-  };
-});
-
-System.register("chunks:///_virtual/group-item.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Label, Sprite, SpriteFrame, Node, _decorator, Component;
-  return {
-    setters: [function (module) {
-      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
-      _initializerDefineProperty = module.initializerDefineProperty;
-    }, function (module) {
-      cclegacy = module.cclegacy;
-      Label = module.Label;
-      Sprite = module.Sprite;
-      SpriteFrame = module.SpriteFrame;
-      Node = module.Node;
-      _decorator = module._decorator;
-      Component = module.Component;
-    }],
-    execute: function () {
-      var _dec, _dec2, _dec3, _dec4, _dec5, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4;
-      cclegacy._RF.push({}, "7c1da7HaNZD0LyTwwYatFr+", "group-item", undefined);
-      const {
-        ccclass,
-        property
-      } = _decorator;
-      let GroupItem = exports('GroupItem', (_dec = ccclass('GroupItem'), _dec2 = property(Label), _dec3 = property(Sprite), _dec4 = property([SpriteFrame]), _dec5 = property(Node), _dec(_class = (_class2 = class GroupItem extends Component {
-        constructor(...args) {
-          super(...args);
-          // @property(StarLayout)
-          // starLayout: StarLayout = null;
-          _initializerDefineProperty(this, "lblGroupId", _descriptor, this);
-          _initializerDefineProperty(this, "sprLockState", _descriptor2, this);
-          _initializerDefineProperty(this, "sprLockStateFrames", _descriptor3, this);
-          _initializerDefineProperty(this, "cover", _descriptor4, this);
-          this._isLocked = false;
-        }
-        set isLocked(val) {
-          this._isLocked = val;
-          this.sprLockState.spriteFrame = val ? this.sprLockStateFrames[0] : this.sprLockStateFrames[1];
-          this.cover.active = val;
-        }
-        get isLocked() {
-          return this._isLocked;
-        }
-        initWithData(chapterId, groupId) {
-          // ResUtil.load(this.sprPic.node, `textures/ui/picture/${chapterId}/picture-${groupId}/spriteFrame`, (err, frame) => {
-          //     if (err) {
-          //         console.error(err);
-          //     } else {
-          //         this.sprPic.spriteFrame = frame;
-          //     }
-          // });
-          this.lblGroupId.string = `${groupId + 1}`;
-        }
-        setStarLayout(total, cur) {
-          // this.starLayout.totalNum = total;
-          // this.starLayout.curNum = cur;
-        }
-      }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "lblGroupId", [_dec2], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "sprLockState", [_dec3], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "sprLockStateFrames", [_dec4], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return [];
-        }
-      }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, "cover", [_dec5], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      })), _class2)) || _class));
       cclegacy._RF.pop();
     }
   };
@@ -15110,10 +14532,8 @@ System.register("chunks:///_virtual/home-view.ts", ['./rollupPluginModLoBabelHel
           gdManager.updateLoginDayNum(TimeAgent.instance.getTime());
           let data = gdManager.data;
           this.lblLv.string = `Level\n${data.level}`;
-          if (Config.ENABLE_SG) {
-            MountManager.instance.notify(MountPoint.NativeCheckLocalCache, null);
-          }
-          if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
+          MountManager.instance.notify(MountPoint.NativeCheckLocalCache, null);
+          if (GameDataManager.instance.sg.state === SgState.Started) {
             if (data.signInData.startTime === 0) {
               data.signInData.startTime = TimeAgent.instance.getTime();
             }
@@ -15122,30 +14542,15 @@ System.register("chunks:///_virtual/home-view.ts", ['./rollupPluginModLoBabelHel
             } else {
               UIManager.instance.open(UIID.GuidePopup);
             }
-          } else {
-            if (data.lastLoginTime > 0) {
-              this.gameDesk.startStage();
-            } else {
-              this.scheduleOnce(() => {
-                ReportAgent.reportCustomEvent(CustomReportEvent.WWY_GAME_LIFE_KEY_NODE, {
-                  step: 'guide_start'
-                });
-                UIManager.instance.open(UIID.GuidePopup);
-              }, 1);
-            }
           }
         }
         onTop(preID, ...args) {
           this.updateDisplay();
           let gdManager = GameDataManager.instance;
-          let restart = false;
           console.log(`onTop-preID:${preID}`);
           switch (preID) {
             case UIID.SignInPopup:
             case UIID.GuidePopup:
-              {
-                restart = true;
-              }
               break;
             case UIID.VictoryPopupSg:
               break;
@@ -15175,27 +14580,13 @@ System.register("chunks:///_virtual/home-view.ts", ['./rollupPluginModLoBabelHel
             case UIID.RewardGetPopup:
               {
                 let delay = 2;
-                if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
+                if (GameDataManager.instance.sg.state === SgState.Started) {
                   this.scheduleOnce(() => {
                     this.showPictureObtainPopup();
-                  }, delay);
-                } else {
-                  this.scheduleOnce(() => {
-                    this.backToStart();
                   }, delay);
                 }
                 return;
               }
-          }
-          if (!this.timer.isUpdate) {
-            if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) ;else {
-              if (restart) {
-                this.gameDesk.startStage();
-              } else {
-                UIManager.instance.closeAll();
-                director.loadScene('map');
-              }
-            }
           }
         }
         onClose() {
@@ -15255,7 +14646,7 @@ System.register("chunks:///_virtual/home-view.ts", ['./rollupPluginModLoBabelHel
             case ParamStage.START:
               {
                 this.timer.startCountUp();
-                if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
+                if (GameDataManager.instance.sg.state === SgState.Started) {
                   this.preloadGraphFrame();
                 }
               }
@@ -15423,7 +14814,7 @@ System.register("chunks:///_virtual/home-view.ts", ['./rollupPluginModLoBabelHel
         }
         onBtnIllustration() {
           this.onClickBtn();
-          if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
+          if (GameDataManager.instance.sg.state === SgState.Started) {
             // open illustration view
             UIManager.instance.open(UIID.IllustrationViewSg);
             let isOpenInter = false;
@@ -15444,7 +14835,7 @@ System.register("chunks:///_virtual/home-view.ts", ['./rollupPluginModLoBabelHel
           }
         }
         onBtnAlbum() {
-          if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
+          if (GameDataManager.instance.sg.state === SgState.Started) {
             // open album view
             UIManager.instance.open(UIID.AlbumView);
             let isOpenInter = false;
@@ -15488,16 +14879,14 @@ System.register("chunks:///_virtual/home-view.ts", ['./rollupPluginModLoBabelHel
             showCloseBtn: true,
             isCloseDirectly: false
           });
-          if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
+          if (GameDataManager.instance.sg.state === SgState.Started) {
             GameDataManager.instance.data.selectedSgPicture = null;
           }
         }
         backToStart() {
           UIManager.instance.closeAll();
-          if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
+          if (GameDataManager.instance.sg.state === SgState.Started) {
             director.loadScene('map-sg');
-          } else {
-            director.loadScene('map');
           }
         }
         async preloadGraphFrame() {
@@ -15919,8 +15308,8 @@ System.register("chunks:///_virtual/illustraion-item.ts", ['./rollupPluginModLoB
   };
 });
 
-System.register("chunks:///_virtual/item-get-popup.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ui-view.ts', './reward-type-define.ts', './game-data-manager.ts', './res-loader.ts', './audio-manager.ts', './game-constants.ts', './res-util.ts', './bridge-util.ts', './config.ts', './game-data-type-define.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Sprite, SpriteFrame, Node, Label, _decorator, UITransform, director, UIView, ItemType, GameDataManager, resLoader, AudioManager, AudioUrl, GameEvent, ResUtil, BridgeUtil, VibrationEffect, Config, SgState;
+System.register("chunks:///_virtual/item-get-popup.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ui-view.ts', './reward-type-define.ts', './game-data-manager.ts', './res-loader.ts', './audio-manager.ts', './game-constants.ts', './res-util.ts', './bridge-util.ts', './game-data-type-define.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Sprite, SpriteFrame, Node, Label, _decorator, UITransform, director, UIView, ItemType, GameDataManager, resLoader, AudioManager, AudioUrl, GameEvent, ResUtil, BridgeUtil, VibrationEffect, SgState;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -15953,8 +15342,6 @@ System.register("chunks:///_virtual/item-get-popup.ts", ['./rollupPluginModLoBab
       BridgeUtil = module.BridgeUtil;
       VibrationEffect = module.VibrationEffect;
     }, function (module) {
-      Config = module.Config;
-    }, function (module) {
       SgState = module.SgState;
     }],
     execute: function () {
@@ -15984,13 +15371,8 @@ System.register("chunks:///_virtual/item-get-popup.ts", ['./rollupPluginModLoBab
           //title
           // this.sprtTitle.spriteFra me = itemId > 1? this.sprtTitleFrames[1] : this.sprtTitleFrames[0];
 
-          if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
+          if (GameDataManager.instance.sg.state === SgState.Started) {
             resLoader.load('bundle-sg', `texture/reward/item-icon/item-${itemId}/spriteFrame`, (err, frame) => {
-              this.sprtItem.spriteFrame = frame;
-              ResUtil.assignWith(frame, this.node, true);
-            });
-          } else {
-            resLoader.load(`textures/ui/reward/item-icon/item-${itemId}/spriteFrame`, (err, frame) => {
               this.sprtItem.spriteFrame = frame;
               ResUtil.assignWith(frame, this.node, true);
             });
@@ -17180,9 +16562,9 @@ System.register("chunks:///_virtual/log-util.ts", ['cc', './config.ts'], functio
   };
 });
 
-System.register("chunks:///_virtual/main", ['./front-line.ts', './welcome-hf.ts', './ad-agent.ts', './ad-manager.ts', './bridge-event.ts', './bridge-manager.ts', './bridge-util.ts', './audio-effect-pool.ts', './audio-effect.ts', './audio-manager.ts', './audio-music.ts', './config-agent.ts', './data-agent.ts', './storage-manager.ts', './union-fetch-agent.ts', './gm-manager.ts', './time-agent.ts', './graph-manager.ts', './loading-flow.ts', './loading-manager.ts', './mount-manager.ts', './mount-pod.ts', './mount-point.ts', './http-agent.ts', './request-manager.ts', './res-keeper.ts', './res-leak-checker.ts', './res-loader.ts', './res-util.ts', './action-chain.ts', './bg-adapter.ts', './btn-effect.ts', './ui-manager.ts', './ui-screen-adapter.ts', './ui-view.ts', './animation-util.ts', './array-util.ts', './bezier-util.ts', './common-util.ts', './debug-util.ts', './log-util.ts', './object-util.ts', './random-util.ts', './safe-area-util.ts', './string-util.ts', './svg-util.ts', './ui-util.ts', './circular-mask.ts', './progress-bar-ctrl.ts', './round-rect-mask.ts', './bundle-conifg.ts', './config.ts', './default-config.ts', './text-config.ts', './ui-config.ts', './connect-agent.ts', './native-agent.ts', './sdk-agent.ts', './animation-canvas.ts', './card-constants.ts', './card-data.ts', './card-dealer.ts', './card-render.ts', './card.ts', './celebrate-agent.ts', './flip-ctrl.ts', './game-constants.ts', './game-data-manager.ts', './game-data-type-define.ts', './game-desk.ts', './game-res-manager.ts', './game-step.ts', './layout-tableau.ts', './step-checker.ts', './tool-agent.ts', './tool-auto-check-end.ts', './tool-auto-prompt.ts', './tool-auto-solve.ts', './tool-magic.ts', './tool-undo.ts', './i18n-agent.ts', './i18n-label.ts', './report-agent.ts', './reward-manager.ts', './reward-type-define.ts', './map.ts', './stage.ts', './welcome.ts', './AQKTRMDQJQQBTDC.ts', './FJOIKK.ts', './CCIOERS.ts', './CIVTVAVXRORTVD.ts', './FSIOKP.ts', './BSCTBWK.ts', './SVDMRMIFJDYHRX.ts', './OBGMYUHSPZ.ts', './AHGNGYYNSSRZ.ts', './AKHOCOQOOYH.ts', './CryptoES.mjs_cjs=&original=.js', './GKHQIDKQUTV.ts', './KENOHXMVJJSH.ts', './LIGHOZ.ts', './MEMINEFUZFGAOP.ts', './MNDOCJRWDSHZ.ts', './MNQRQYTLR.ts', './MYKRDT.ts', './OULQSMFSYRNMXWT.ts', './PQBRALKRA.ts', './QLHROXRCFBPYKY.ts', './RHNDXTSQQCUFJ.ts', './RTONERXYWGCD.ts', './SDYSTNCVGG.ts', './TAMEBDDEGGUCY.ts', './TBGHTYXGU.ts', './VBWBHDOLKCQNA.ts', './YJPHBDNICBXPNH.ts', './CJXOHZKFR.ts', './PZCMUYBUB.ts', './WBKIRV.ts', './TTINOQH.ts', './card-theme-item.ts', './card-theme-view.ts', './ad-btn.ts', './debug-info-view.ts', './gm-view.ts', './guide-tips.ts', './loading-anim.ts', './loading-view.ts', './major-token-tab.ts', './reflect-effect-mask.ts', './star-layout.ts', './timer-displayer.ts', './toast.ts', './token-account.ts', './guide-popup.ts', './home-view.ts', './menu-popup.ts', './more-game-view.ts', './policy-popup.ts', './rating-popup.ts', './target-popup.ts', './token-account-layout.ts', './under-view.ts', './victory-popup.ts', './chapter-detail-view.ts', './chapter-item.ts', './chapter-picture-item.ts', './chapter-view.ts', './group-item.ts', './illustraion-item.ts', './map-lv-item.ts', './map-pic-item.ts', './map-view.ts', './picture-view.ts', './plot-view.ts', './select-result-view.ts', './select-view.ts', './start-view.ts', './drift-bubble.ts', './item-get-popup.ts', './item-obtain-popup.ts', './reward-anim-controller.ts', './reward-get-popup.ts', './shuffle-anim-controller.ts', './sign-in-item.ts', './sign-in-popup.ts', './progress-effect.ts', './star-effect.ts'], function () {
+System.register("chunks:///_virtual/main", ['./front-line.ts', './welcome-hf.ts', './ad-agent.ts', './ad-manager.ts', './bridge-event.ts', './bridge-manager.ts', './bridge-util.ts', './audio-effect-pool.ts', './audio-effect.ts', './audio-manager.ts', './audio-music.ts', './config-agent.ts', './data-agent.ts', './storage-manager.ts', './union-fetch-agent.ts', './gm-manager.ts', './time-agent.ts', './graph-manager.ts', './loading-flow.ts', './loading-manager.ts', './mount-manager.ts', './mount-pod.ts', './mount-point.ts', './http-agent.ts', './request-manager.ts', './res-keeper.ts', './res-leak-checker.ts', './res-loader.ts', './res-util.ts', './action-chain.ts', './bg-adapter.ts', './btn-effect.ts', './ui-manager.ts', './ui-screen-adapter.ts', './ui-view.ts', './animation-util.ts', './array-util.ts', './bezier-util.ts', './common-util.ts', './debug-util.ts', './log-util.ts', './object-util.ts', './random-util.ts', './safe-area-util.ts', './string-util.ts', './svg-util.ts', './ui-util.ts', './circular-mask.ts', './progress-bar-ctrl.ts', './round-rect-mask.ts', './bundle-conifg.ts', './config.ts', './default-config.ts', './text-config.ts', './ui-config.ts', './connect-agent.ts', './native-agent.ts', './sdk-agent.ts', './animation-canvas.ts', './card-constants.ts', './card-data.ts', './card-dealer.ts', './card-render.ts', './card.ts', './celebrate-agent.ts', './flip-ctrl.ts', './game-constants.ts', './game-data-manager.ts', './game-data-type-define.ts', './game-desk.ts', './game-res-manager.ts', './game-step.ts', './layout-tableau.ts', './step-checker.ts', './tool-agent.ts', './tool-auto-check-end.ts', './tool-auto-prompt.ts', './tool-auto-solve.ts', './tool-magic.ts', './tool-undo.ts', './i18n-agent.ts', './i18n-label.ts', './report-agent.ts', './reward-manager.ts', './reward-type-define.ts', './map.ts', './stage.ts', './welcome.ts', './AQKTRMDQJQQBTDC.ts', './FJOIKK.ts', './CCIOERS.ts', './CIVTVAVXRORTVD.ts', './FSIOKP.ts', './BSCTBWK.ts', './SVDMRMIFJDYHRX.ts', './OBGMYUHSPZ.ts', './AHGNGYYNSSRZ.ts', './AKHOCOQOOYH.ts', './CryptoES.mjs_cjs=&original=.js', './GKHQIDKQUTV.ts', './KENOHXMVJJSH.ts', './LIGHOZ.ts', './MEMINEFUZFGAOP.ts', './MNDOCJRWDSHZ.ts', './MNQRQYTLR.ts', './MYKRDT.ts', './OULQSMFSYRNMXWT.ts', './PQBRALKRA.ts', './QLHROXRCFBPYKY.ts', './RHNDXTSQQCUFJ.ts', './RTONERXYWGCD.ts', './SDYSTNCVGG.ts', './TAMEBDDEGGUCY.ts', './TBGHTYXGU.ts', './VBWBHDOLKCQNA.ts', './YJPHBDNICBXPNH.ts', './CJXOHZKFR.ts', './PZCMUYBUB.ts', './WBKIRV.ts', './TTINOQH.ts', './card-theme-item.ts', './card-theme-view.ts', './ad-btn.ts', './debug-info-view.ts', './gm-view.ts', './guide-tips.ts', './loading-anim.ts', './loading-view.ts', './major-token-tab.ts', './reflect-effect-mask.ts', './star-layout.ts', './timer-displayer.ts', './toast.ts', './token-account.ts', './guide-popup.ts', './home-view.ts', './menu-popup.ts', './more-game-view.ts', './policy-popup.ts', './rating-popup.ts', './target-popup.ts', './token-account-layout.ts', './under-view.ts', './victory-popup.ts', './illustraion-item.ts', './picture-view.ts', './plot-view.ts', './drift-bubble.ts', './item-get-popup.ts', './item-obtain-popup.ts', './reward-anim-controller.ts', './reward-get-popup.ts', './shuffle-anim-controller.ts', './sign-in-item.ts', './sign-in-popup.ts', './progress-effect.ts', './star-effect.ts'], function () {
   return {
-    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
     execute: function () {}
   };
 });
@@ -17241,369 +16623,8 @@ System.register("chunks:///_virtual/major-token-tab.ts", ['cc', './game-data-man
   };
 });
 
-System.register("chunks:///_virtual/map-lv-item.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Label, Sprite, SpriteFrame, _decorator, Component, Color;
-  return {
-    setters: [function (module) {
-      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
-      _initializerDefineProperty = module.initializerDefineProperty;
-    }, function (module) {
-      cclegacy = module.cclegacy;
-      Label = module.Label;
-      Sprite = module.Sprite;
-      SpriteFrame = module.SpriteFrame;
-      _decorator = module._decorator;
-      Component = module.Component;
-      Color = module.Color;
-    }],
-    execute: function () {
-      var _dec, _dec2, _dec3, _dec4, _class, _class2, _descriptor, _descriptor2, _descriptor3;
-      cclegacy._RF.push({}, "d4354aODYZNro826Zg3DAD7", "map-lv-item", undefined);
-      const {
-        ccclass,
-        property
-      } = _decorator;
-      let MapLvItemState = exports('MapLvItemState', /*#__PURE__*/function (MapLvItemState) {
-        MapLvItemState[MapLvItemState["Unlocked"] = 0] = "Unlocked";
-        MapLvItemState[MapLvItemState["Completed"] = 1] = "Completed";
-        MapLvItemState[MapLvItemState["Locked"] = 2] = "Locked";
-        return MapLvItemState;
-      }({}));
-      const LabelOutlineColorConfig = ['#C5A200', '#00BD06'];
-      let MapLvItem = exports('MapLvItem', (_dec = ccclass('MapLvItem'), _dec2 = property(Label), _dec3 = property(Sprite), _dec4 = property([SpriteFrame]), _dec(_class = (_class2 = class MapLvItem extends Component {
-        constructor(...args) {
-          super(...args);
-          _initializerDefineProperty(this, "lblId", _descriptor, this);
-          _initializerDefineProperty(this, "sprBg", _descriptor2, this);
-          _initializerDefineProperty(this, "sprBgFrames", _descriptor3, this);
-          this._state = MapLvItemState.Locked;
-        }
-        get state() {
-          return this._state;
-        }
-        set state(val) {
-          this._state = val;
-          let lock = this.node.getChildByName('Lock');
-          this.sprBg.spriteFrame = this.sprBgFrames[val];
-          switch (val) {
-            case MapLvItemState.Unlocked:
-            case MapLvItemState.Completed:
-              {
-                this.lblId.node.active = true;
-                Color.fromHEX(this.lblId.outlineColor, LabelOutlineColorConfig[val]);
-                lock.active = false;
-              }
-              break;
-            case MapLvItemState.Locked:
-              {
-                this.lblId.node.active = false;
-                lock.active = true;
-              }
-              break;
-          }
-        }
-        set id(val) {
-          this.lblId.string = `${val}`;
-        }
-        get id() {
-          return parseInt(this.lblId.string);
-        }
-      }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "lblId", [_dec2], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "sprBg", [_dec3], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "sprBgFrames", [_dec4], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return [];
-        }
-      })), _class2)) || _class));
-      cclegacy._RF.pop();
-    }
-  };
-});
-
-System.register("chunks:///_virtual/map-pic-item.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Sprite, _decorator, Component;
-  return {
-    setters: [function (module) {
-      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
-      _initializerDefineProperty = module.initializerDefineProperty;
-    }, function (module) {
-      cclegacy = module.cclegacy;
-      Sprite = module.Sprite;
-      _decorator = module._decorator;
-      Component = module.Component;
-    }],
-    execute: function () {
-      var _dec, _dec2, _class, _class2, _descriptor;
-      cclegacy._RF.push({}, "75fc4Tsx/dO4KGBO/tmf9DW", "map-pic-item", undefined);
-      const {
-        ccclass,
-        property
-      } = _decorator;
-      let MapPicItem = exports('MapPicItem', (_dec = ccclass('MapPicItem'), _dec2 = property(Sprite), _dec(_class = (_class2 = class MapPicItem extends Component {
-        constructor(...args) {
-          super(...args);
-          _initializerDefineProperty(this, "sprPic", _descriptor, this);
-        }
-        set isLocked(val) {
-          this.node.getChildByName('Lock').active = val;
-        }
-        get isLocked() {
-          return this.node.getChildByName('Lock').active;
-        }
-      }, _descriptor = _applyDecoratedDescriptor(_class2.prototype, "sprPic", [_dec2], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _class2)) || _class));
-      cclegacy._RF.pop();
-    }
-  };
-});
-
-System.register("chunks:///_virtual/map-view.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ui-view.ts', './game-data-manager.ts', './map-lv-item.ts', './map-pic-item.ts', './res-util.ts', './ui-manager.ts', './ui-config.ts', './audio-manager.ts', './game-constants.ts', './bridge-util.ts', './config.ts', './game-data-type-define.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Label, Node, Prefab, ScrollView, _decorator, director, instantiate, UITransform, Vec2, assetManager, UIView, GameDataManager, MapLvItem, MapLvItemState, MapPicItem, ResUtil, UIManager, UIID, AudioManager, AudioUrl, BridgeUtil, VibrationEffect, Config, SgState;
-  return {
-    setters: [function (module) {
-      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
-      _initializerDefineProperty = module.initializerDefineProperty;
-    }, function (module) {
-      cclegacy = module.cclegacy;
-      Label = module.Label;
-      Node = module.Node;
-      Prefab = module.Prefab;
-      ScrollView = module.ScrollView;
-      _decorator = module._decorator;
-      director = module.director;
-      instantiate = module.instantiate;
-      UITransform = module.UITransform;
-      Vec2 = module.Vec2;
-      assetManager = module.assetManager;
-    }, function (module) {
-      UIView = module.UIView;
-    }, function (module) {
-      GameDataManager = module.GameDataManager;
-    }, function (module) {
-      MapLvItem = module.MapLvItem;
-      MapLvItemState = module.MapLvItemState;
-    }, function (module) {
-      MapPicItem = module.MapPicItem;
-    }, function (module) {
-      ResUtil = module.ResUtil;
-    }, function (module) {
-      UIManager = module.UIManager;
-    }, function (module) {
-      UIID = module.UIID;
-    }, function (module) {
-      AudioManager = module.AudioManager;
-    }, function (module) {
-      AudioUrl = module.AudioUrl;
-    }, function (module) {
-      BridgeUtil = module.BridgeUtil;
-      VibrationEffect = module.VibrationEffect;
-    }, function (module) {
-      Config = module.Config;
-    }, function (module) {
-      SgState = module.SgState;
-    }],
-    execute: function () {
-      var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6;
-      cclegacy._RF.push({}, "11787MVImpEWaGK9FaMMwpB", "map-view", undefined);
-      const {
-        ccclass,
-        property
-      } = _decorator;
-      let MapView = exports('MapView', (_dec = ccclass('MapView'), _dec2 = property(Label), _dec3 = property(Node), _dec4 = property(Label), _dec5 = property(Prefab), _dec6 = property(Prefab), _dec7 = property(ScrollView), _dec(_class = (_class2 = class MapView extends UIView {
-        constructor(...args) {
-          super(...args);
-          _initializerDefineProperty(this, "lblTitle", _descriptor, this);
-          _initializerDefineProperty(this, "content", _descriptor2, this);
-          _initializerDefineProperty(this, "lblBtn", _descriptor3, this);
-          _initializerDefineProperty(this, "prfbLvItem", _descriptor4, this);
-          _initializerDefineProperty(this, "prfbPicItem", _descriptor5, this);
-          _initializerDefineProperty(this, "scrollView", _descriptor6, this);
-          this.curChapterType = null;
-          this.lvItemList = [];
-          this.picItemList = [];
-        }
-        onOpen(fromUI, ...args) {
-          let accountLayout = director.getScene().getChildByPath('Canvas/midLayer/LayoutTokenAccount');
-          if (accountLayout) {
-            accountLayout.active = false;
-          }
-
-          // director.preloadScene('stage');
-          let chapterData = GameDataManager.instance.data.chapterData;
-          this.curChapterType = chapterData.chapterList[chapterData.curChapterId];
-          this.initMapItems();
-          this.lblBtn.string = `Level ${GameDataManager.instance.data.level}`;
-        }
-        onClose() {
-          GameDataManager.instance.saveData(true);
-        }
-        initMapItems() {
-          let gdMgr = GameDataManager.instance;
-          let curItem = null;
-          for (let i = 1; i < 25; i++) {
-            if (i % 5 == 0) {
-              // special
-              let picNode = instantiate(this.prfbPicItem);
-              picNode.setParent(this.content);
-              let picItem = picNode.getComponent(MapPicItem);
-              picItem && this.picItemList.push(picItem);
-              let url = '';
-              let chapterList = gdMgr.data.chapterData.chapterList;
-              if (i > 12) {
-                url = `textures/ui/illustration/bg/${chapterList[1]}/${i - 13}/spriteFrame`;
-              } else {
-                url = `textures/ui/illustration/bg/${chapterList[0]}/${i - 1}/spriteFrame`;
-              }
-              ResUtil.load(picItem.node, url, (err, frame) => {
-                if (err) {
-                  console.error(err);
-                } else {
-                  picItem.sprPic.spriteFrame = frame;
-                }
-              });
-              picItem.isLocked = i >= gdMgr.data.level;
-              if (gdMgr.data.level == i) {
-                curItem = picItem;
-              }
-            } else {
-              // normal
-              let node = instantiate(this.prfbLvItem);
-              node.setParent(this.content);
-              let lvItem = node.getComponent(MapLvItem);
-              if (lvItem) {
-                lvItem.id = i;
-                this.lvItemList.push(lvItem);
-              }
-              if (gdMgr.data.level == i) {
-                lvItem.state = MapLvItemState.Unlocked;
-                curItem = lvItem;
-              } else if (gdMgr.data.level > i) {
-                lvItem.state = MapLvItemState.Completed;
-              } else {
-                lvItem.state = MapLvItemState.Locked;
-              }
-            }
-          }
-          this.scheduleOnce(() => {
-            if (curItem) {
-              let lvItemHeight = this.lvItemList[0].node.getComponent(UITransform).height;
-              let picItemHeight = this.picItemList[0].node.getComponent(UITransform).height;
-              let contentHeight = this.content.getComponent(UITransform).height;
-              let total = contentHeight - lvItemHeight / 2 - picItemHeight / 2 - 400 * 2;
-              let itemWpos = curItem.node.worldPosition;
-              let contentWpos = this.content.worldPosition;
-              let winHeight = director.getScene().getChildByName('Canvas').getComponent(UITransform).height;
-              let offsetY = itemWpos.y - contentWpos.y - winHeight / 2;
-              let offsetPercent = offsetY / total;
-              offsetPercent = Math.max(offsetPercent, 0);
-              if (this.lvItemList.indexOf(curItem) === this.lvItemList.length - 1) {
-                offsetPercent = 1;
-              }
-              this.scrollView.scrollTo(new Vec2(0, offsetPercent), 0.5);
-            } else {
-              this.scrollView.scrollTo(new Vec2(0, 1), 0.5);
-            }
-          });
-        }
-        onPlayBtn() {
-          this.onClickBtn();
-          UIManager.instance.closeAll();
-          if (Config.ENABLE_SG && GameDataManager.instance.isSgResReady()) {
-            GameDataManager.instance.sg.state = SgState.Started;
-            GameDataManager.instance.saveData();
-            let bundleSg = assetManager.getBundle('bundle-sg');
-            bundleSg.loadScene('map-sg', (err, scene) => {
-              if (err) {
-                console.error(err);
-              } else {
-                UIManager.instance.closeAll();
-                director.loadScene('map-sg');
-              }
-            });
-          } else {
-            director.loadScene('stage');
-          }
-        }
-        onBackBtn() {
-          this.onClickBtn();
-          UIManager.instance.close(this);
-          UIManager.instance.open(UIID.StartView);
-        }
-        onClickBtn() {
-          AudioManager.instance.playEffect(AudioUrl.BTN_CLICK);
-          BridgeUtil.vibrate(30, VibrationEffect.TICK);
-        }
-      }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "lblTitle", [_dec2], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "content", [_dec3], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "lblBtn", [_dec4], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, "prfbLvItem", [_dec5], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, "prfbPicItem", [_dec6], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, "scrollView", [_dec7], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      })), _class2)) || _class));
-      cclegacy._RF.pop();
-    }
-  };
-});
-
-System.register("chunks:///_virtual/map.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ui-manager.ts', './ui-config.ts', './game-data-manager.ts', './res-util.ts', './game-constants.ts', './audio-manager.ts', './mount-manager.ts', './mount-point.ts', './graph-manager.ts', './config.ts', './bg-adapter.ts', './game-data-type-define.ts', './ui-util.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Sprite, ParticleSystem2D, _decorator, Component, director, Node, sys, Vec3, UIManager, UICF, UIID, GameDataManager, ResUtil, AudioUrl, AudioManager, MountManager, MountPoint, GraphManager, ConfigEvent, Config, BgAdapter, SgState, UIUtil;
+System.register("chunks:///_virtual/map.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ui-manager.ts', './ui-config.ts', './game-data-manager.ts', './game-constants.ts', './audio-manager.ts', './mount-manager.ts', './mount-point.ts', './graph-manager.ts', './config.ts', './bg-adapter.ts', './game-data-type-define.ts', './ui-util.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Sprite, ParticleSystem2D, _decorator, Component, director, Node, sys, Vec3, UIManager, UICF, UIID, GameDataManager, AudioUrl, AudioManager, MountManager, MountPoint, GraphManager, ConfigEvent, Config, BgAdapter, SgState, UIUtil;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -17625,8 +16646,6 @@ System.register("chunks:///_virtual/map.ts", ['./rollupPluginModLoBabelHelpers.j
       UIID = module.UIID;
     }, function (module) {
       GameDataManager = module.GameDataManager;
-    }, function (module) {
-      ResUtil = module.ResUtil;
     }, function (module) {
       AudioUrl = module.AudioUrl;
     }, function (module) {
@@ -17703,24 +16722,14 @@ System.register("chunks:///_virtual/map.ts", ['./rollupPluginModLoBabelHelpers.j
           }
           let gdMgr = GameDataManager.instance;
           let sgState = gdMgr.sg.state;
-          if (Config.ENABLE_SG && sgState === SgState.Started) {
+          if (sgState === SgState.Started) {
             if (gdMgr.sg.isPlayPlots || gdMgr.data.isPlayPlots) {
               UIManager.instance.open(UIID.StartViewSg);
             } else {
               UIManager.instance.open(UIID.PlotView);
             }
-          } else {
-            if (!gdMgr.data.isPlayPlots) {
-              UIManager.instance.open(UIID.PlotView);
-            } else if (GameDataManager.instance.inGame) {
-              UIManager.instance.open(UIID.MapView);
-            } else {
-              UIManager.instance.open(UIID.StartView);
-            }
           }
-          if (Config.ENABLE_SG) {
-            this.onFlagChanged();
-          }
+          this.onFlagChanged();
         }
         onDestroy() {
           this.unscheduleAllCallbacks();
@@ -17734,7 +16743,7 @@ System.register("chunks:///_virtual/map.ts", ['./rollupPluginModLoBabelHelpers.j
           this.ptclClick.node.active = true;
         }
         async updateBg() {
-          if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
+          if (GameDataManager.instance.sg.state === SgState.Started) {
             // 根据逻辑选择bg
             let bgInfo = GameDataManager.instance.getRandomBgInfo();
             if (!bgInfo) {
@@ -17750,23 +16759,10 @@ System.register("chunks:///_virtual/map.ts", ['./rollupPluginModLoBabelHelpers.j
               let adapter = this.sprBg.getComponent(BgAdapter);
               adapter && adapter.updateSize();
             }
-          } else {
-            let chapterData = GameDataManager.instance.data.chapterData;
-            let curChapterType = chapterData.chapterList[chapterData.curChapterId];
-            ResUtil.load(this.sprBg.node, `textures/ui/chapter/blur-bg/${curChapterType}/spriteFrame`, (err, frame) => {
-              if (err) {
-                console.error(err);
-              } else {
-                this.sprBg.spriteFrame = frame;
-                let adapter = this.sprBg.getComponent(BgAdapter);
-                adapter.updateSize();
-                frame.addRef();
-              }
-            });
           }
         }
         async onFlagChanged() {
-          if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Unready) {
+          if (GameDataManager.instance.sg.state === SgState.Unready) {
             MountManager.instance.notify(MountPoint.NativeCheckLocalCache, null);
             console.log('Map-loadSg--start');
             let gdMgr = GameDataManager.instance;
@@ -19025,8 +18021,8 @@ System.register("chunks:///_virtual/picture-view.ts", ['./rollupPluginModLoBabel
   };
 });
 
-System.register("chunks:///_virtual/plot-view.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ui-view.ts', './ui-manager.ts', './ui-config.ts', './game-data-manager.ts', './config.ts', './game-data-type-define.ts', './report-agent.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, _decorator, director, UIOpacity, tween, Button, UIView, UIManager, UIID, GameDataManager, Config, SgState, ReportAgent, CustomReportEvent;
+System.register("chunks:///_virtual/plot-view.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ui-view.ts', './ui-manager.ts', './ui-config.ts', './game-data-manager.ts', './game-data-type-define.ts', './report-agent.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, _decorator, director, UIOpacity, tween, Button, UIView, UIManager, UIID, GameDataManager, SgState, ReportAgent, CustomReportEvent;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -19047,8 +18043,6 @@ System.register("chunks:///_virtual/plot-view.ts", ['./rollupPluginModLoBabelHel
       UIID = module.UIID;
     }, function (module) {
       GameDataManager = module.GameDataManager;
-    }, function (module) {
-      Config = module.Config;
     }, function (module) {
       SgState = module.SgState;
     }, function (module) {
@@ -19112,10 +18106,8 @@ System.register("chunks:///_virtual/plot-view.ts", ['./rollupPluginModLoBabelHel
             this.showPlot(4);
           } else if (this.page2.active) {
             UIManager.instance.close(this);
-            if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
+            if (GameDataManager.instance.sg.state === SgState.Started) {
               UIManager.instance.open(UIID.DescriptionView);
-            } else {
-              UIManager.instance.open(UIID.SelectView);
             }
           }
         }
@@ -22348,164 +21340,6 @@ System.register("chunks:///_virtual/SDYSTNCVGG.ts", ['cc', './SVDMRMIFJDYHRX.ts'
   };
 });
 
-System.register("chunks:///_virtual/select-result-view.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ui-view.ts', './game-data-manager.ts', './ui-manager.ts', './ui-config.ts', './game-constants.ts', './audio-manager.ts', './bridge-util.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Sprite, SpriteFrame, Label, _decorator, UIView, GameDataManager, UIManager, UIID, ChapterName, AudioUrl, AudioManager, BridgeUtil, VibrationEffect;
-  return {
-    setters: [function (module) {
-      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
-      _initializerDefineProperty = module.initializerDefineProperty;
-    }, function (module) {
-      cclegacy = module.cclegacy;
-      Sprite = module.Sprite;
-      SpriteFrame = module.SpriteFrame;
-      Label = module.Label;
-      _decorator = module._decorator;
-    }, function (module) {
-      UIView = module.UIView;
-    }, function (module) {
-      GameDataManager = module.GameDataManager;
-    }, function (module) {
-      UIManager = module.UIManager;
-    }, function (module) {
-      UIID = module.UIID;
-    }, function (module) {
-      ChapterName = module.ChapterName;
-      AudioUrl = module.AudioUrl;
-    }, function (module) {
-      AudioManager = module.AudioManager;
-    }, function (module) {
-      BridgeUtil = module.BridgeUtil;
-      VibrationEffect = module.VibrationEffect;
-    }],
-    execute: function () {
-      var _dec, _dec2, _dec3, _dec4, _dec5, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4;
-      cclegacy._RF.push({}, "9a37bosekNOh7wcgiEZ1v/n", "select-result-view", undefined);
-      const {
-        ccclass,
-        property
-      } = _decorator;
-      const DescConfig = ["Let’s head to the luxurious city and experience the vibrant nightlife. Every area is a frenzy of consumption, and each shopping spree helps release your stress.", "Let's revisit the town where you came of age. Every cobblestone here holds memories waiting to be unraveled, every breeze carries the rhythm of slow living."];
-      let SelectResultView = exports('SelectResultView', (_dec = ccclass('SelectResultView'), _dec2 = property(Sprite), _dec3 = property([SpriteFrame]), _dec4 = property(Label), _dec5 = property(Label), _dec(_class = (_class2 = class SelectResultView extends UIView {
-        constructor(...args) {
-          super(...args);
-          _initializerDefineProperty(this, "picture", _descriptor, this);
-          _initializerDefineProperty(this, "pictureFrames", _descriptor2, this);
-          _initializerDefineProperty(this, "title", _descriptor3, this);
-          _initializerDefineProperty(this, "desc", _descriptor4, this);
-        }
-        onOpen(fromUI, ...args) {
-          let chaptData = GameDataManager.instance.data.chapterData;
-          let id = chaptData.chapterList[chaptData.curChapterId];
-          this.picture.spriteFrame = this.pictureFrames[id];
-          this.title.string = ChapterName[id];
-          this.desc.string = DescConfig[id];
-        }
-        onPlayBtn() {
-          AudioManager.instance.playEffect(AudioUrl.BTN_CLICK);
-          BridgeUtil.vibrate(30, VibrationEffect.TICK);
-          UIManager.instance.close(this);
-          UIManager.instance.open(UIID.StartView);
-        }
-      }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "picture", [_dec2], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "pictureFrames", [_dec3], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return [];
-        }
-      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "title", [_dec4], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, "desc", [_dec5], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      })), _class2)) || _class));
-      cclegacy._RF.pop();
-    }
-  };
-});
-
-System.register("chunks:///_virtual/select-view.ts", ['cc', './ui-view.ts', './ui-manager.ts', './ui-config.ts', './game-data-manager.ts', './reward-type-define.ts', './audio-manager.ts', './game-constants.ts', './bridge-util.ts', './report-agent.ts'], function (exports) {
-  var cclegacy, _decorator, UIView, UIManager, UIID, GameDataManager, ChapterType, AudioManager, AudioUrl, BridgeUtil, VibrationEffect, ReportAgent, CustomReportEvent;
-  return {
-    setters: [function (module) {
-      cclegacy = module.cclegacy;
-      _decorator = module._decorator;
-    }, function (module) {
-      UIView = module.UIView;
-    }, function (module) {
-      UIManager = module.UIManager;
-    }, function (module) {
-      UIID = module.UIID;
-    }, function (module) {
-      GameDataManager = module.GameDataManager;
-    }, function (module) {
-      ChapterType = module.ChapterType;
-    }, function (module) {
-      AudioManager = module.AudioManager;
-    }, function (module) {
-      AudioUrl = module.AudioUrl;
-    }, function (module) {
-      BridgeUtil = module.BridgeUtil;
-      VibrationEffect = module.VibrationEffect;
-    }, function (module) {
-      ReportAgent = module.ReportAgent;
-      CustomReportEvent = module.CustomReportEvent;
-    }],
-    execute: function () {
-      var _dec, _class;
-      cclegacy._RF.push({}, "18899EfpDNI6o0EMKutQnfT", "select-view", undefined);
-      const {
-        ccclass,
-        property
-      } = _decorator;
-      let SelectView = exports('SelectView', (_dec = ccclass('SelectView'), _dec(_class = class SelectView extends UIView {
-        onOpen(fromUI, ...args) {
-          ReportAgent.reportCustomEvent(CustomReportEvent.USER_LIFECYCLE_MILESTONE, {
-            action: 'life_first'
-          });
-        }
-        onClose() {
-          GameDataManager.instance.data.isPlayPlots = true;
-          GameDataManager.instance.saveData();
-        }
-        onBtnRelaxation() {
-          this.onClickBtn();
-          UIManager.instance.close(this);
-          GameDataManager.instance.data.chapterData.chapterList = [ChapterType.Countryside, ChapterType.Consumtion];
-          UIManager.instance.open(UIID.SelectResultView);
-        }
-        onBtnSpending() {
-          this.onClickBtn();
-          UIManager.instance.close(this);
-          GameDataManager.instance.data.chapterData.chapterList = [ChapterType.Consumtion, ChapterType.Countryside];
-          UIManager.instance.open(UIID.SelectResultView);
-        }
-        onClickBtn() {
-          AudioManager.instance.playEffect(AudioUrl.BTN_CLICK);
-          BridgeUtil.vibrate(30, VibrationEffect.TICK);
-        }
-      }) || _class));
-      cclegacy._RF.pop();
-    }
-  };
-});
-
 System.register("chunks:///_virtual/shuffle-anim-controller.ts", ['cc'], function (exports) {
   var cclegacy, Component, _decorator;
   return {
@@ -22839,8 +21673,8 @@ System.register("chunks:///_virtual/sign-in-popup.ts", ['./rollupPluginModLoBabe
   };
 });
 
-System.register("chunks:///_virtual/stage.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ui-manager.ts', './ui-config.ts', './game-data-manager.ts', './mount-manager.ts', './mount-point.ts', './config.ts', './log-util.ts', './report-agent.ts', './res-util.ts', './graph-manager.ts', './bg-adapter.ts', './game-data-type-define.ts', './ui-util.ts', './game-constants.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, Sprite, ParticleSystem2D, _decorator, Component, sys, game, Game, director, Vec3, UIManager, UIID, UICF, GameDataManager, MountManager, MountPoint, Config, LogUtil, ReportAgent, CustomReportEvent, ResUtil, GraphManager, BgAdapter, SgState, UIUtil, GameEvent;
+System.register("chunks:///_virtual/stage.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ui-manager.ts', './ui-config.ts', './game-data-manager.ts', './mount-manager.ts', './mount-point.ts', './config.ts', './log-util.ts', './report-agent.ts', './graph-manager.ts', './bg-adapter.ts', './game-data-type-define.ts', './ui-util.ts', './game-constants.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, Sprite, ParticleSystem2D, _decorator, Component, sys, game, Game, director, Vec3, UIManager, UIID, UICF, GameDataManager, MountManager, MountPoint, Config, LogUtil, ReportAgent, CustomReportEvent, GraphManager, BgAdapter, SgState, UIUtil, GameEvent;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -22875,8 +21709,6 @@ System.register("chunks:///_virtual/stage.ts", ['./rollupPluginModLoBabelHelpers
     }, function (module) {
       ReportAgent = module.ReportAgent;
       CustomReportEvent = module.CustomReportEvent;
-    }, function (module) {
-      ResUtil = module.ResUtil;
     }, function (module) {
       GraphManager = module.GraphManager;
     }, function (module) {
@@ -22924,11 +21756,8 @@ System.register("chunks:///_virtual/stage.ts", ['./rollupPluginModLoBabelHelpers
           //     UIManager.instance.showDebugInfoToast();
           // }, 5)
 
-          if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
+          if (GameDataManager.instance.sg.state === SgState.Started) {
             UIManager.instance.open(UIID.HomeViewSg);
-          } else {
-            // UIManager.instance.open(UIID.UnderView);
-            UIManager.instance.open(UIID.HomeView);
           }
 
           // this.setupBridge();
@@ -22969,7 +21798,7 @@ System.register("chunks:///_virtual/stage.ts", ['./rollupPluginModLoBabelHelpers
         }
         async updateBg() {
           let gdMgr = GameDataManager.instance;
-          if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
+          if (GameDataManager.instance.sg.state === SgState.Started) {
             // 根据逻辑选择bg
             let bgInfo = GameDataManager.instance.data.selectedSgPicture;
             let bgSpf = null;
@@ -22993,27 +21822,6 @@ System.register("chunks:///_virtual/stage.ts", ['./rollupPluginModLoBabelHelpers
                 this.sprBg.spriteFrame = bgSpf;
                 let adapter = this.sprBg.getComponent(BgAdapter);
                 adapter.updateSize();
-              }
-            });
-          } else {
-            let url = '';
-            let chapterList = gdMgr.data.chapterData.chapterList;
-            if (!Array.isArray(chapterList)) {
-              return;
-            }
-            if (gdMgr.data.level > 12) {
-              url = `textures/ui/illustration/bg/${chapterList[1]}/${gdMgr.data.level - 13}/spriteFrame`;
-            } else {
-              url = `textures/ui/illustration/bg/${chapterList[0]}/${gdMgr.data.level - 1}/spriteFrame`;
-            }
-            ResUtil.load(this.sprBg.node, url, (err, frame) => {
-              if (err) {
-                console.error(err);
-              } else {
-                this.sprBg.spriteFrame = frame;
-                let adapter = this.sprBg.getComponent(BgAdapter);
-                adapter.updateSize();
-                frame.addRef();
               }
             });
           }
@@ -23190,167 +21998,6 @@ System.register("chunks:///_virtual/star-layout.ts", ['./rollupPluginModLoBabelH
           return [];
         }
       }), _class2)) || _class));
-      cclegacy._RF.pop();
-    }
-  };
-});
-
-System.register("chunks:///_virtual/start-view.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ui-view.ts', './ui-manager.ts', './ui-config.ts', './reward-manager.ts', './game-data-manager.ts', './game-constants.ts', './res-util.ts', './star-layout.ts', './log-util.ts', './audio-manager.ts', './bridge-util.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Label, Sprite, ProgressBar, _decorator, director, UIView, UIManager, UIID, RewardManager, GameDataManager, ChapterName, AudioUrl, ResUtil, StarLayout, LogUtil, AudioManager, BridgeUtil, VibrationEffect;
-  return {
-    setters: [function (module) {
-      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
-      _initializerDefineProperty = module.initializerDefineProperty;
-    }, function (module) {
-      cclegacy = module.cclegacy;
-      Label = module.Label;
-      Sprite = module.Sprite;
-      ProgressBar = module.ProgressBar;
-      _decorator = module._decorator;
-      director = module.director;
-    }, function (module) {
-      UIView = module.UIView;
-    }, function (module) {
-      UIManager = module.UIManager;
-    }, function (module) {
-      UIID = module.UIID;
-    }, function (module) {
-      RewardManager = module.RewardManager;
-    }, function (module) {
-      GameDataManager = module.GameDataManager;
-    }, function (module) {
-      ChapterName = module.ChapterName;
-      AudioUrl = module.AudioUrl;
-    }, function (module) {
-      ResUtil = module.ResUtil;
-    }, function (module) {
-      StarLayout = module.StarLayout;
-    }, function (module) {
-      LogUtil = module.LogUtil;
-    }, function (module) {
-      AudioManager = module.AudioManager;
-    }, function (module) {
-      BridgeUtil = module.BridgeUtil;
-      VibrationEffect = module.VibrationEffect;
-    }],
-    execute: function () {
-      var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6;
-      cclegacy._RF.push({}, "db7c8gf7TRJjYWqtK8R+033", "start-view", undefined);
-      const {
-        ccclass,
-        property
-      } = _decorator;
-      let StartView = exports('StartView', (_dec = ccclass('StartView'), _dec2 = property(Label), _dec3 = property(Label), _dec4 = property(Sprite), _dec5 = property(StarLayout), _dec6 = property(Label), _dec7 = property(ProgressBar), _dec(_class = (_class2 = class StartView extends UIView {
-        constructor(...args) {
-          super(...args);
-          _initializerDefineProperty(this, "lblChapter", _descriptor, this);
-          _initializerDefineProperty(this, "lblDesc", _descriptor2, this);
-          _initializerDefineProperty(this, "sprPic", _descriptor3, this);
-          _initializerDefineProperty(this, "starLayout", _descriptor4, this);
-          _initializerDefineProperty(this, "lblProgress", _descriptor5, this);
-          _initializerDefineProperty(this, "progressBar", _descriptor6, this);
-        }
-        onOpen(fromUI, ...args) {
-          let accountLayout = director.getScene().getChildByPath('Canvas/midLayer/LayoutTokenAccount');
-          if (accountLayout) {
-            accountLayout.active = true;
-          }
-          let chapterData = GameDataManager.instance.data.chapterData;
-          let curChapterType = chapterData.chapterList[chapterData.curChapterId];
-          this.lblChapter.string = ChapterName[curChapterType];
-          this.lblDesc.string = ChapterName[curChapterType];
-          LogUtil.log(`curChapterType: ${curChapterType}`);
-          let cost = RewardManager.instance.getConfig().sg.album_cost;
-          let account = GameDataManager.instance.getFragment();
-          let str = `${account}/${cost}`;
-          this.lblProgress.string = str;
-          this.progressBar.progress = account / cost;
-          ResUtil.load(this.sprPic.node, `textures/ui/chapter/picture/pic-${curChapterType}/spriteFrame`, (err, frame) => {
-            if (err) {
-              console.error(err);
-            } else {
-              this.sprPic.spriteFrame = frame;
-            }
-          });
-        }
-        onTop(preID, ...args) {
-          let accountLayout = director.getScene().getChildByPath('Canvas/midLayer/LayoutTokenAccount');
-          if (accountLayout) {
-            accountLayout.active = true;
-          }
-        }
-        onSettingBtn() {
-          this.onClickBtn();
-          UIManager.instance.open(UIID.MenuPopup);
-        }
-        onChapterBtn() {
-          this.onClickBtn();
-          UIManager.instance.open(UIID.ChapterView);
-        }
-        onStartBtn() {
-          this.onClickBtn();
-          UIManager.instance.close(this);
-          UIManager.instance.open(UIID.MapView);
-        }
-        onIllustrationBtn() {
-          this.onClickBtn();
-          UIManager.instance.open(UIID.IllustrationView);
-        }
-        onThemeBtn() {
-          this.onClickBtn();
-          UIManager.instance.open(UIID.CardThemeView);
-        }
-        onClickPic() {
-          this.onClickBtn();
-          UIManager.instance.open(UIID.ChapterView);
-        }
-        onClickBtn() {
-          AudioManager.instance.playEffect(AudioUrl.BTN_CLICK);
-          BridgeUtil.vibrate(30, VibrationEffect.TICK);
-        }
-      }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "lblChapter", [_dec2], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "lblDesc", [_dec3], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "sprPic", [_dec4], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, "starLayout", [_dec5], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, "lblProgress", [_dec6], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor6 = _applyDecoratedDescriptor(_class2.prototype, "progressBar", [_dec7], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      })), _class2)) || _class));
       cclegacy._RF.pop();
     }
   };
@@ -24392,8 +23039,8 @@ System.register("chunks:///_virtual/TAMEBDDEGGUCY.ts", ['cc', './SVDMRMIFJDYHRX.
   };
 });
 
-System.register("chunks:///_virtual/target-popup.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ui-view.ts', './card-render.ts', './card-data.ts', './game-data-manager.ts', './ui-manager.ts', './ui-config.ts', './game-constants.ts', './config.ts', './log-util.ts', './game-data-type-define.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, _decorator, UIView, CardRender, CardData, GameDataManager, UIManager, UIID, ParamStage, Config, LogUtil, SgState;
+System.register("chunks:///_virtual/target-popup.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ui-view.ts', './card-render.ts', './card-data.ts', './game-data-manager.ts', './ui-manager.ts', './ui-config.ts', './game-constants.ts', './log-util.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, _decorator, UIView, CardRender, CardData, GameDataManager, UIManager, UIID, ParamStage, LogUtil;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -24417,11 +23064,7 @@ System.register("chunks:///_virtual/target-popup.ts", ['./rollupPluginModLoBabel
     }, function (module) {
       ParamStage = module.ParamStage;
     }, function (module) {
-      Config = module.Config;
-    }, function (module) {
       LogUtil = module.LogUtil;
-    }, function (module) {
-      SgState = module.SgState;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _dec4, _dec5, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4;
@@ -24459,8 +23102,7 @@ System.register("chunks:///_virtual/target-popup.ts", ['./rollupPluginModLoBabel
         onClickArea() {
           UIManager.instance.close(this);
           if (this.isWin) {
-            let uiid = Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started ? UIID.HomeViewSg : UIID.HomeView;
-            let home = UIManager.instance.getUI(uiid);
+            let home = UIManager.instance.getUI(UIID.HomeViewSg);
             home.onGameStageChange(ParamStage.WIN);
           }
         }
@@ -27795,7 +26437,7 @@ System.register("chunks:///_virtual/VBWBHDOLKCQNA.ts", ['cc', './SVDMRMIFJDYHRX.
 });
 
 System.register("chunks:///_virtual/victory-popup.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './ui-view.ts', './ui-manager.ts', './string-util.ts', './game-data-manager.ts', './reward-type-define.ts', './reward-manager.ts', './ui-config.ts', './res-util.ts', './mount-manager.ts', './config.ts', './ad-manager.ts', './audio-manager.ts', './game-constants.ts', './log-util.ts', './bridge-util.ts', './report-agent.ts', './mount-point.ts', './game-data-type-define.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Label, Node, Sprite, _decorator, ParticleSystem2D, assetManager, SpriteFrame, director, UIView, UIManager, StringUtil, GameDataManager, ItemType, RewardManager, UIID, ResUtil, MountManager, Config, AdManager, AudioManager, AudioUrl, LogUtil, BridgeUtil, VibrationEffect, ReportAgent, CustomReportEvent, PageName, BtnName, MountPoint, PictureData, SgState;
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Label, Node, Sprite, _decorator, ParticleSystem2D, assetManager, SpriteFrame, director, UIView, UIManager, StringUtil, GameDataManager, ItemType, RewardManager, UIID, ResUtil, MountManager, Config, AdManager, AudioManager, AudioUrl, LogUtil, BridgeUtil, VibrationEffect, ReportAgent, CustomReportEvent, PageName, BtnName, MountPoint, SgState;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -27849,7 +26491,6 @@ System.register("chunks:///_virtual/victory-popup.ts", ['./rollupPluginModLoBabe
     }, function (module) {
       MountPoint = module.MountPoint;
     }, function (module) {
-      PictureData = module.PictureData;
       SgState = module.SgState;
     }],
     execute: function () {
@@ -27911,18 +26552,6 @@ System.register("chunks:///_virtual/victory-popup.ts", ['./rollupPluginModLoBabe
           let gdMgr = GameDataManager.instance;
           this.lblScore.string = StringUtil.timeFormat(score, false);
           this.lblBestScore.string = StringUtil.timeFormat(gdMgr.data.bestTime, false);
-          if (!Config.ENABLE_SG) {
-            let chapterList = gdMgr.data.chapterData.chapterList;
-            if (gdMgr.data.level > 12) {
-              this.url = `textures/ui/illustration/bg/${chapterList[1]}/${gdMgr.data.level - 14}/spriteFrame`;
-            } else {
-              this.url = `textures/ui/illustration/bg/${chapterList[0]}/${gdMgr.data.level - 2}/spriteFrame`;
-            }
-            gdMgr.data.illustrationData.push({
-              data: new PictureData(),
-              url: this.url
-            });
-          }
 
           // token
           // 是否激励用户
@@ -27931,12 +26560,8 @@ System.register("chunks:///_virtual/victory-popup.ts", ['./rollupPluginModLoBabe
           this.tokenId = ItemType.MinorToken;
           this.tokenAmount = RewardManager.instance.getRewardAmountWithItemId(this.tokenId);
           this.lblTokenAmount.string = showMajor ? `${gdMgr.getCurrency()}${this.tokenAmount}` : `x${this.tokenAmount}`;
-          if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
+          if (GameDataManager.instance.sg.state === SgState.Started) {
             this.lblFragmentAmount.node.parent.active = false;
-          } else {
-            this.fragmentAmount = RewardManager.instance.getRewardAmountWithItemId(ItemType.Fragment);
-            this.lblFragmentAmount.node.parent.active = true;
-            this.lblFragmentAmount.string = `x${this.fragmentAmount}`;
           }
           ReportAgent.reportCustomEvent(CustomReportEvent.AD_EVENT_DISTRIBUTED, {
             reward_page_show: 'victory_reward'
@@ -27962,7 +26587,7 @@ System.register("chunks:///_virtual/victory-popup.ts", ['./rollupPluginModLoBabe
             btn: BtnName.Close,
             action: 'click'
           });
-          if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
+          if (GameDataManager.instance.sg.state === SgState.Started) {
             let isOpenInter = false;
             let config = RewardManager.instance.getConfig();
             console.log(`config: ${config}`);
@@ -28000,25 +26625,18 @@ System.register("chunks:///_virtual/victory-popup.ts", ['./rollupPluginModLoBabe
         doGetReward(isAd = false) {
           let multiple = isAd ? RewardManager.instance.getConfig().ad.reward_multiple : 1;
           UIManager.instance.close(this);
-          if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
+          if (GameDataManager.instance.sg.state === SgState.Started) {
             // sg album disable, fragment disable
             UIManager.instance.open(UIID.RewardGetPopup, {
               token_amount: this.tokenAmount * multiple,
               fragment_amount: 0
             });
-          } else {
-            UIManager.instance.open(UIID.RewardGetPopup, {
-              token_amount: this.tokenAmount * multiple,
-              fragment_amount: this.fragmentAmount * multiple
-            });
           }
         }
         backToStart() {
           UIManager.instance.closeAll();
-          if (Config.ENABLE_SG && GameDataManager.instance.sg.state === SgState.Started) {
+          if (GameDataManager.instance.sg.state === SgState.Started) {
             director.loadScene('map-sg');
-          } else {
-            director.loadScene('map');
           }
         }
         showPictureObtainPopup() {
@@ -28218,7 +26836,7 @@ System.register("chunks:///_virtual/WBKIRV.ts", ['cc'], function (exports) {
 });
 
 System.register("chunks:///_virtual/welcome-hf.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './front-line.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, ProgressBar, Label, _decorator, Component, sys, director, FrontLineEvent, FrontLine;
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, ProgressBar, Label, _decorator, Component, profiler, sys, director, FrontLineEvent, FrontLine;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -28229,6 +26847,7 @@ System.register("chunks:///_virtual/welcome-hf.ts", ['./rollupPluginModLoBabelHe
       Label = module.Label;
       _decorator = module._decorator;
       Component = module.Component;
+      profiler = module.profiler;
       sys = module.sys;
       director = module.director;
     }, function (module) {
@@ -28236,23 +26855,26 @@ System.register("chunks:///_virtual/welcome-hf.ts", ['./rollupPluginModLoBabelHe
       FrontLine = module.FrontLine;
     }],
     execute: function () {
-      var _dec, _dec2, _dec3, _class, _class2, _descriptor, _descriptor2;
+      var _dec, _dec2, _dec3, _dec4, _class, _class2, _descriptor, _descriptor2, _descriptor3;
       cclegacy._RF.push({}, "e4aea4Ab2BI2K7U5K18jWoJ", "welcome-hf", undefined);
       const {
         ccclass,
         property
       } = _decorator;
-      let WelcomeHf = exports('WelcomeHf', (_dec = ccclass('WelcomeHf'), _dec2 = property(ProgressBar), _dec3 = property(Label), _dec(_class = (_class2 = class WelcomeHf extends Component {
+      const HOT_UPDATE_TIME_COST = exports('HOT_UPDATE_TIME_COST', 'hot_update_time_cost');
+      let WelcomeHf = exports('WelcomeHf', (_dec = ccclass('WelcomeHf'), _dec2 = property(ProgressBar), _dec3 = property(Label), _dec4 = property(Label), _dec(_class = (_class2 = class WelcomeHf extends Component {
         constructor(...args) {
           super(...args);
           _initializerDefineProperty(this, "progressBar", _descriptor, this);
           _initializerDefineProperty(this, "lblProgress", _descriptor2, this);
-          this.HOT_UPDATE_KEY = 'hot_update_timestamp';
+          _initializerDefineProperty(this, "lblLoading", _descriptor3, this);
+          this.HOT_UPDATE_TIMESTAMP = 'hot_update_timestamp';
           this.HOT_UPDATE_THRESHOLD = 5 * 60 * 1000;
         }
         // 5分钟内的更新认为是刚更新过
 
         onLoad() {
+          profiler.hideStats();
           this.progressBar.progress = 0;
           this.lblProgress.string = '0%';
 
@@ -28265,6 +26887,9 @@ System.register("chunks:///_virtual/welcome-hf.ts", ['./rollupPluginModLoBabelHe
 
           // 发起热更新检查
           this.startHotUpdate();
+        }
+        start() {
+          this.updateLoadingLabel();
         }
         onEnable() {
           this.node.on(FrontLineEvent.UPDATE_PROGRESS, this.updateProgress, this);
@@ -28285,7 +26910,7 @@ System.register("chunks:///_virtual/welcome-hf.ts", ['./rollupPluginModLoBabelHe
          * 检查是否最近刚进行过热更新
          */
         isRecentlyUpdated() {
-          const lastUpdateTime = sys.localStorage.getItem(this.HOT_UPDATE_KEY);
+          const lastUpdateTime = sys.localStorage.getItem(this.HOT_UPDATE_TIMESTAMP);
           if (!lastUpdateTime) {
             return false;
           }
@@ -28300,7 +26925,7 @@ System.register("chunks:///_virtual/welcome-hf.ts", ['./rollupPluginModLoBabelHe
          * 记录热更新时间
          */
         recordUpdateTime() {
-          sys.localStorage.setItem(this.HOT_UPDATE_KEY, Date.now().toString());
+          sys.localStorage.setItem(this.HOT_UPDATE_TIMESTAMP, Date.now().toString());
           console.log('OjaiTest-记录热更新时间');
         }
 
@@ -28308,6 +26933,7 @@ System.register("chunks:///_virtual/welcome-hf.ts", ['./rollupPluginModLoBabelHe
          * 开始热更新流程
          */
         startHotUpdate() {
+          let startTime = Date.now();
           console.log('OjaiTest-开始热更新检查');
           const frontLine = this.node.getComponent(FrontLine);
           if (!frontLine) {
@@ -28318,8 +26944,12 @@ System.register("chunks:///_virtual/welcome-hf.ts", ['./rollupPluginModLoBabelHe
           frontLine.start((success, message) => {
             if (success) {
               console.log('OjaiTest-热更新成功');
+              let endTime = Date.now();
+              console.log(`OjaiTest-热更新成功，耗时：${endTime - startTime}ms`);
+              sys.localStorage.setItem(HOT_UPDATE_TIME_COST, ((endTime - startTime) / 1000).toFixed(2));
             } else {
               console.log('OjaiTest-热更新失败', message);
+              this.enterGame();
             }
           });
         }
@@ -28374,6 +27004,23 @@ System.register("chunks:///_virtual/welcome-hf.ts", ['./rollupPluginModLoBabelHe
           // 根据配置决定进入哪个场景
           director.loadScene('welcome');
         }
+
+        /**
+         * 开始显示hello world动画，每隔1秒增加一个点，最多3个点，然后循环
+         */
+        updateLoadingLabel() {
+          //每隔1s 变化一个点 需要循环
+          let dotCount = 0;
+          this.schedule(() => {
+            // 生成对应数量的点
+            let suffix = '.'.repeat(dotCount);
+            const text = 'Loading' + suffix;
+            this.lblLoading.string = text;
+
+            // 增加点数，最多3个，然后循环重置
+            dotCount = (dotCount + 1) % 4;
+          }, 1);
+        }
       }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "progressBar", [_dec2], {
         configurable: true,
         enumerable: true,
@@ -28388,14 +27035,21 @@ System.register("chunks:///_virtual/welcome-hf.ts", ['./rollupPluginModLoBabelHe
         initializer: function () {
           return null;
         }
+      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "lblLoading", [_dec4], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: function () {
+          return null;
+        }
       })), _class2)) || _class));
       cclegacy._RF.pop();
     }
   };
 });
 
-System.register("chunks:///_virtual/welcome.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './config-agent.ts', './progress-bar-ctrl.ts', './game-res-manager.ts', './data-agent.ts', './game-data-manager.ts', './reward-manager.ts', './mount-point.ts', './mount-manager.ts', './bridge-manager.ts', './log-util.ts', './connect-agent.ts', './i18n-agent.ts', './config.ts', './report-agent.ts', './graph-manager.ts', './union-fetch-agent.ts', './progress-effect.ts', './game-data-type-define.ts', './time-agent.ts', './ui-manager.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Sprite, SpriteFrame, Node, _decorator, Component, profiler, director, screen, view, ResolutionPolicy, UIOpacity, tween, Vec3, assetManager, ConfigAgent, ConfigType, ProgressBarCtrl, GameResManager, DataAgent, DataType, GameDataManager, RewardManager, MountPoint, MountManager, BridgeManager, LogUtil, ConnectAgent, i18nAgent, i18n, Config, ReportAgent, CustomReportEvent, GraphManager, UnionFetchAgent, ProgressEffect, SgState, TimeAgent, UIManager;
+System.register("chunks:///_virtual/welcome.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './config-agent.ts', './progress-bar-ctrl.ts', './game-res-manager.ts', './data-agent.ts', './game-data-manager.ts', './mount-point.ts', './mount-manager.ts', './bridge-manager.ts', './log-util.ts', './connect-agent.ts', './i18n-agent.ts', './config.ts', './report-agent.ts', './graph-manager.ts', './union-fetch-agent.ts', './progress-effect.ts', './game-data-type-define.ts', './time-agent.ts', './ui-manager.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Sprite, Node, _decorator, Component, profiler, director, screen, view, ResolutionPolicy, UIOpacity, tween, Vec3, assetManager, ConfigAgent, ConfigType, ProgressBarCtrl, GameResManager, DataAgent, DataType, GameDataManager, MountPoint, MountManager, BridgeManager, LogUtil, ConnectAgent, i18nAgent, i18n, Config, ReportAgent, CustomReportEvent, GraphManager, UnionFetchAgent, ProgressEffect, SgState, TimeAgent, UIManager;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -28403,7 +27057,6 @@ System.register("chunks:///_virtual/welcome.ts", ['./rollupPluginModLoBabelHelpe
     }, function (module) {
       cclegacy = module.cclegacy;
       Sprite = module.Sprite;
-      SpriteFrame = module.SpriteFrame;
       Node = module.Node;
       _decorator = module._decorator;
       Component = module.Component;
@@ -28428,8 +27081,6 @@ System.register("chunks:///_virtual/welcome.ts", ['./rollupPluginModLoBabelHelpe
       DataType = module.DataType;
     }, function (module) {
       GameDataManager = module.GameDataManager;
-    }, function (module) {
-      RewardManager = module.RewardManager;
     }, function (module) {
       MountPoint = module.MountPoint;
     }, function (module) {
@@ -28462,33 +27113,24 @@ System.register("chunks:///_virtual/welcome.ts", ['./rollupPluginModLoBabelHelpe
       UIManager = module.UIManager;
     }],
     execute: function () {
-      var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _class2, _class3, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6;
+      var _dec, _dec2, _dec3, _dec4, _dec5, _class2, _class3, _descriptor, _descriptor2, _descriptor3, _descriptor4;
       cclegacy._RF.push({}, "a9c69fLvMRDMJtwp/Vxiu1h", "welcome", undefined);
       const {
         ccclass,
         property
       } = _decorator;
-      let welcome = exports('welcome', (_dec = ccclass('welcome'), _dec2 = property(Sprite), _dec3 = property([SpriteFrame]), _dec4 = property(ProgressBarCtrl), _dec5 = property(ProgressEffect), _dec6 = property(Node), _dec7 = property(Node), _dec(_class2 = (_class3 = class welcome extends Component {
+      let welcome = exports('welcome', (_dec = ccclass('welcome'), _dec2 = property(Sprite), _dec3 = property(ProgressBarCtrl), _dec4 = property(ProgressEffect), _dec5 = property(Node), _dec(_class2 = (_class3 = class welcome extends Component {
         constructor(...args) {
           super(...args);
           _initializerDefineProperty(this, "sprBg", _descriptor, this);
-          _initializerDefineProperty(this, "frames", _descriptor2, this);
-          _initializerDefineProperty(this, "progressBar", _descriptor3, this);
-          _initializerDefineProperty(this, "progressBarSg", _descriptor4, this);
-          _initializerDefineProperty(this, "logo", _descriptor5, this);
-          _initializerDefineProperty(this, "logoSg", _descriptor6, this);
+          _initializerDefineProperty(this, "progressBar", _descriptor2, this);
+          _initializerDefineProperty(this, "progressBarSg", _descriptor3, this);
+          _initializerDefineProperty(this, "logoSg", _descriptor4, this);
           this._isSgLoading = false;
           this._isSgLoadComplete = false;
-          this.timeCount = 0;
         }
         onLoad() {
           this.adapt();
-        }
-        onEnable() {
-          this.schedule(this.updateForFlagChanged, 1);
-        }
-        onDisable() {
-          this.unschedule(this.updateForFlagChanged);
         }
         async start() {
           Config.firstSetFlagTime = Date.now();
@@ -28524,13 +27166,14 @@ System.register("chunks:///_virtual/welcome.ts", ['./rollupPluginModLoBabelHelpe
             Config.INIT_FETCH_DATA = true;
             this.notifyAfterFetchData();
             this.lockProgress(65);
+            await this.loadSg();
             let time3 = TimeAgent.instance.getTime();
             this.reportLoading("fetch_data", "end", time2, time3);
-
+            this.lockProgress(80);
             // proload
             this.reportLoading("proload", "start", time3);
             await this.preload();
-            this.lockProgress(80);
+            this.lockProgress(100);
             let time4 = TimeAgent.instance.getTime();
             this.reportLoading("proload", "end", time3, time4);
           });
@@ -28570,22 +27213,15 @@ System.register("chunks:///_virtual/welcome.ts", ['./rollupPluginModLoBabelHelpe
           }
         }
         updateDisplay() {
-          let isSg = Config.getRFlag();
-          this.sprBg.spriteFrame = isSg ? this.frames[1] : this.frames[0];
+          let isSg = true;
           let progressOpacity = this.progressBar.getComponent(UIOpacity);
-          progressOpacity.opacity = isSg ? 0 : 255;
-          this.logo.active = !isSg;
+          progressOpacity.opacity = 0;
           this.progressBarSg.node.active = isSg;
           this.progressBarSg.progress = 0;
-          this.logoSg.active = isSg;
           let bgLight = this.logoSg.getChildByName('BgLight');
-          if (this.logoSg.active) {
-            tween(bgLight).by(10, {
-              eulerAngles: new Vec3(0, 0, 360)
-            }).repeatForever().start();
-          } else {
-            tween(bgLight).stop();
-          }
+          tween(bgLight).by(10, {
+            eulerAngles: new Vec3(0, 0, 360)
+          }).repeatForever().start();
         }
         async loadBundles() {
           const bundles = ['bundle-beyond', 'bundle-sg'];
@@ -28611,14 +27247,8 @@ System.register("chunks:///_virtual/welcome.ts", ['./rollupPluginModLoBabelHelpe
         onProgressComplete() {
           LogUtil.log('onProgressComplete');
           ReportAgent.reportCustomEvent(CustomReportEvent.HOME_START_GAME);
-
-          // director.emit(ConfigEvent.FLAG_CHANGED);
-          if (Config.ENABLE_SG) {
-            GameDataManager.instance.sg.state = SgState.Started;
-            director.loadScene('map-sg');
-          } else {
-            director.loadScene('map');
-          }
+          GameDataManager.instance.sg.state = SgState.Started;
+          director.loadScene('map-sg');
           if (GameDataManager.instance.data.firstGameAction.start_game) {
             GameDataManager.instance.data.firstGameAction.start_game = false;
             ReportAgent.reportCustomEvent(CustomReportEvent.USER_LIFECYCLE_MILESTONE, {
@@ -28739,46 +27369,55 @@ System.register("chunks:///_virtual/welcome.ts", ['./rollupPluginModLoBabelHelpe
             LogUtil.error('welcome loadSg:', error);
           }
         }
-        async updateForFlagChanged() {
-          let time = 5;
-          let preloadTime = RewardManager.instance.getConfig().sg.preload_time;
-          ++this.timeCount;
-          LogUtil.log('updateForFlagChanged: timeCount:' + this.timeCount);
-          if (this.timeCount >= time + preloadTime) {
-            this.onSgProcessComplete();
-            return;
-          }
-          if (Config.ENABLE_SG) {
-            if (!this._isSgLoading) {
-              this._isSgLoading = true;
-              this.loadSg();
-            }
-            if (this._isSgLoadComplete) {
-              this.onSgProcessComplete();
-            }
-          } else if (Config.isFlagChanged) {
-            if (Config.getRFlag()) {
-              if (!this._isSgLoading) {
-                this._isSgLoading = true;
-                this.loadSg();
-              }
-              if (this._isSgLoadComplete) {
-                this.onSgProcessComplete();
-              }
-            } else {
-              if (this.timeCount >= time) {
-                this.onSgProcessComplete();
-              }
-            }
-          }
-        }
-        onSgProcessComplete() {
-          if (this.progressBar.getCurrentLock() >= 80) {
-            this.unschedule(this.updateForFlagChanged);
-            // this.progressBar.unlock();
-            this.progressBarSg.toProgress(100, this.onProgressComplete.bind(this));
-          }
-        }
+
+        // private timeCount: number = 0;
+        // async updateForFlagChanged() {
+        //     let time = 5;
+        //     let preloadTime = RewardManager.instance.getConfig().sg.preload_time;
+        //     ++this.timeCount;
+        //     LogUtil.log('updateForFlagChanged: timeCount:' + this.timeCount);
+        //     if (this.timeCount >= time + preloadTime) {
+        //         this.onSgProcessComplete();
+        //         return;
+        //     }
+
+        //     if (Config.ENABLE_SG) {
+        //         if (!this._isSgLoading) {
+        //             this._isSgLoading = true;
+        //             this.loadSg();
+        //         }
+
+        //         if (this._isSgLoadComplete) {
+        //             this.onSgProcessComplete();
+        //         }
+        //     } else if (Config.isFlagChanged) {
+        //         if (Config.getRFlag()) {
+        //             if (!this._isSgLoading) {
+        //                 this._isSgLoading = true;
+        //                 this.loadSg();
+        //             }
+
+        //             if (this._isSgLoadComplete) {
+        //                 this.onSgProcessComplete();
+        //             }
+        //         } else {
+        //             if (this.timeCount >= time) {
+        //                 this.onSgProcessComplete();
+        //             }
+        //         }
+        //     }
+
+        // }
+
+        // onSgProcessComplete() {
+        //     if (this.progressBar.getCurrentLock() >= 80) {
+        //         this.unschedule(this.updateForFlagChanged);
+        //         // this.progressBar.unlock();
+        //         this.progressBarSg.toProgress(100, this.onProgressComplete.bind(this));
+
+        //     }
+        // }
+
         reportLoading(stepId, action, startTime, endTime = null) {
           let dur = endTime ? endTime - startTime : 0;
           ReportAgent.reportCustomEvent(CustomReportEvent.LOADING, {
@@ -28795,35 +27434,21 @@ System.register("chunks:///_virtual/welcome.ts", ['./rollupPluginModLoBabelHelpe
         initializer: function () {
           return null;
         }
-      }), _descriptor2 = _applyDecoratedDescriptor(_class3.prototype, "frames", [_dec3], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return [];
-        }
-      }), _descriptor3 = _applyDecoratedDescriptor(_class3.prototype, "progressBar", [_dec4], {
+      }), _descriptor2 = _applyDecoratedDescriptor(_class3.prototype, "progressBar", [_dec3], {
         configurable: true,
         enumerable: true,
         writable: true,
         initializer: function () {
           return null;
         }
-      }), _descriptor4 = _applyDecoratedDescriptor(_class3.prototype, "progressBarSg", [_dec5], {
+      }), _descriptor3 = _applyDecoratedDescriptor(_class3.prototype, "progressBarSg", [_dec4], {
         configurable: true,
         enumerable: true,
         writable: true,
         initializer: function () {
           return null;
         }
-      }), _descriptor5 = _applyDecoratedDescriptor(_class3.prototype, "logo", [_dec6], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor6 = _applyDecoratedDescriptor(_class3.prototype, "logoSg", [_dec7], {
+      }), _descriptor4 = _applyDecoratedDescriptor(_class3.prototype, "logoSg", [_dec5], {
         configurable: true,
         enumerable: true,
         writable: true,
