@@ -27302,7 +27302,7 @@ System.register("chunks:///_virtual/welcome-hf-A.ts", ['./rollupPluginModLoBabel
           profiler.hideStats();
           this.progressBar.progress = 0;
           this.lblProgress.string = '0%';
-          console.log('OjaiTest-welcome-hfA-onloaded');
+          console.log('OjaiTest-welcome-hf-onloaded');
           // 检查是否刚进行过热更新
           if (this.isRecentlyUpdated()) {
             console.log('OjaiTest-检测到最近刚进行过热更新，直接进入游戏');
@@ -27341,9 +27341,6 @@ System.register("chunks:///_virtual/welcome-hf-A.ts", ['./rollupPluginModLoBabel
          * 检查是否最近刚进行过热更新
          */
         isRecentlyUpdated() {
-          if (sys.isNative) {
-            return true;
-          }
           const lastUpdateTime = sys.localStorage.getItem(HOT_UPDATE_TIMESTAMP);
           if (!lastUpdateTime) {
             return false;
@@ -27529,7 +27526,7 @@ System.register("chunks:///_virtual/welcome-hf-B.ts", ['./rollupPluginModLoBabel
         onLoad() {
           this.progressBar.progress = 0;
           this.lblProgress.string = '0%';
-          console.log('OjaiTest-welcome-hfB-onloaded');
+          console.log('OjaiTest-welcome-hf-onloaded');
           // 检查是否刚进行过热更新
           if (this.isRecentlyUpdated()) {
             console.log('OjaiTest-检测到最近刚进行过热更新，直接进入游戏');
@@ -27563,9 +27560,6 @@ System.register("chunks:///_virtual/welcome-hf-B.ts", ['./rollupPluginModLoBabel
          * 检查是否最近刚进行过热更新
          */
         isRecentlyUpdated() {
-          if (sys.isNative) {
-            return true;
-          }
           const lastUpdateTime = sys.localStorage.getItem(this.HOT_UPDATE_TIMESTAMP);
           if (!lastUpdateTime) {
             return false;
