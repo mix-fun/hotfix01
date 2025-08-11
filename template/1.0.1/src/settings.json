@@ -37,6 +37,9 @@
         "subpackages": [],
         "preloadBundles": [
             {
+                "bundle": "resources"
+            },
+            {
                 "bundle": "main"
             }
         ],
@@ -44,12 +47,18 @@
         "preloadAssets": [],
         "projectBundles": [
             "internal",
-            "main"
+            "resources",
+            "main",
+            "bundle-beyond",
+            "bundle-sg"
         ],
         "downloadMaxConcurrency": 15
     },
     "plugins": {
-        "jsList": []
+        "jsList": [
+            "assets/scripts/sdk/andd/ZGBCEFLHDZOBMP/js/CryptoES.js",
+            "assets/scripts/sdk/andd/ZGBCEFLHDZOBMP/js/CryptoES.min.js"
+        ]
     },
     "scripting": {
         "scriptPackages": [
@@ -57,7 +66,7 @@
         ]
     },
     "launch": {
-        "launchScene": "db://assets/hf_a/welcome-hf-A.scene"
+        "launchScene": "db://assets/scenes/welcome.scene"
     },
     "screen": {
         "exactFitScreen": true,
