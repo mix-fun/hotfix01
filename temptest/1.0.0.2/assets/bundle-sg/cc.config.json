@@ -1,0 +1,35 @@
+{
+    "importBase": "import",
+    "nativeBase": "native",
+    "name": "bundle-sg",
+    "deps": [
+        "resources"
+    ],
+    "uuids": [
+        "30ffd7bc-c568-4c50-9ac1-1c6bade23305@f9941",
+        "d1ba0be2-fc86-45ce-ad63-e0f4a37ca6e4"
+    ],
+    "paths": {
+        "d1ba0be2-fc86-45ce-ad63-e0f4a37ca6e4": [
+            "scene/gameScene-sg",
+            "cc.SceneAsset",
+            1
+        ]
+    },
+    "scenes": {
+        "db://assets/bundle-sg/scene/gameScene-sg.scene": "d1ba0be2-fc86-45ce-ad63-e0f4a37ca6e4"
+    },
+    "packs": {},
+    "versions": {
+        "import": [],
+        "native": []
+    },
+    "redirect": [
+        "30ffd7bc-c568-4c50-9ac1-1c6bade23305@f9941",
+        "0"
+    ],
+    "debug": true,
+    "extensionMap": {},
+    "hasPreloadScript": true,
+    "dependencyRelationships": {}
+}
