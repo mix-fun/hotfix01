@@ -7818,7 +7818,7 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
 });
 
 System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './AudioMgr.ts', './GameDataMgr.ts', './ResMgr.ts', './BasePage.ts', './PageMgr.ts', './connectMgr.ts', './barSortBridge.ts', './union-fetch-agent.ts', './config.ts', './mount-manager.ts', './mount-dot.ts', './config-agent.ts', './LogMgr.ts', './front-line.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, ProgressBar, Label, _decorator, SpriteFrame, director, sys, AudioMgr, AUDIO_NAME, GameDataMgr, SgState, ResMgr, BasePage, UIPage, connectMgr, barSortBridge, UnionFetchAgent, Config, MountManager, MountDot, ConfigAgent, ConfigType, LogMgr, FrontLineEvent, FrontLine, HOT_UPDATE_TIMESTAMP, HOT_UPDATE_TIME_COST;
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, ProgressBar, Label, _decorator, profiler, SpriteFrame, director, sys, AudioMgr, AUDIO_NAME, GameDataMgr, SgState, ResMgr, BasePage, UIPage, connectMgr, barSortBridge, UnionFetchAgent, Config, MountManager, MountDot, ConfigAgent, ConfigType, LogMgr, FrontLineEvent, FrontLine, HOT_UPDATE_TIMESTAMP, HOT_UPDATE_TIME_COST;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -7828,6 +7828,7 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
       ProgressBar = module.ProgressBar;
       Label = module.Label;
       _decorator = module._decorator;
+      profiler = module.profiler;
       SpriteFrame = module.SpriteFrame;
       director = module.director;
       sys = module.sys;
@@ -7890,13 +7891,16 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
         // 5分钟内的更新认为是刚更新过
 
         onLoad() {
+          profiler.hideStats();
           GameDataMgr.instance.loadDataFromLocal();
           ResMgr.instance.loadPage(UIPage.Game, null);
           AudioMgr.instance.playMusic(AUDIO_NAME.BG_MUSIC);
           this.progressBar.progress = this.currentProgress / this.targetProgress;
         }
         async start() {
+          console.log("welcome start");
           barSortBridge.instance.setupNativeEventListner(async () => {
+            console.log("welcome ready to init sdk");
             connectMgr.init();
             this.lockProgress = 30;
             await UnionFetchAgent.fetchUnionData();
@@ -8040,7 +8044,10 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
           }
 
           // 获取版本号并拆分
-          const version = frontLine.getVersion();
+          let version = frontLine.getVersion();
+          if (!version) {
+            version = "1.0.0.0";
+          }
           const versionParts = version.split('.');
           const lastPart = parseInt(versionParts[versionParts.length - 1]);
 
