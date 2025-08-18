@@ -8121,6 +8121,8 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
           this.lockProgress = 100;
           console.log('OjaiTest-进入下一个场景');
           // 根据配置决定进入哪个场景
+
+          this.unschedule(this.updateForFlagChange);
         }
       }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "progressBar", [_dec2], {
         configurable: true,
