@@ -1482,9 +1482,10 @@ System.register("chunks:///_virtual/config.ts", ['cc', './gm-manager.ts', './Gam
         }
         static getRFlag() {
           console.log(`getRFlag: gm-${GmManager.instance.RFlag} || R_FLAG-${this.R_FLAG} || last-${GameDataMgr.instance.localData.lastRFlag}`);
-          return GmManager.instance.RFlag || this.R_FLAG || GameDataMgr.instance.localData.lastRFlag;
+          return true; //GmManager.instance.RFlag || this.R_FLAG || GameDataMgr.instance.localData.lastRFlag;
         }
       }
+
       exports('Config', Config);
       //注意：native 请在 game.config.json中配置，然后由native回传
       Config.API_URL = 'https://beta-boost.mix-fun.com';
@@ -7953,12 +7954,16 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
             progress = 1;
           }
           this.progressBar.progress = progress;
-          if (this.currentProgress == this.targetProgress && !this.isChangeScene) {
+          if (this.currentProgress == this.targetProgress) {
             this.isChangeScene = true;
+            console.log("goto nex scene");
+            console.log("ENABLE_SG", Config.ENABLE_SG);
             if (Config.ENABLE_SG) {
               GameDataMgr.instance.sg.state = SgState.Started;
+              console.log("welcome_sg");
               director.loadScene("welcome_sg");
             } else {
+              console.log("gameScene");
               director.loadScene("gameScene");
             }
           }
@@ -8076,6 +8081,7 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
          * 更新进度回调
          */
         updateProgress(progress) {
+          console.log('OjaiTest-更新进度回调', progress);
           this.lockProgress = 50 + progress / 2;
           // this.lblLoading.string = `${Math.floor(progress * 100)}%`;
         }
@@ -8095,7 +8101,7 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
          */
         onUpdateFailed() {
           console.log('OjaiTest-热更新失败，继续进入游戏');
-          this.enterNext();
+          director.loadScene("gameScene");
         }
 
         /**
@@ -8111,7 +8117,7 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
          */
         onUpdateError() {
           console.log('OjaiTest-热更新出错，继续进入游戏');
-          this.enterNext();
+          director.loadScene("gameScene");
         }
 
         /**
@@ -8121,6 +8127,8 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
           this.lockProgress = 100;
           console.log('OjaiTest-进入下一个场景');
           // 根据配置决定进入哪个场景
+
+          this.unschedule(this.updateForFlagChange);
         }
       }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "progressBar", [_dec2], {
         configurable: true,
