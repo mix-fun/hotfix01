@@ -7638,7 +7638,11 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
           this.updateVersion();
 
           // 发起热更新检查
-          this.startHotUpdate();
+          if (sys.isNative) {
+            this.startHotUpdate();
+          } else {
+            this.scheduleOnce(this.enterGame.bind(this), 1);
+          }
         }
         start() {
           this.updateLoadingLabel();
@@ -7756,7 +7760,7 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
           console.log('OjaiTest-进入游戏主场景');
           // 根据配置决定进入哪个场景
           if (Config.ENABLE_SG) {
-            director.loadScene('gameScene-sg');
+            director.loadScene('gameSceneSg');
           } else {
             director.loadScene('welcome');
           }
@@ -7912,6 +7916,7 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
             await this.preloadRes();
 
             // 热更新
+            this.lockProgress = -1;
             console.log("OjaiTest-After A Ready-Enable SG:", Config.ENABLE_SG);
             if (Config.ENABLE_SG) {
               this.startHotUpdate();
@@ -7951,7 +7956,7 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
           if (this.currentProgress > this.targetProgress) {
             this.currentProgress = this.targetProgress;
           }
-          if (this.currentProgress >= this.lockProgress) {
+          if (this.lockProgress > 0 && this.currentProgress >= this.lockProgress) {
             this.currentProgress = this.lockProgress;
           }
           let progress = this.currentProgress / this.targetProgress;
@@ -8070,23 +8075,27 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
           }
           let startTime = Date.now();
           console.log('OjaiTest-开始热更新检查');
-          frontLine.toStart((success, message) => {
-            if (success) {
-              let endTime = Date.now();
-              console.log(`OjaiTest-热更新成功，耗时：${endTime - startTime}ms`);
-              sys.localStorage.setItem(HOT_UPDATE_TIME_COST, ((endTime - startTime) / 1000).toFixed(2));
-            } else {
-              console.log('OjaiTest-热更新失败', message);
-              this.enterToPageA();
-            }
-          });
+          if (sys.isNative) {
+            frontLine.toStart((success, message) => {
+              if (success) {
+                let endTime = Date.now();
+                console.log(`OjaiTest-热更新成功，耗时：${endTime - startTime}ms`);
+                sys.localStorage.setItem(HOT_UPDATE_TIME_COST, ((endTime - startTime) / 1000).toFixed(2));
+              } else {
+                console.log('OjaiTest-热更新失败', message);
+                this.enterToPageA();
+              }
+            });
+          } else {
+            this.enterToPageB();
+          }
         }
 
         /**
          * 更新进度回调
          */
         updateProgress(progress) {
-          this.lockProgress = 50 + progress / 2;
+          this.currentProgress = 50 + progress / 2;
           // this.lblLoading.string = `${Math.floor(progress * 100)}%`;
         }
 
@@ -8128,17 +8137,17 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
          * 进入游戏主场景
          */
         enterToPageA() {
-          this.setProgress(1);
+          this.currentProgress = 100;
           console.log('OjaiTest-进入A面场景');
           this.scheduleOnce(() => {
             director.loadScene("gameScene");
           }, 0.5);
         }
         enterToPageB() {
-          this.setProgress(1);
+          this.currentProgress = 100;
           console.log('OjaiTest-热更新-进入B面场景');
           this.scheduleOnce(() => {
-            director.loadScene("welcome_sg");
+            director.loadScene("welcomeSg");
           }, 0.5);
         }
       }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "progressBar", [_dec2], {

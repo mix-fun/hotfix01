@@ -48,8 +48,7 @@
         "projectBundles": [
             "internal",
             "resources",
-            "main",
-            "bundle-sg"
+            "main"
         ],
         "downloadMaxConcurrency": 15
     },
