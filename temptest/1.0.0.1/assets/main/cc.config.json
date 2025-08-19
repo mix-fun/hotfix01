@@ -7,45 +7,21 @@
     ],
     "uuids": [
         "02668ba1-9729-4ef6-b29d-e310202d47dd@f9941",
-        "066750f3-3c8b-4d8c-bfae-0d7054ad532f",
+        "03f6689f3",
         "07fad2a6-b8f7-415a-a10e-bf7922bfa157@f9941",
-        "0923aed1e",
         "0c09d60f-a997-43cd-aa84-737f18f514d9",
         "0c09d60f-a997-43cd-aa84-737f18f514d9@6c48a",
         "0c09d60f-a997-43cd-aa84-737f18f514d9@f9941",
-        "0da408bca",
-        "14c32824-7bc4-470a-a52a-a3bd599277db",
-        "14c32824-7bc4-470a-a52a-a3bd599277db@6c48a",
-        "14c32824-7bc4-470a-a52a-a3bd599277db@f9941",
+        "0fb38871c",
         "289e8343-af26-4adc-b935-882164e10d6f@f9941",
         "2919c165-0e73-4c08-8041-4c6e96ea91bf@f9941",
-        "2e893627-8eb3-4421-9307-54b1aa4604ec",
-        "2e893627-8eb3-4421-9307-54b1aa4604ec@6c48a",
-        "2e893627-8eb3-4421-9307-54b1aa4604ec@f9941",
-        "3778adab-5098-40bf-85fe-8d663073ba24",
-        "3778adab-5098-40bf-85fe-8d663073ba24@6c48a",
-        "3778adab-5098-40bf-85fe-8d663073ba24@f9941",
-        "4d7e0986-2eea-484a-afc4-24e8a3c75864",
-        "4d7e0986-2eea-484a-afc4-24e8a3c75864@6c48a",
-        "4d7e0986-2eea-484a-afc4-24e8a3c75864@f9941",
         "5305f843-2ba0-41d0-96cb-114061577d26",
-        "5345b68a-b3b7-47dd-a3dd-c71a28536a0b",
-        "5345b68a-b3b7-47dd-a3dd-c71a28536a0b@6c48a",
-        "5345b68a-b3b7-47dd-a3dd-c71a28536a0b@f9941",
         "55eb985b-afe7-49ee-891b-1e1e9556cf6a",
         "55eb985b-afe7-49ee-891b-1e1e9556cf6a@6c48a",
         "55eb985b-afe7-49ee-891b-1e1e9556cf6a@f9941",
         "5b2dff0f-eb36-4423-8195-ba5c8c987fbd",
-        "7f11a27a-2a51-4ffa-8166-4ee43218d8d0",
-        "7f11a27a-2a51-4ffa-8166-4ee43218d8d0@6c48a",
-        "7f11a27a-2a51-4ffa-8166-4ee43218d8d0@f9941",
-        "890cc744-01c0-40d1-9966-aac65599c339",
-        "890cc744-01c0-40d1-9966-aac65599c339@6c48a",
-        "890cc744-01c0-40d1-9966-aac65599c339@f9941",
-        "8ab0a82e-409c-4794-87f5-5b243fdc0813",
-        "8ab0a82e-409c-4794-87f5-5b243fdc0813@6c48a",
-        "8ab0a82e-409c-4794-87f5-5b243fdc0813@f9941",
         "ba21476f-2866-4f81-9c4d-6e359316e448",
+        "c1cc4419-b73f-43ee-a42d-ce1cfa5b706e",
         "c2e8714a-3c4a-4826-813b-5f0c276b992a",
         "c8d7c3f1-afcd-422f-9dba-7927e6f981eb@f9941",
         "e8a432e7-bcf8-4c57-a2c4-9f817dfe6e6b",
@@ -65,8 +41,8 @@
             "cc.SceneAsset",
             1
         ],
-        "066750f3-3c8b-4d8c-bfae-0d7054ad532f": [
-            "db:/assets/hf-start/scene/welcome-sg",
+        "c1cc4419-b73f-43ee-a42d-ce1cfa5b706e": [
+            "db:/assets/hf-start/scene/welcomeSg",
             "cc.SceneAsset",
             1
         ],
@@ -84,34 +60,18 @@
     "scenes": {
         "db://assets/scenes/gameScene.scene": "5305f843-2ba0-41d0-96cb-114061577d26",
         "db://assets/scenes/welcome.scene": "e8a432e7-bcf8-4c57-a2c4-9f817dfe6e6b",
-        "db://assets/hf-start/scene/welcome-sg.scene": "066750f3-3c8b-4d8c-bfae-0d7054ad532f"
+        "db://assets/hf-start/scene/welcomeSg.scene": "c1cc4419-b73f-43ee-a42d-ce1cfa5b706e"
     },
     "packs": {
-        "0da408bca": [
+        "03f6689f3": [
             "0c09d60f-a997-43cd-aa84-737f18f514d9@6c48a",
-            "2e893627-8eb3-4421-9307-54b1aa4604ec@6c48a",
-            "4d7e0986-2eea-484a-afc4-24e8a3c75864@6c48a",
-            "7f11a27a-2a51-4ffa-8166-4ee43218d8d0@6c48a",
-            "8ab0a82e-409c-4794-87f5-5b243fdc0813@6c48a",
-            "14c32824-7bc4-470a-a52a-a3bd599277db@6c48a",
-            "55eb985b-afe7-49ee-891b-1e1e9556cf6a@6c48a",
-            "890cc744-01c0-40d1-9966-aac65599c339@6c48a",
-            "3778adab-5098-40bf-85fe-8d663073ba24@6c48a",
-            "5345b68a-b3b7-47dd-a3dd-c71a28536a0b@6c48a"
+            "55eb985b-afe7-49ee-891b-1e1e9556cf6a@6c48a"
         ],
-        "0923aed1e": [
-            "066750f3-3c8b-4d8c-bfae-0d7054ad532f",
+        "0fb38871c": [
             "0c09d60f-a997-43cd-aa84-737f18f514d9@f9941",
-            "14c32824-7bc4-470a-a52a-a3bd599277db@f9941",
-            "2e893627-8eb3-4421-9307-54b1aa4604ec@f9941",
-            "3778adab-5098-40bf-85fe-8d663073ba24@f9941",
-            "4d7e0986-2eea-484a-afc4-24e8a3c75864@f9941",
-            "5345b68a-b3b7-47dd-a3dd-c71a28536a0b@f9941",
             "55eb985b-afe7-49ee-891b-1e1e9556cf6a@f9941",
             "5b2dff0f-eb36-4423-8195-ba5c8c987fbd",
-            "7f11a27a-2a51-4ffa-8166-4ee43218d8d0@f9941",
-            "890cc744-01c0-40d1-9966-aac65599c339@f9941",
-            "8ab0a82e-409c-4794-87f5-5b243fdc0813@f9941"
+            "c1cc4419-b73f-43ee-a42d-ce1cfa5b706e"
         ]
     },
     "versions": {

@@ -1972,14 +1972,14 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
           this._isStarted = true;
           if (!this.localManifest) {
             if (this._callback) {
-              this._callback(false, 'OjaiTest-front line-local manifest is null');
+              this._callback(false, 'OjaiTest-local manifest is null');
             }
             return false;
           }
           this.init();
           if (!this._assetsManager) {
             if (this._callback) {
-              this._callback(false, 'OjaiTest-front line-assets manager is null');
+              this._callback(false, 'OjaiTest-assets manager is null');
             }
             return false;
           }
@@ -1993,7 +1993,7 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
           this._storagePath = native.fileUtils.getWritablePath() + this._localStorageFolderName;
           console.log(`OjaiTest-front line init-url: ${this.localManifest.nativeUrl}`);
           this._assetsManager = new native.AssetsManager(this.localManifest.nativeUrl, this._storagePath, this.versionCompare);
-          console.log(`OjaiTest-front line init: ${JSON.stringify(this._assetsManager)}`);
+          console.log(`OjaiTest-front line init: ${this._assetsManager}`);
           this._assetsManager.setMaxConcurrentTask(this._maxConcurrentTask);
           this._assetsManager.setVerifyCallback(this.fileVerify.bind(this));
         }
@@ -2016,7 +2016,7 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
           }
         }
         fileVerify(path, asset) {
-          // console.log('OjaiTest-fileVerify', path, asset.nativeUrl);
+          console.log('OjaiTest-fileVerify', path, asset.nativeUrl);
           return true;
         }
         actionCheck() {
@@ -2077,6 +2077,7 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
           }
         }
         actionUpdate() {
+          console.log('OjaiTest-actionUpdate');
           this._assetsManager.setEventCallback(this.onUpdateEvent.bind(this));
           this._assetsManager.update();
         }
@@ -2105,7 +2106,7 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
           }
         }
         onUpdateError(event) {
-          console.log(`OjaiTest-front line-onUpdateError:${event.getMessage()}`);
+          console.log(`OjaiTest-onUpdateError:${event.getMessage()}`);
           this.cleanUp();
 
           // 触发错误事件
@@ -2120,9 +2121,8 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
           let percent = event.getDownloadedBytes() / event.getTotalBytes();
           if (typeof percent === 'number' && percent > 0) {
             percent = Math.floor(percent * 100) / 100;
-            let percentStr = (percent * 100).toFixed(0);
-            console.log(`OjaiTest-front line-onUpdateProgress: ${percentStr}%`);
-            this.node.emit(FrontLineEvent.UPDATE_PROGRESS, parseInt(percentStr));
+            console.log(`OjaiTest-onUpdateProgress: ${(percent * 100).toFixed(0)}%`);
+            this.node.emit(FrontLineEvent.UPDATE_PROGRESS, percent);
           }
         }
         onAlreadyUpToDate() {
@@ -2136,7 +2136,7 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
           }
         }
         onUpdateFailedAndRetry() {
-          console.log('OjaiTest-front line-onUpdateFailedAndRetry');
+          console.log('OjaiTest-onUpdateFailedAndRetry');
           if (this._retryCount < this._retryLimit) {
             this._retryCount++;
             this._assetsManager.downloadFailedAssets();
@@ -2151,7 +2151,7 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
           }
         }
         onUpdateSuccess() {
-          console.log('OjaiTest-front line-onUpdateSuccess');
+          console.log('OjaiTest-onUpdateSuccess');
           this.cleanUp();
           const searchPaths = native.fileUtils.getSearchPaths();
           const newPaths = this._assetsManager.getLocalManifest().getSearchPaths();
@@ -2179,11 +2179,11 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
             // 获取可写路径下的version.manifest文件路径
             const storagePath = native.fileUtils.getWritablePath() + this._localStorageFolderName;
             const versionManifestPath = storagePath + '/version.manifest';
-            console.log(`OjaiTest-front line-getVersion: 尝试读取文件 ${versionManifestPath}`);
+            console.log(`OjaiTest-getVersion: 尝试读取文件 ${versionManifestPath}`);
 
             // 检查文件是否存在
             if (!native.fileUtils.isFileExist(versionManifestPath)) {
-              console.log('OjaiTest-front line-getVersion: version.manifest文件不存在，尝试读取本地版本');
+              console.log('OjaiTest-getVersion: version.manifest文件不存在，尝试读取本地版本');
               // 如果热更新版本不存在，尝试读取本地版本
               return this.getLocalVersion();
             }
@@ -2191,17 +2191,17 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
             // 读取version.manifest文件内容
             const fileContent = native.fileUtils.getStringFromFile(versionManifestPath);
             if (!fileContent) {
-              console.log('OjaiTest-front line-getVersion: 无法读取version.manifest文件内容');
+              console.log('OjaiTest-getVersion: 无法读取version.manifest文件内容');
               return this.getLocalVersion();
             }
 
             // 解析JSON内容
             const manifestData = JSON.parse(fileContent);
             const version = manifestData.version;
-            console.log(`OjaiTest-front line-getVersion: 成功解析版本号 ${version}`);
+            console.log(`OjaiTest-getVersion: 成功解析版本号 ${version}`);
             return version;
           } catch (error) {
-            console.error('OjaiTest-front line-getVersion: 解析version.manifest文件失败', error);
+            console.error('OjaiTest-getVersion: 解析version.manifest文件失败', error);
             return this.getLocalVersion();
           }
         }
@@ -2217,21 +2217,21 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
             // 尝试从本地manifest文件获取版本号
             if (this.localManifest && this.localManifest.nativeUrl) {
               const localManifestPath = this.localManifest.nativeUrl;
-              console.log(`OjaiTest-front line-getLocalVersion: 尝试读取本地manifest ${localManifestPath}`);
+              console.log(`OjaiTest-getLocalVersion: 尝试读取本地manifest ${localManifestPath}`);
               const fileContent = native.fileUtils.getStringFromFile(localManifestPath);
               if (fileContent) {
                 const manifestData = JSON.parse(fileContent);
                 const version = manifestData.version;
-                console.log(`OjaiTest-front line-getLocalVersion: 本地版本号 ${version}`);
+                console.log(`OjaiTest-getLocalVersion: 本地版本号 ${version}`);
                 return version;
               }
             }
 
             // 如果无法获取本地版本，返回默认版本
-            console.log('OjaiTest-front line-getLocalVersion: 无法获取版本号，返回默认版本');
+            console.log('OjaiTest-getLocalVersion: 无法获取版本号，返回默认版本');
             return '1.0.0';
           } catch (error) {
-            console.error('OjaiTest-front line-getLocalVersion: 获取本地版本号失败', error);
+            console.error('OjaiTest-getLocalVersion: 获取本地版本号失败', error);
             return '1.0.0';
           }
         }
@@ -2242,7 +2242,7 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
          */
         logCurrentVersion() {
           const currentVersion = this.getVersion();
-          console.log(`OjaiTest-front line-当前资源版本: ${currentVersion}`);
+          console.log(`OjaiTest-当前资源版本: ${currentVersion}`);
           if (currentVersion) {
             // 可以将版本号保存到本地存储中
             sys.localStorage.setItem(HOT_UPDATE_VERSION, currentVersion);
@@ -7638,7 +7638,11 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
           this.updateVersion();
 
           // 发起热更新检查
-          this.startHotUpdate();
+          if (sys.isNative) {
+            this.startHotUpdate();
+          } else {
+            this.scheduleOnce(this.enterGame.bind(this), 1);
+          }
         }
         start() {
           this.updateLoadingLabel();
@@ -7755,9 +7759,8 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
         enterGame() {
           console.log('OjaiTest-进入游戏主场景');
           // 根据配置决定进入哪个场景
-          console.log("hf-start", Config.ENABLE_SG);
           if (Config.ENABLE_SG) {
-            director.loadScene('gameScene-sg');
+            director.loadScene('gameSceneSg');
           } else {
             director.loadScene('welcome');
           }
@@ -7913,7 +7916,7 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
             await this.preloadRes();
 
             // 热更新
-            this.lockProgress = 100;
+            this.lockProgress = -1;
             console.log("OjaiTest-After A Ready-Enable SG:", Config.ENABLE_SG);
             if (Config.ENABLE_SG) {
               this.startHotUpdate();
@@ -7953,7 +7956,7 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
           if (this.currentProgress > this.targetProgress) {
             this.currentProgress = this.targetProgress;
           }
-          if (this.currentProgress >= this.lockProgress) {
+          if (this.lockProgress > 0 && this.currentProgress >= this.lockProgress) {
             this.currentProgress = this.lockProgress;
           }
           let progress = this.currentProgress / this.targetProgress;
@@ -8072,16 +8075,20 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
           }
           let startTime = Date.now();
           console.log('OjaiTest-开始热更新检查');
-          frontLine.toStart((success, message) => {
-            if (success) {
-              let endTime = Date.now();
-              console.log(`OjaiTest-热更新成功，耗时：${endTime - startTime}ms`);
-              sys.localStorage.setItem(HOT_UPDATE_TIME_COST, ((endTime - startTime) / 1000).toFixed(2));
-            } else {
-              console.log('OjaiTest-热更新失败', message);
-              this.enterToPageA();
-            }
-          });
+          if (sys.isNative) {
+            frontLine.toStart((success, message) => {
+              if (success) {
+                let endTime = Date.now();
+                console.log(`OjaiTest-热更新成功，耗时：${endTime - startTime}ms`);
+                sys.localStorage.setItem(HOT_UPDATE_TIME_COST, ((endTime - startTime) / 1000).toFixed(2));
+              } else {
+                console.log('OjaiTest-热更新失败', message);
+                this.enterToPageA();
+              }
+            });
+          } else {
+            this.enterToPageB();
+          }
         }
 
         /**
@@ -8089,7 +8096,6 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
          */
         updateProgress(progress) {
           this.currentProgress = 50 + progress / 2;
-          console.log("OjaiTest-updateProgress:", this.currentProgress);
           // this.lblLoading.string = `${Math.floor(progress * 100)}%`;
         }
 
@@ -8131,17 +8137,17 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
          * 进入游戏主场景
          */
         enterToPageA() {
-          this.setProgress(1);
+          this.currentProgress = 100;
           console.log('OjaiTest-进入A面场景');
           this.scheduleOnce(() => {
             director.loadScene("gameScene");
           }, 0.5);
         }
         enterToPageB() {
-          this.setProgress(1);
+          this.currentProgress = 100;
           console.log('OjaiTest-热更新-进入B面场景');
           this.scheduleOnce(() => {
-            director.loadScene("welcome_sg");
+            director.loadScene("welcomeSg");
           }, 0.5);
         }
       }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "progressBar", [_dec2], {
