@@ -1947,7 +1947,6 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
         UPDATE_FAILED: 'update_failed',
         ALREADY_UP_TO_DATE: 'already_up_to_date'
       });
-      const HOT_UPDATE_TIMESTAMP = exports('HOT_UPDATE_TIMESTAMP', 'hot_update_timestamp');
       const HOT_UPDATE_TIME_COST = exports('HOT_UPDATE_TIME_COST', 'hot_update_time_cost');
       const HOT_UPDATE_VERSION = exports('HOT_UPDATE_VERSION', 'hot_update_version');
       let FrontLine = exports('FrontLine', (_dec = ccclass('FrontLine'), _dec2 = property(Asset), _dec(_class2 = (_class3 = class FrontLine extends Component {
@@ -7586,7 +7585,7 @@ System.register("chunks:///_virtual/waterFlow.ts", ['cc', './AudioMgr.ts'], func
 });
 
 System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './front-line.ts', './config.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, ProgressBar, Label, _decorator, Component, sys, director, FrontLineEvent, FrontLine, Config;
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, ProgressBar, Label, _decorator, Component, sys, director, FrontLineEvent, FrontLine, HOT_UPDATE_TIME_COST, Config;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -7602,6 +7601,7 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
     }, function (module) {
       FrontLineEvent = module.FrontLineEvent;
       FrontLine = module.FrontLine;
+      HOT_UPDATE_TIME_COST = module.HOT_UPDATE_TIME_COST;
     }, function (module) {
       Config = module.Config;
     }],
@@ -7612,7 +7612,7 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
         ccclass,
         property
       } = _decorator;
-      const HOT_UPDATE_TIME_COST = exports('HOT_UPDATE_TIME_COST', 'hot_update_time_cost');
+      const HOT_UPDATE_TIMESTAMP_2 = exports('HOT_UPDATE_TIMESTAMP_2', 'hot_update_timestamp_2');
       let WelcomeHfStart = exports('WelcomeHfStart', (_dec = ccclass('WelcomeHfStart'), _dec2 = property(ProgressBar), _dec3 = property(Label), _dec4 = property(Label), _dec5 = property(Label), _dec(_class = (_class2 = class WelcomeHfStart extends Component {
         constructor(...args) {
           super(...args);
@@ -7620,7 +7620,6 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
           _initializerDefineProperty(this, "lblProgress", _descriptor2, this);
           _initializerDefineProperty(this, "lblLoading", _descriptor3, this);
           _initializerDefineProperty(this, "lblVersion", _descriptor4, this);
-          this.HOT_UPDATE_TIMESTAMP = 'hot_update_timestamp';
           this.HOT_UPDATE_THRESHOLD = 5 * 60 * 1000;
         }
         // 5分钟内的更新认为是刚更新过
@@ -7666,7 +7665,7 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
          * 检查是否最近刚进行过热更新
          */
         isRecentlyUpdated() {
-          const lastUpdateTime = sys.localStorage.getItem(this.HOT_UPDATE_TIMESTAMP);
+          const lastUpdateTime = sys.localStorage.getItem(HOT_UPDATE_TIMESTAMP_2);
           if (!lastUpdateTime) {
             return false;
           }
@@ -7681,7 +7680,7 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
          * 记录热更新时间
          */
         recordUpdateTime() {
-          sys.localStorage.setItem(this.HOT_UPDATE_TIMESTAMP, Date.now().toString());
+          sys.localStorage.setItem(HOT_UPDATE_TIMESTAMP_2, Date.now().toString());
           console.log('OjaiTest-记录热更新时间');
         }
 
@@ -7702,7 +7701,18 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
               console.log('OjaiTest-热更新成功');
               let endTime = Date.now();
               console.log(`OjaiTest-热更新成功，耗时：${endTime - startTime}ms`);
-              sys.localStorage.setItem(HOT_UPDATE_TIME_COST, ((endTime - startTime) / 1000).toFixed(2));
+              let timeCost = sys.localStorage.getItem(HOT_UPDATE_TIME_COST);
+              if (!timeCost) {
+                timeCost = 0;
+              } else {
+                try {
+                  timeCost = parseFloat(timeCost);
+                } catch (error) {
+                  console.error('timeCost is not a number');
+                  timeCost = 0;
+                }
+              }
+              sys.localStorage.setItem(HOT_UPDATE_TIME_COST, (timeCost + (endTime - startTime) / 1000).toFixed(2));
               this.updateVersion();
             } else {
               console.log('OjaiTest-热更新失败', message);
@@ -7823,7 +7833,7 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
 });
 
 System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './AudioMgr.ts', './GameDataMgr.ts', './ResMgr.ts', './BasePage.ts', './PageMgr.ts', './connectMgr.ts', './barSortBridge.ts', './union-fetch-agent.ts', './config.ts', './mount-manager.ts', './mount-dot.ts', './config-agent.ts', './front-line.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, ProgressBar, Label, _decorator, profiler, SpriteFrame, sys, director, AudioMgr, AUDIO_NAME, GameDataMgr, ResMgr, BasePage, UIPage, connectMgr, barSortBridge, UnionFetchAgent, Config, MountManager, MountDot, ConfigAgent, ConfigType, FrontLineEvent, FrontLine, HOT_UPDATE_TIMESTAMP, HOT_UPDATE_TIME_COST;
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, ProgressBar, Label, _decorator, profiler, SpriteFrame, sys, director, AudioMgr, AUDIO_NAME, GameDataMgr, ResMgr, BasePage, UIPage, connectMgr, barSortBridge, UnionFetchAgent, Config, MountManager, MountDot, ConfigAgent, ConfigType, FrontLineEvent, FrontLine, HOT_UPDATE_TIME_COST;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -7866,7 +7876,6 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
     }, function (module) {
       FrontLineEvent = module.FrontLineEvent;
       FrontLine = module.FrontLine;
-      HOT_UPDATE_TIMESTAMP = module.HOT_UPDATE_TIMESTAMP;
       HOT_UPDATE_TIME_COST = module.HOT_UPDATE_TIME_COST;
     }],
     execute: function () {
@@ -7876,6 +7885,7 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
         ccclass,
         property
       } = _decorator;
+      const HOT_UPDATE_TIMESTAMP_1 = 'hot_update_timestamp_1';
       let welcomeView = exports('welcomeView', (_dec = ccclass('welcomeView'), _dec2 = property(ProgressBar), _dec3 = property(Label), _dec(_class = (_class2 = class welcomeView extends BasePage {
         constructor(...args) {
           super(...args);
@@ -7887,7 +7897,6 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
           this.step = 0.7;
           this.pointNum = 0;
           this.timeCount = 0;
-          this.isChangeScene = false;
           this.HOT_UPDATE_THRESHOLD = 5 * 60 * 1000;
         }
         // 5分钟内的更新认为是刚更新过
@@ -7969,24 +7978,7 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
             progress = 1;
           }
           this.progressBar.progress = progress;
-
-          // Todo，这里需要处理
-          // if(this.currentProgress == this.targetProgress){
-          //     this.isChangeScene = true;
-          //     console.log("goto nex scene");
-          //     console.log("ENABLE_SG", Config.ENABLE_SG);
-
-          //     if (Config.ENABLE_SG) {
-          //         GameDataMgr.instance.sg.state = SgState.Started;
-          //         console.log("welcome_sg");
-          //         director.loadScene("welcome_sg");
-          //     } else {
-          //         console.log("gameScene");
-          //         director.loadScene("gameScene");
-          //     }
-          // }
         }
-
         async updateForFlagChange() {
           console.log("OjaiTest-wait for-Enable SG-timecount:", this.timeCount);
           if (--this.timeCount < 0) {
@@ -8031,7 +8023,7 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
         * 检查是否最近刚进行过热更新
         */
         isRecentlyUpdated() {
-          const lastUpdateTime = sys.localStorage.getItem(HOT_UPDATE_TIMESTAMP);
+          const lastUpdateTime = sys.localStorage.getItem(HOT_UPDATE_TIMESTAMP_1);
           if (!lastUpdateTime) {
             return false;
           }
@@ -8045,7 +8037,7 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
          * 记录热更新时间
          */
         recordUpdateTime() {
-          sys.localStorage.setItem(HOT_UPDATE_TIMESTAMP, Date.now().toString());
+          sys.localStorage.setItem(HOT_UPDATE_TIMESTAMP_1, Date.now().toString());
         }
 
         /**
