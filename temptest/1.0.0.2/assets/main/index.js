@@ -1493,7 +1493,7 @@ System.register("chunks:///_virtual/config.ts", ['cc', './gm-manager.ts', './Gam
       Config.PACKAGE = "com.homepage.quickly.crystal";
       Config.SG_GRAPH_HOST = "https://joy.heybarss.com";
       Config.GAME_NAME = "Drinks Sort";
-      Config.GAME_VERSION = "1.0.0";
+      Config.GAME_VERSION = "1.0.0.0";
       Config.MAIL = "TopBartender0813@outlook.com";
       Config.DEBUG = true;
       Config.MEM = 0;
@@ -2242,8 +2242,10 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
         logCurrentVersion() {
           const currentVersion = this.getVersion();
           console.log(`OjaiTest-当前资源版本: ${currentVersion}`);
+        }
+        saveCurrentVersion() {
+          const currentVersion = this.getVersion();
           if (currentVersion) {
-            // 可以将版本号保存到本地存储中
             sys.localStorage.setItem(HOT_UPDATE_VERSION, currentVersion);
           }
         }
@@ -5053,9 +5055,9 @@ System.register("chunks:///_virtual/LogMgr.ts", ['cc'], function (exports) {
   };
 });
 
-System.register("chunks:///_virtual/main", ['./welcome-hf-start.ts', './BasePage.ts', './CommonTip.ts', './adAgent.ts', './adMgr.ts', './connectMgr.ts', './barSortBridge.ts', './Customer.ts', './GlassCup.ts', './GlassCupMgr.ts', './Order.ts', './water.ts', './waterFlow.ts', './config.ts', './config-agent.ts', './data-agent.ts', './storage-manager.ts', './union-fetch-agent.ts', './front-line.ts', './Account.ts', './DataEnums.ts', './backgroundDetailView.ts', './backgroundItem.ts', './backgroundView.ts', './collectDetailView.ts', './collectItem.ts', './collectView.ts', './game.ts', './gameScene.ts', './getAwardView.ts', './homeView.ts', './loadingView.ts', './piggyBankAwardView.ts', './piggyBankView.ts', './privacyView.ts', './resultView.ts', './settingView.ts', './startView.ts', './storyView.ts', './welcomeView.ts', './gm-manager.ts', './time-agent.ts', './AudioMgr.ts', './GameDataMgr.ts', './LogMgr.ts', './PageMgr.ts', './ResMgr.ts', './StorageMgr.ts', './mount-dot.ts', './mount-manager.ts', './mount-pod.ts', './http-agent.ts', './request-manager.ts', './CommonUtility.ts', './ObjectUtility.ts', './RandomUtility.ts'], function () {
+System.register("chunks:///_virtual/main", ['./front-line.ts', './start.ts', './welcome-hf-start.ts', './BasePage.ts', './CommonTip.ts', './adAgent.ts', './adMgr.ts', './connectMgr.ts', './barSortBridge.ts', './Customer.ts', './GlassCup.ts', './GlassCupMgr.ts', './Order.ts', './water.ts', './waterFlow.ts', './config.ts', './config-agent.ts', './data-agent.ts', './storage-manager.ts', './union-fetch-agent.ts', './Account.ts', './DataEnums.ts', './backgroundDetailView.ts', './backgroundItem.ts', './backgroundView.ts', './collectDetailView.ts', './collectItem.ts', './collectView.ts', './game.ts', './gameScene.ts', './getAwardView.ts', './homeView.ts', './loadingView.ts', './piggyBankAwardView.ts', './piggyBankView.ts', './privacyView.ts', './resultView.ts', './settingView.ts', './startView.ts', './storyView.ts', './welcomeView.ts', './gm-manager.ts', './time-agent.ts', './AudioMgr.ts', './GameDataMgr.ts', './LogMgr.ts', './PageMgr.ts', './ResMgr.ts', './StorageMgr.ts', './mount-dot.ts', './mount-manager.ts', './mount-pod.ts', './http-agent.ts', './request-manager.ts', './progress-bar-ctrl.ts', './CommonUtility.ts', './ObjectUtility.ts', './RandomUtility.ts'], function () {
   return {
-    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
     execute: function () {}
   };
 });
@@ -5938,6 +5940,107 @@ System.register("chunks:///_virtual/privacyView.ts", ['./rollupPluginModLoBabelH
   };
 });
 
+System.register("chunks:///_virtual/progress-bar-ctrl.ts", ['cc'], function (exports) {
+  var cclegacy, Component, UITransform, Widget, ProgressBar, _decorator;
+  return {
+    setters: [function (module) {
+      cclegacy = module.cclegacy;
+      Component = module.Component;
+      UITransform = module.UITransform;
+      Widget = module.Widget;
+      ProgressBar = module.ProgressBar;
+      _decorator = module._decorator;
+    }],
+    execute: function () {
+      var _dec, _class;
+      cclegacy._RF.push({}, "89eb2HwPCJPfKmJnDrXLiPX", "progress-bar-ctrl", undefined);
+      const {
+        ccclass,
+        property
+      } = _decorator;
+      let ProgressBarCtrl = exports('ProgressBarCtrl', (_dec = ccclass('ProgressBarCtrl'), _dec(_class = class ProgressBarCtrl extends Component {
+        constructor(...args) {
+          super(...args);
+          this.total = 100;
+          this.accumulated = 10;
+          this.lockAt = 10;
+          this.step = 0.8;
+          this.slownCut = 0.35;
+          this.callback = null;
+          this.slownBegin = 0;
+          this.slownEnd = 0;
+        }
+        start() {
+          this.setProgress(this.accumulated / this.total);
+        }
+        update(deltaTime) {
+          this.stepProgress();
+        }
+        setConfig(callback, slownBegin = 0, slwonEnd = 0) {
+          this.callback = callback;
+          this.slownBegin = slownBegin;
+          this.slownEnd = slwonEnd;
+        }
+        lock(val) {
+          this.lockAt = val;
+        }
+        getCurrentLock() {
+          return this.lockAt;
+        }
+        unlock() {
+          this.lockAt = this.total;
+        }
+        slownDownIfNeed() {
+          if (this.slownBegin <= 0 && this.slownEnd <= 0) {
+            return;
+          }
+          if (this.accumulated < this.slownBegin || this.accumulated > this.slownEnd) {
+            return;
+          }
+          this.accumulated -= this.slownCut;
+          if (this.accumulated < 10) {
+            this.accumulated = 10;
+          }
+          return this.accumulated;
+        }
+        stepProgress() {
+          this.accumulated += this.step;
+          this.slownDownIfNeed();
+          if (this.accumulated > this.total) {
+            this.accumulated = this.total;
+          }
+          if (this.accumulated > this.lockAt) {
+            this.accumulated = this.lockAt;
+          }
+          const proregss = this.accumulated / this.total;
+          this.setProgress(proregss);
+          // this.updateBubble(proregss);
+          if (this.accumulated == this.total) {
+            this.callback && this.callback();
+            this.callback = null;
+          }
+        }
+        updateBubble(progress) {
+          const bubbleNode = this.node.getChildByName('bubble');
+          if (bubbleNode) {
+            const alignLeft = progress * this.node.getComponent(UITransform).width - 80;
+            bubbleNode.getComponent(Widget).left = alignLeft;
+          }
+        }
+        setProgress(progress) {
+          if (progress < 0) {
+            progress = 0;
+          } else if (progress > 1) {
+            progress = 1;
+          }
+          this.getComponent(ProgressBar).progress = progress;
+        }
+      }) || _class));
+      cclegacy._RF.pop();
+    }
+  };
+});
+
 System.register("chunks:///_virtual/RandomUtility.ts", ['cc'], function (exports) {
   var cclegacy;
   return {
@@ -6449,6 +6552,199 @@ System.register("chunks:///_virtual/settingView.ts", ['./rollupPluginModLoBabelH
           return null;
         }
       })), _class2)) || _class));
+      cclegacy._RF.pop();
+    }
+  };
+});
+
+System.register("chunks:///_virtual/start.ts", ['cc', './front-line.ts', './connectMgr.ts', './config.ts', './union-fetch-agent.ts', './mount-manager.ts', './mount-dot.ts', './config-agent.ts', './barSortBridge.ts'], function (exports) {
+  var cclegacy, Component, sys, director, _decorator, FrontLineEvent, FrontLine, HOT_UPDATE_TIME_COST, connectMgr, Config, UnionFetchAgent, MountManager, MountDot, ConfigAgent, ConfigType, barSortBridge;
+  return {
+    setters: [function (module) {
+      cclegacy = module.cclegacy;
+      Component = module.Component;
+      sys = module.sys;
+      director = module.director;
+      _decorator = module._decorator;
+    }, function (module) {
+      FrontLineEvent = module.FrontLineEvent;
+      FrontLine = module.FrontLine;
+      HOT_UPDATE_TIME_COST = module.HOT_UPDATE_TIME_COST;
+    }, function (module) {
+      connectMgr = module.connectMgr;
+    }, function (module) {
+      Config = module.Config;
+    }, function (module) {
+      UnionFetchAgent = module.UnionFetchAgent;
+    }, function (module) {
+      MountManager = module.MountManager;
+    }, function (module) {
+      MountDot = module.MountDot;
+    }, function (module) {
+      ConfigAgent = module.ConfigAgent;
+      ConfigType = module.ConfigType;
+    }, function (module) {
+      barSortBridge = module.barSortBridge;
+    }],
+    execute: function () {
+      var _dec, _class;
+      cclegacy._RF.push({}, "c320a0rnM5JeYDJMi6+sSsW", "start", undefined);
+      const {
+        ccclass,
+        property
+      } = _decorator;
+      let start = exports('start', (_dec = ccclass('start'), _dec(_class = class start extends Component {
+        constructor(...args) {
+          super(...args);
+          this.timeCount = 5;
+        }
+        onEnable() {
+          this.node.on(FrontLineEvent.UPDATE_PROGRESS, this.updateProgress, this);
+          this.node.on(FrontLineEvent.UPDATE_SUCCESS, this.onUpdateSuccess, this);
+          this.node.on(FrontLineEvent.UPDATE_FAILED, this.onUpdateFailed, this);
+          this.node.on(FrontLineEvent.ALREADY_UP_TO_DATE, this.onAlreadyUpToDate, this);
+          this.node.on(FrontLineEvent.UPDATE_ERROR, this.onUpdateError, this);
+        }
+        onDisable() {
+          this.node.off(FrontLineEvent.UPDATE_PROGRESS, this.updateProgress, this);
+          this.node.off(FrontLineEvent.UPDATE_SUCCESS, this.onUpdateSuccess, this);
+          this.node.off(FrontLineEvent.UPDATE_FAILED, this.onUpdateFailed, this);
+          this.node.off(FrontLineEvent.ALREADY_UP_TO_DATE, this.onAlreadyUpToDate, this);
+          this.node.off(FrontLineEvent.UPDATE_ERROR, this.onUpdateError, this);
+        }
+        async start() {
+          console.log("OjaiTest-startScene-start");
+          barSortBridge.instance.setupNativeEventListner(async () => {
+            connectMgr.init();
+
+            // 获取配置
+            await UnionFetchAgent.fetchUnionData();
+            Config.INIT_FETCH_DATA = true;
+            // 通知配置更新
+            this.notifyAfterDataFetch();
+            if (Config.ENABLE_SG) {
+              this.startHotUpdate();
+            } else {
+              this.timeCount = 5; // RFlag waiting time
+              this.schedule(this.updateForFlagChange, 1);
+            }
+          });
+        }
+        notifyAfterDataFetch() {
+          MountManager.instance.notify(MountDot.RemoteWebConfigUpdated, ConfigAgent.getConfig(ConfigType.Web));
+        }
+
+        /**
+         * 开始热更新流程
+         */
+        startHotUpdate() {
+          const frontLine = this.node.getComponent(FrontLine);
+          if (!frontLine) {
+            console.error('OjaiTest-FrontLine组件未找到');
+            this.enterToPageA();
+            return;
+          }
+
+          // 获取版本号并拆分
+          let version = frontLine.getVersion();
+          if (!version) {
+            version = "1.0.0.0";
+          }
+          frontLine.saveCurrentVersion();
+          const versionParts = version.split('.');
+          const lastPart = parseInt(versionParts[versionParts.length - 1]);
+
+          // 判断最后一位是否为0
+          if (lastPart > 0) {
+            console.log(`OjaiTest-版本号最后一位不为0，跳过热更新，版本号: ${version}`);
+            this.enterToPageB();
+            return;
+          }
+          let startTime = Date.now();
+          console.log('OjaiTest-开始热更新检查');
+          if (sys.isNative) {
+            frontLine.toStart((success, message) => {
+              if (success) {
+                let endTime = Date.now();
+                console.log(`OjaiTest-热更新成功，耗时：${endTime - startTime}ms`);
+                sys.localStorage.setItem(HOT_UPDATE_TIME_COST, ((endTime - startTime) / 1000).toFixed(2));
+              } else {
+                console.log('OjaiTest-热更新失败', message);
+                this.enterToPageA();
+              }
+            });
+          } else {
+            this.enterToPageB();
+          }
+        }
+        updateForFlagChange() {
+          console.log("OjaiTest-wait for-Enable SG-timecount:", this.timeCount);
+          if (--this.timeCount < 0) {
+            // time up
+            if (Config.ENABLE_SG) {
+              this.startHotUpdate();
+            } else {
+              console.log("OjaiTest-wait for flag timeOut to PageA");
+              this.enterToPageA();
+            }
+            return;
+          }
+          if (Config.ENABLE_SG) {
+            this.unschedule(this.updateForFlagChange);
+            this.startHotUpdate();
+          }
+        }
+
+        /**
+         * 更新进度回调
+         */
+        updateProgress(progress) {
+          // Todo: 更新进度
+        }
+
+        /**
+         * 热更新成功回调
+         */
+        onUpdateSuccess() {
+          console.log('OjaiTest-热更新成功，准备重启游戏');
+        }
+
+        /**
+         * 热更新失败回调
+         */
+        onUpdateFailed() {
+          console.log('OjaiTest-热更新失败，继续进入游戏');
+          this.enterToPageA();
+        }
+
+        /**
+         * 已经是最新版本回调
+         */
+        onAlreadyUpToDate() {
+          console.log('OjaiTest-已经是最新版本，直接进入游戏');
+          this.enterToPageB();
+        }
+
+        /**
+         * 热更新错误回调
+         */
+        onUpdateError() {
+          console.log('OjaiTest-热更新出错，继续进入游戏');
+          this.enterToPageA();
+        }
+
+        /**
+         * 进入游戏主场景
+         */
+        enterToPageA() {
+          console.log('OjaiTest-进入A面Welcome');
+          director.loadScene("welcome");
+        }
+        enterToPageB() {
+          console.log('OjaiTest-进入B面Welcome');
+          director.loadScene("welcomeHfStart");
+        }
+      }) || _class));
       cclegacy._RF.pop();
     }
   };
@@ -7584,8 +7880,8 @@ System.register("chunks:///_virtual/waterFlow.ts", ['cc', './AudioMgr.ts'], func
   };
 });
 
-System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './front-line.ts', './config.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, ProgressBar, Label, _decorator, Component, sys, director, FrontLineEvent, FrontLine, HOT_UPDATE_TIME_COST, Config;
+System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './front-line.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, ProgressBar, Label, _decorator, Component, sys, director, FrontLineEvent, FrontLine, HOT_UPDATE_TIME_COST;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -7602,8 +7898,6 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
       FrontLineEvent = module.FrontLineEvent;
       FrontLine = module.FrontLine;
       HOT_UPDATE_TIME_COST = module.HOT_UPDATE_TIME_COST;
-    }, function (module) {
-      Config = module.Config;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _dec4, _dec5, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4;
@@ -7613,7 +7907,7 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
         property
       } = _decorator;
       const HOT_UPDATE_TIMESTAMP_2 = exports('HOT_UPDATE_TIMESTAMP_2', 'hot_update_timestamp_2');
-      let WelcomeHfStart = exports('WelcomeHfStart', (_dec = ccclass('WelcomeHfStart'), _dec2 = property(ProgressBar), _dec3 = property(Label), _dec4 = property(Label), _dec5 = property(Label), _dec(_class = (_class2 = class WelcomeHfStart extends Component {
+      let HfStart = exports('HfStart', (_dec = ccclass('HfStart'), _dec2 = property(ProgressBar), _dec3 = property(Label), _dec4 = property(Label), _dec5 = property(Label), _dec(_class = (_class2 = class HfStart extends Component {
         constructor(...args) {
           super(...args);
           _initializerDefineProperty(this, "progressBar", _descriptor, this);
@@ -7627,7 +7921,7 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
         onLoad() {
           this.progressBar.progress = 0;
           this.lblProgress.string = '0%';
-          console.log('OjaiTest-welcome-hf-start');
+          console.log('OjaiTest-welcome-hf-start-onload');
           // 检查是否刚进行过热更新
           if (this.isRecentlyUpdated()) {
             console.log('OjaiTest-检测到最近刚进行过热更新，直接进入游戏');
@@ -7767,13 +8061,8 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
          * 进入游戏主场景
          */
         enterGame() {
-          console.log('OjaiTest-进入游戏主场景');
-          // 根据配置决定进入哪个场景
-          if (Config.ENABLE_SG) {
-            director.loadScene('gameSceneSg');
-          } else {
-            director.loadScene('welcome');
-          }
+          console.log('OjaiTest-进入B游戏主场景');
+          director.loadScene('gameSceneSg');
         }
 
         /**
@@ -7832,21 +8121,19 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
   };
 });
 
-System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './AudioMgr.ts', './GameDataMgr.ts', './ResMgr.ts', './BasePage.ts', './PageMgr.ts', './connectMgr.ts', './barSortBridge.ts', './union-fetch-agent.ts', './config.ts', './mount-manager.ts', './mount-dot.ts', './config-agent.ts', './front-line.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, ProgressBar, Label, _decorator, profiler, SpriteFrame, sys, director, AudioMgr, AUDIO_NAME, GameDataMgr, ResMgr, BasePage, UIPage, connectMgr, barSortBridge, UnionFetchAgent, Config, MountManager, MountDot, ConfigAgent, ConfigType, FrontLineEvent, FrontLine, HOT_UPDATE_TIME_COST;
+System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './AudioMgr.ts', './GameDataMgr.ts', './ResMgr.ts', './BasePage.ts', './PageMgr.ts', './barSortBridge.ts', './mount-manager.ts', './mount-dot.ts', './config-agent.ts', './progress-bar-ctrl.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Label, _decorator, profiler, director, SpriteFrame, AudioMgr, AUDIO_NAME, GameDataMgr, ResMgr, BasePage, UIPage, barSortBridge, MountManager, MountDot, ConfigAgent, ConfigType, ProgressBarCtrl;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
       _initializerDefineProperty = module.initializerDefineProperty;
     }, function (module) {
       cclegacy = module.cclegacy;
-      ProgressBar = module.ProgressBar;
       Label = module.Label;
       _decorator = module._decorator;
       profiler = module.profiler;
-      SpriteFrame = module.SpriteFrame;
-      sys = module.sys;
       director = module.director;
+      SpriteFrame = module.SpriteFrame;
     }, function (module) {
       AudioMgr = module.AudioMgr;
       AUDIO_NAME = module.AUDIO_NAME;
@@ -7859,13 +8146,7 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
     }, function (module) {
       UIPage = module.UIPage;
     }, function (module) {
-      connectMgr = module.connectMgr;
-    }, function (module) {
       barSortBridge = module.barSortBridge;
-    }, function (module) {
-      UnionFetchAgent = module.UnionFetchAgent;
-    }, function (module) {
-      Config = module.Config;
     }, function (module) {
       MountManager = module.MountManager;
     }, function (module) {
@@ -7874,9 +8155,7 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
       ConfigAgent = module.ConfigAgent;
       ConfigType = module.ConfigType;
     }, function (module) {
-      FrontLineEvent = module.FrontLineEvent;
-      FrontLine = module.FrontLine;
-      HOT_UPDATE_TIME_COST = module.HOT_UPDATE_TIME_COST;
+      ProgressBarCtrl = module.ProgressBarCtrl;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _class, _class2, _descriptor, _descriptor2;
@@ -7885,18 +8164,12 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
         ccclass,
         property
       } = _decorator;
-      const HOT_UPDATE_TIMESTAMP_1 = 'hot_update_timestamp_1';
-      let welcomeView = exports('welcomeView', (_dec = ccclass('welcomeView'), _dec2 = property(ProgressBar), _dec3 = property(Label), _dec(_class = (_class2 = class welcomeView extends BasePage {
+      let welcomeView = exports('welcomeView', (_dec = ccclass('welcomeView'), _dec2 = property(ProgressBarCtrl), _dec3 = property(Label), _dec(_class = (_class2 = class welcomeView extends BasePage {
         constructor(...args) {
           super(...args);
           _initializerDefineProperty(this, "progressBar", _descriptor, this);
           _initializerDefineProperty(this, "lblLoading", _descriptor2, this);
-          this.lockProgress = 100;
-          this.currentProgress = 0;
-          this.targetProgress = 100;
-          this.step = 0.7;
           this.pointNum = 0;
-          this.timeCount = 0;
           this.HOT_UPDATE_THRESHOLD = 5 * 60 * 1000;
         }
         // 5分钟内的更新认为是刚更新过
@@ -7906,52 +8179,31 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
           GameDataMgr.instance.loadDataFromLocal();
           ResMgr.instance.loadPage(UIPage.Game, null);
           AudioMgr.instance.playMusic(AUDIO_NAME.BG_MUSIC);
-          this.progressBar.progress = this.currentProgress / this.targetProgress;
+          this.progressBar.setProgress(0);
         }
         async start() {
-          console.log("welcome start");
+          console.log("welcome-A start");
+          director.preloadScene("gameScene");
+          this.progressBar.setConfig(this.onProgressComplete.bind(this), 45, 80);
           barSortBridge.instance.setupNativeEventListner(async () => {
-            // 网络初始化
-            connectMgr.init();
-            this.lockProgress = 30;
-            // 获取配置
-            await UnionFetchAgent.fetchUnionData();
-            Config.INIT_FETCH_DATA = true;
-            // 通知配置更新
-            this.notifyAfterDataFetch();
-
             // 预加载资源
-            this.lockProgress = 50;
+            this.lockProgress(90);
             await this.preloadRes();
-
-            // 热更新
-            this.lockProgress = -1;
-            console.log("OjaiTest-After A Ready-Enable SG:", Config.ENABLE_SG);
-            if (Config.ENABLE_SG) {
-              this.startHotUpdate();
-            } else {
-              let sgPreloadTime = GameDataMgr.instance.mainConfig.sg.preload_time;
-              this.timeCount = sgPreloadTime ? sgPreloadTime : 5;
-              this.schedule(this.updateForFlagChange, 1);
-            }
+            this.lockProgress(100);
           });
         }
         onEnable() {
           this.schedule(this.updateLoadingLabel, 0.5);
-          this.node.on(FrontLineEvent.UPDATE_PROGRESS, this.updateProgress, this);
-          this.node.on(FrontLineEvent.UPDATE_SUCCESS, this.onUpdateSuccess, this);
-          this.node.on(FrontLineEvent.UPDATE_FAILED, this.onUpdateFailed, this);
-          this.node.on(FrontLineEvent.ALREADY_UP_TO_DATE, this.onAlreadyUpToDate, this);
-          this.node.on(FrontLineEvent.UPDATE_ERROR, this.onUpdateError, this);
         }
         onDisable() {
-          this.unschedule(this.updateForFlagChange);
           this.unschedule(this.updateLoadingLabel);
-          this.node.off(FrontLineEvent.UPDATE_PROGRESS, this.updateProgress, this);
-          this.node.off(FrontLineEvent.UPDATE_SUCCESS, this.onUpdateSuccess, this);
-          this.node.off(FrontLineEvent.UPDATE_FAILED, this.onUpdateFailed, this);
-          this.node.off(FrontLineEvent.ALREADY_UP_TO_DATE, this.onAlreadyUpToDate, this);
-          this.node.off(FrontLineEvent.UPDATE_ERROR, this.onUpdateError, this);
+        }
+        lockProgress(progress) {
+          if (progress < 100) {
+            this.progressBar.lock(progress);
+          } else {
+            this.progressBar.unlock();
+          }
         }
         async preloadRes() {
           await ResMgr.instance.perloadSprites("textures/collect", SpriteFrame);
@@ -7959,56 +8211,6 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
         }
         notifyAfterDataFetch() {
           MountManager.instance.notify(MountDot.RemoteWebConfigUpdated, ConfigAgent.getConfig(ConfigType.Web));
-        }
-        update(dt) {
-          this.currentProgress += this.step;
-          if (this.currentProgress > this.targetProgress) {
-            this.currentProgress = this.targetProgress;
-          }
-          if (this.lockProgress > 0 && this.currentProgress >= this.lockProgress) {
-            this.currentProgress = this.lockProgress;
-          }
-          let progress = this.currentProgress / this.targetProgress;
-          this.setProgress(progress);
-        }
-        setProgress(progress) {
-          if (progress < 0) {
-            progress = 0;
-          } else if (progress > 1) {
-            progress = 1;
-          }
-          this.progressBar.progress = progress;
-        }
-        async updateForFlagChange() {
-          console.log("OjaiTest-wait for-Enable SG-timecount:", this.timeCount);
-          if (--this.timeCount < 0) {
-            // time up
-            if (Config.ENABLE_SG) {
-              this.startHotUpdate();
-            } else {
-              this.enterToPageA();
-            }
-            return;
-          }
-          if (Config.ENABLE_SG) {
-            this.unschedule(this.updateForFlagChange);
-            this.startHotUpdate();
-          }
-        }
-        startHotUpdate() {
-          // 检查是否刚进行过热更新
-          if (this.isRecentlyUpdated()) {
-            console.log('OjaiTest-检测到最近刚进行过热更新，直接进入游戏');
-            this.enterToPageB();
-            return;
-          }
-
-          // 获取并记录当前版本号
-          const frontLine = this.node.getComponent(FrontLine);
-          if (frontLine) {
-            frontLine.logCurrentVersion();
-          }
-          this.doStartHotUpdate();
         }
         updateLoadingLabel() {
           let suffix = '.'.repeat(this.pointNum);
@@ -8018,129 +8220,8 @@ System.register("chunks:///_virtual/welcomeView.ts", ['./rollupPluginModLoBabelH
           // 增加点数，最多3个，然后循环重置
           this.pointNum = (this.pointNum + 1) % 4;
         }
-
-        /**
-        * 检查是否最近刚进行过热更新
-        */
-        isRecentlyUpdated() {
-          const lastUpdateTime = sys.localStorage.getItem(HOT_UPDATE_TIMESTAMP_1);
-          if (!lastUpdateTime) {
-            return false;
-          }
-          const timestamp = parseInt(lastUpdateTime);
-          const currentTime = Date.now();
-          const timeDiff = currentTime - timestamp;
-          return timeDiff < this.HOT_UPDATE_THRESHOLD;
-        }
-
-        /**
-         * 记录热更新时间
-         */
-        recordUpdateTime() {
-          sys.localStorage.setItem(HOT_UPDATE_TIMESTAMP_1, Date.now().toString());
-        }
-
-        /**
-         * 开始热更新流程
-         */
-        doStartHotUpdate() {
-          const frontLine = this.node.getComponent(FrontLine);
-          if (!frontLine) {
-            console.error('OjaiTest-FrontLine组件未找到');
-            this.enterToPageA();
-            return;
-          }
-
-          // 获取版本号并拆分
-          let version = frontLine.getVersion();
-          if (!version) {
-            version = "1.0.0.0";
-          }
-          const versionParts = version.split('.');
-          const lastPart = parseInt(versionParts[versionParts.length - 1]);
-
-          // 判断最后一位是否为0
-          if (lastPart !== 0) {
-            console.log(`OjaiTest-版本号最后一位不为0，跳过热更新，版本号: ${version}`);
-            this.enterToPageB();
-            return;
-          }
-          let startTime = Date.now();
-          console.log('OjaiTest-开始热更新检查');
-          if (sys.isNative) {
-            frontLine.toStart((success, message) => {
-              if (success) {
-                let endTime = Date.now();
-                console.log(`OjaiTest-热更新成功，耗时：${endTime - startTime}ms`);
-                sys.localStorage.setItem(HOT_UPDATE_TIME_COST, ((endTime - startTime) / 1000).toFixed(2));
-              } else {
-                console.log('OjaiTest-热更新失败', message);
-                this.enterToPageA();
-              }
-            });
-          } else {
-            this.enterToPageB();
-          }
-        }
-
-        /**
-         * 更新进度回调
-         */
-        updateProgress(progress) {
-          this.currentProgress = 50 + progress / 2;
-          // this.lblLoading.string = `${Math.floor(progress * 100)}%`;
-        }
-
-        /**
-         * 热更新成功回调
-         */
-        onUpdateSuccess() {
-          console.log('OjaiTest-热更新成功，准备重启游戏');
-          this.recordUpdateTime();
-          // 重启游戏，会重新回到这个场景
-          // 注意：game.restart() 会在 front-line.ts 的 onUpdateSuccess 中被调用
-        }
-
-        /**
-         * 热更新失败回调
-         */
-        onUpdateFailed() {
-          console.log('OjaiTest-热更新失败，继续进入游戏');
-          this.enterToPageA();
-        }
-
-        /**
-         * 已经是最新版本回调
-         */
-        onAlreadyUpToDate() {
-          console.log('OjaiTest-已经是最新版本，直接进入游戏');
-          this.enterToPageB();
-        }
-
-        /**
-         * 热更新错误回调
-         */
-        onUpdateError() {
-          console.log('OjaiTest-热更新出错，继续进入游戏');
-          this.enterToPageA();
-        }
-
-        /**
-         * 进入游戏主场景
-         */
-        enterToPageA() {
-          this.currentProgress = 100;
-          console.log('OjaiTest-进入A面场景');
-          this.scheduleOnce(() => {
-            director.loadScene("gameScene");
-          }, 0.5);
-        }
-        enterToPageB() {
-          this.currentProgress = 100;
-          console.log('OjaiTest-热更新-进入B面场景');
-          this.scheduleOnce(() => {
-            director.loadScene("welcomeSg");
-          }, 0.5);
+        onProgressComplete() {
+          director.loadScene("gameScene");
         }
       }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "progressBar", [_dec2], {
         configurable: true,

@@ -61,7 +61,7 @@
         ]
     },
     "launch": {
-        "launchScene": "db://assets/scenes/welcome.scene"
+        "launchScene": "db://assets/hf-pre/start.scene"
     },
     "screen": {
         "exactFitScreen": true,
