@@ -5941,7 +5941,7 @@ System.register("chunks:///_virtual/privacyView.ts", ['./rollupPluginModLoBabelH
 });
 
 System.register("chunks:///_virtual/progress-bar-ctrl.ts", ['cc'], function (exports) {
-  var cclegacy, Component, UITransform, Widget, ProgressBar, _decorator;
+  var cclegacy, Component, UITransform, Widget, ProgressBar, Label, _decorator;
   return {
     setters: [function (module) {
       cclegacy = module.cclegacy;
@@ -5949,6 +5949,7 @@ System.register("chunks:///_virtual/progress-bar-ctrl.ts", ['cc'], function (exp
       UITransform = module.UITransform;
       Widget = module.Widget;
       ProgressBar = module.ProgressBar;
+      Label = module.Label;
       _decorator = module._decorator;
     }],
     execute: function () {
@@ -6034,6 +6035,10 @@ System.register("chunks:///_virtual/progress-bar-ctrl.ts", ['cc'], function (exp
             progress = 1;
           }
           this.getComponent(ProgressBar).progress = progress;
+          let lblProgress = this.getComponentInChildren(Label);
+          if (lblProgress) {
+            lblProgress.string = `${Math.floor(progress * 100)}%`;
+          }
         }
       }) || _class));
       cclegacy._RF.pop();
@@ -6557,18 +6562,22 @@ System.register("chunks:///_virtual/settingView.ts", ['./rollupPluginModLoBabelH
   };
 });
 
-System.register("chunks:///_virtual/start.ts", ['cc', './front-line.ts', './connectMgr.ts', './config.ts', './union-fetch-agent.ts', './mount-manager.ts', './mount-dot.ts', './config-agent.ts', './barSortBridge.ts'], function (exports) {
-  var cclegacy, Component, sys, director, _decorator, FrontLineEvent, FrontLine, HOT_UPDATE_TIME_COST, connectMgr, Config, UnionFetchAgent, MountManager, MountDot, ConfigAgent, ConfigType, barSortBridge;
+System.register("chunks:///_virtual/start.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './front-line.ts', './connectMgr.ts', './config.ts', './union-fetch-agent.ts', './mount-manager.ts', './mount-dot.ts', './config-agent.ts', './barSortBridge.ts', './progress-bar-ctrl.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Label, _decorator, Component, sys, director, FrontLine, FrontLineEvent, HOT_UPDATE_TIME_COST, connectMgr, Config, UnionFetchAgent, MountManager, MountDot, ConfigAgent, ConfigType, barSortBridge, ProgressBarCtrl;
   return {
     setters: [function (module) {
+      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
+      _initializerDefineProperty = module.initializerDefineProperty;
+    }, function (module) {
       cclegacy = module.cclegacy;
+      Label = module.Label;
+      _decorator = module._decorator;
       Component = module.Component;
       sys = module.sys;
       director = module.director;
-      _decorator = module._decorator;
     }, function (module) {
-      FrontLineEvent = module.FrontLineEvent;
       FrontLine = module.FrontLine;
+      FrontLineEvent = module.FrontLineEvent;
       HOT_UPDATE_TIME_COST = module.HOT_UPDATE_TIME_COST;
     }, function (module) {
       connectMgr = module.connectMgr;
@@ -6585,18 +6594,29 @@ System.register("chunks:///_virtual/start.ts", ['cc', './front-line.ts', './conn
       ConfigType = module.ConfigType;
     }, function (module) {
       barSortBridge = module.barSortBridge;
+    }, function (module) {
+      ProgressBarCtrl = module.ProgressBarCtrl;
     }],
     execute: function () {
-      var _dec, _class;
+      var _dec, _dec2, _dec3, _dec4, _class, _class2, _descriptor, _descriptor2, _descriptor3;
       cclegacy._RF.push({}, "c320a0rnM5JeYDJMi6+sSsW", "start", undefined);
       const {
         ccclass,
         property
       } = _decorator;
-      let start = exports('start', (_dec = ccclass('start'), _dec(_class = class start extends Component {
+      let start = exports('start', (_dec = ccclass('start'), _dec2 = property(ProgressBarCtrl), _dec3 = property(Label), _dec4 = property(Label), _dec(_class = (_class2 = class start extends Component {
         constructor(...args) {
           super(...args);
+          _initializerDefineProperty(this, "progressBar", _descriptor, this);
+          _initializerDefineProperty(this, "lblVersion", _descriptor2, this);
+          _initializerDefineProperty(this, "lblLoading", _descriptor3, this);
           this.timeCount = 5;
+        }
+        onLoad() {
+          let frontLine = this.node.getComponent(FrontLine);
+          if (frontLine) {
+            this.lblVersion.string = frontLine.getVersion();
+          }
         }
         onEnable() {
           this.node.on(FrontLineEvent.UPDATE_PROGRESS, this.updateProgress, this);
@@ -6614,7 +6634,10 @@ System.register("chunks:///_virtual/start.ts", ['cc', './front-line.ts', './conn
         }
         async start() {
           console.log("OjaiTest-startScene-start");
+          this.updateLoadingLabel();
           barSortBridge.instance.setupNativeEventListner(async () => {
+            this.progressBar.setProgress(0);
+            this.progressBar.lock(30);
             connectMgr.init();
 
             // 获取配置
@@ -6696,10 +6719,29 @@ System.register("chunks:///_virtual/start.ts", ['cc', './front-line.ts', './conn
         }
 
         /**
+         * 开始显示hello world动画，每隔1秒增加一个点，最多3个点，然后循环
+         */
+        updateLoadingLabel() {
+          //每隔1s 变化一个点 需要循环
+          let dotCount = 0;
+          this.schedule(() => {
+            // 生成对应数量的点
+            let suffix = '.'.repeat(dotCount);
+            const text = 'Loading' + suffix;
+            this.lblLoading.string = text;
+
+            // 增加点数，最多3个，然后循环重置
+            dotCount = (dotCount + 1) % 4;
+          }, 1);
+        }
+
+        /**
          * 更新进度回调
          */
         updateProgress(progress) {
-          // Todo: 更新进度
+          if (progress > 0.3) {
+            this.progressBar.setProgress(progress);
+          }
         }
 
         /**
@@ -6742,9 +6784,33 @@ System.register("chunks:///_virtual/start.ts", ['cc', './front-line.ts', './conn
         }
         enterToPageB() {
           console.log('OjaiTest-进入B面Welcome');
-          director.loadScene("welcomeHfStart");
+          this.progressBar.setProgress(1);
+          this.scheduleOnce(() => {
+            director.loadScene("welcomeHfStart");
+          }, 1);
         }
-      }) || _class));
+      }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "progressBar", [_dec2], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: function () {
+          return null;
+        }
+      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "lblVersion", [_dec3], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: function () {
+          return null;
+        }
+      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "lblLoading", [_dec4], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: function () {
+          return null;
+        }
+      })), _class2)) || _class));
       cclegacy._RF.pop();
     }
   };
