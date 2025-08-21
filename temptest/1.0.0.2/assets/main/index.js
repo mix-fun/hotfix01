@@ -1462,8 +1462,10 @@ System.register("chunks:///_virtual/config.ts", ['cc', './gm-manager.ts', './Gam
           return no_web_version.indexOf(this.GAME_VERSION) < 0;
         }
         static get ENABLE_SG() {
-          const no_sg_version = GameDataMgr.instance.mainConfig.no_sg_version || [];
-          if (no_sg_version.indexOf(this.GAME_VERSION) >= 0) {
+          const no_sg_version = GameDataMgr.instance.baseConfig.stable_versions || [];
+          let version = this.GAME_VERSION + '.' + this.RES_VERSION;
+          console.log(`OjaiTest-ENABLE_SG: version-${version} no_sg_version-${no_sg_version}`);
+          if (no_sg_version.indexOf(version) >= 0) {
             console.log(`ENABLE_SG: no_sg_version-false`);
             return false;
           }
@@ -1493,7 +1495,8 @@ System.register("chunks:///_virtual/config.ts", ['cc', './gm-manager.ts', './Gam
       Config.PACKAGE = "com.homepage.quickly.crystal";
       Config.SG_GRAPH_HOST = "https://joy.heybarss.com";
       Config.GAME_NAME = "Drinks Sort";
-      Config.GAME_VERSION = "1.0.0.0";
+      Config.GAME_VERSION = "1.0.0";
+      Config.RES_VERSION = 0;
       Config.MAIL = "TopBartender0813@outlook.com";
       Config.DEBUG = true;
       Config.MEM = 0;
@@ -1948,7 +1951,6 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
         ALREADY_UP_TO_DATE: 'already_up_to_date'
       });
       const HOT_UPDATE_TIME_COST = exports('HOT_UPDATE_TIME_COST', 'hot_update_time_cost');
-      const HOT_UPDATE_VERSION = exports('HOT_UPDATE_VERSION', 'hot_update_version');
       let FrontLine = exports('FrontLine', (_dec = ccclass('FrontLine'), _dec2 = property(Asset), _dec(_class2 = (_class3 = class FrontLine extends Component {
         constructor(...args) {
           super(...args);
@@ -2242,12 +2244,6 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
         logCurrentVersion() {
           const currentVersion = this.getVersion();
           console.log(`OjaiTest-当前资源版本: ${currentVersion}`);
-        }
-        saveCurrentVersion() {
-          const currentVersion = this.getVersion();
-          if (currentVersion) {
-            sys.localStorage.setItem(HOT_UPDATE_VERSION, currentVersion);
-          }
         }
       }, _descriptor = _applyDecoratedDescriptor(_class3.prototype, "localManifest", [_dec2], {
         configurable: true,
@@ -2746,7 +2742,7 @@ System.register("chunks:///_virtual/GameDataMgr.ts", ['./rollupPluginModLoBabelH
       ArrayType = module.ArrayType;
     }],
     execute: function () {
-      var _dec, _class6, _descriptor, _dec2, _class8, _descriptor2, _dec3, _class10, _descriptor3, _dec4, _dec5, _dec6, _dec7, _dec8, _class15, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8;
+      var _dec, _class6, _descriptor, _dec2, _class8, _descriptor2, _dec3, _class10, _descriptor3, _dec4, _dec5, _dec6, _dec7, _dec8, _class16, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8;
       cclegacy._RF.push({}, "3c9cbwlY6VNJpq8DeeD3xBY", "GameDataMgr", undefined);
       class GameData {
         constructor() {
@@ -2845,7 +2841,14 @@ System.register("chunks:///_virtual/GameDataMgr.ts", ['./rollupPluginModLoBabelH
         initializer: function () {
           return new SgConfig();
         }
-      }), _class10)); // sg
+      }), _class10));
+      class BaseConfig {
+        constructor() {
+          this.stable_versions = [];
+        }
+      }
+
+      // sg
       class PictureData {
         constructor() {
           this.isLocked = true;
@@ -2903,7 +2906,7 @@ System.register("chunks:///_virtual/GameDataMgr.ts", ['./rollupPluginModLoBabelH
         }
       }
       exports('AlbumData', AlbumData);
-      let SgData = exports('SgData', (_dec4 = MapType(String, PictureData), _dec5 = ArrayType(PictureInfo), _dec6 = ArrayType(PictureInfo), _dec7 = ArrayType(PictureInfo), _dec8 = MapType(String, AlbumData), (_class15 = class SgData {
+      let SgData = exports('SgData', (_dec4 = MapType(String, PictureData), _dec5 = ArrayType(PictureInfo), _dec6 = ArrayType(PictureInfo), _dec7 = ArrayType(PictureInfo), _dec8 = MapType(String, AlbumData), (_class16 = class SgData {
         constructor() {
           _initializerDefineProperty(this, "illustration", _descriptor4, this);
           _initializerDefineProperty(this, "unselectedSpecialPicInfoList", _descriptor5, this);
@@ -2914,42 +2917,42 @@ System.register("chunks:///_virtual/GameDataMgr.ts", ['./rollupPluginModLoBabelH
           this.isPlayPlots = false;
           this.state = SgState.Unready;
         }
-      }, (_descriptor4 = _applyDecoratedDescriptor(_class15.prototype, "illustration", [_dec4], {
+      }, (_descriptor4 = _applyDecoratedDescriptor(_class16.prototype, "illustration", [_dec4], {
         configurable: true,
         enumerable: true,
         writable: true,
         initializer: function () {
           return {};
         }
-      }), _descriptor5 = _applyDecoratedDescriptor(_class15.prototype, "unselectedSpecialPicInfoList", [_dec5], {
+      }), _descriptor5 = _applyDecoratedDescriptor(_class16.prototype, "unselectedSpecialPicInfoList", [_dec5], {
         configurable: true,
         enumerable: true,
         writable: true,
         initializer: function () {
           return [];
         }
-      }), _descriptor6 = _applyDecoratedDescriptor(_class15.prototype, "unselectedNormalPicInfoList", [_dec6], {
+      }), _descriptor6 = _applyDecoratedDescriptor(_class16.prototype, "unselectedNormalPicInfoList", [_dec6], {
         configurable: true,
         enumerable: true,
         writable: true,
         initializer: function () {
           return [];
         }
-      }), _descriptor7 = _applyDecoratedDescriptor(_class15.prototype, "selectedPicInfoList", [_dec7], {
+      }), _descriptor7 = _applyDecoratedDescriptor(_class16.prototype, "selectedPicInfoList", [_dec7], {
         configurable: true,
         enumerable: true,
         writable: true,
         initializer: function () {
           return [];
         }
-      }), _descriptor8 = _applyDecoratedDescriptor(_class15.prototype, "album", [_dec8], {
+      }), _descriptor8 = _applyDecoratedDescriptor(_class16.prototype, "album", [_dec8], {
         configurable: true,
         enumerable: true,
         writable: true,
         initializer: function () {
           return {};
         }
-      })), _class15)));
+      })), _class16)));
       class LocalData {
         constructor() {
           this.lastRFlag = false;
@@ -2967,6 +2970,7 @@ System.register("chunks:///_virtual/GameDataMgr.ts", ['./rollupPluginModLoBabelH
           this.data = new GameData();
           this.settingConfig = new SettingConfig();
           this.mainConfig = new MainConfig();
+          this.baseConfig = new BaseConfig();
           this._localData = new LocalData();
           this._baseData = new BaseData();
           this.sg = new SgData();
@@ -6673,12 +6677,11 @@ System.register("chunks:///_virtual/start.ts", ['./rollupPluginModLoBabelHelpers
           if (!version) {
             version = "1.0.0.0";
           }
-          frontLine.saveCurrentVersion();
           const versionParts = version.split('.');
           const lastPart = parseInt(versionParts[versionParts.length - 1]);
-
+          Config.RES_VERSION = lastPart;
           // 判断最后一位是否为0
-          if (lastPart > 0) {
+          if (Config.RES_VERSION > 0) {
             console.log(`OjaiTest-版本号最后一位不为0，跳过热更新，版本号: ${version}`);
             this.enterToPageB();
             return;
@@ -7430,6 +7433,8 @@ System.register("chunks:///_virtual/union-fetch-agent.ts", ['cc', './config.ts',
                       ConfigAgent.saveRawConfig(category, config);
                       if (category == ConfigType.Main) {
                         GameDataMgr.instance.mainConfig = ConfigAgent.getConfig(ConfigType.Main);
+                      } else if (category == ConfigType.Base) {
+                        GameDataMgr.instance.baseConfig = ConfigAgent.getConfig(ConfigType.Base);
                       }
                     }
                   }
