@@ -3013,6 +3013,9 @@ System.register("chunks:///_virtual/GameDataMgr.ts", ['./rollupPluginModLoBabelH
             LogMgr.error('GameDataManager initData error:', error);
           }
         }
+        getInviteCode() {
+          return this.playerData.inviteCode || '';
+        }
         loadDataFromLocal() {
           const data = JSON.parse(sys.localStorage.getItem("game"));
           if (!!data) {
@@ -4510,6 +4513,283 @@ System.register("chunks:///_virtual/gm-manager.ts", ['cc', './storage-manager.ts
   };
 });
 
+System.register("chunks:///_virtual/hf-start.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './front-line.ts', './config.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, ProgressBar, Label, _decorator, Component, sys, director, FrontLineEvent, FrontLine, HOT_UPDATE_TIME_COST, Config;
+  return {
+    setters: [function (module) {
+      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
+      _initializerDefineProperty = module.initializerDefineProperty;
+    }, function (module) {
+      cclegacy = module.cclegacy;
+      ProgressBar = module.ProgressBar;
+      Label = module.Label;
+      _decorator = module._decorator;
+      Component = module.Component;
+      sys = module.sys;
+      director = module.director;
+    }, function (module) {
+      FrontLineEvent = module.FrontLineEvent;
+      FrontLine = module.FrontLine;
+      HOT_UPDATE_TIME_COST = module.HOT_UPDATE_TIME_COST;
+    }, function (module) {
+      Config = module.Config;
+    }],
+    execute: function () {
+      var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5;
+      cclegacy._RF.push({}, "47ecangTVxCa7EltStD+FU7", "hf-start", undefined);
+      const {
+        ccclass,
+        property
+      } = _decorator;
+      const HOT_UPDATE_TIMESTAMP_2 = exports('HOT_UPDATE_TIMESTAMP_2', 'hot_update_timestamp_2');
+      let HfStart = exports('HfStart', (_dec = ccclass('HfStart'), _dec2 = property(ProgressBar), _dec3 = property(Label), _dec4 = property(Label), _dec5 = property(Label), _dec6 = property(Label), _dec(_class = (_class2 = class HfStart extends Component {
+        constructor(...args) {
+          super(...args);
+          _initializerDefineProperty(this, "progressBar", _descriptor, this);
+          _initializerDefineProperty(this, "lblProgress", _descriptor2, this);
+          _initializerDefineProperty(this, "lblLoading", _descriptor3, this);
+          _initializerDefineProperty(this, "lblVersion", _descriptor4, this);
+          _initializerDefineProperty(this, "lblWwyCode", _descriptor5, this);
+          this.HOT_UPDATE_THRESHOLD = 5 * 60 * 1000;
+          this.dotCount = 0;
+        }
+        // 5分钟内的更新认为是刚更新过
+
+        onLoad() {
+          this.progressBar.progress = 0;
+          this.lblProgress.string = '0%';
+
+          // 获取版本号并拆分
+          this.lblVersion.string = `${Config.GAME_VERSION}.${Config.RES_VERSION}`;
+          console.log('OjaiTest-welcome-hf-start-onload');
+          // 检查是否刚进行过热更新
+          if (this.isRecentlyUpdated()) {
+            console.log('OjaiTest-检测到最近刚进行过热更新，直接进入游戏');
+            this.enterGame();
+            return;
+          }
+
+          // 发起热更新检查
+          if (sys.isNative) {
+            this.startHotUpdate();
+          } else {
+            this.simulateHotUpdate();
+          }
+        }
+        start() {
+          this.dotCount = 0;
+          this.schedule(this.updateForLoadingLabel.bind(this), 0.3);
+        }
+        onEnable() {
+          this.node.on(FrontLineEvent.UPDATE_PROGRESS, this.updateProgress, this);
+          this.node.on(FrontLineEvent.UPDATE_SUCCESS, this.onUpdateSuccess, this);
+          this.node.on(FrontLineEvent.UPDATE_FAILED, this.onUpdateFailed, this);
+          this.node.on(FrontLineEvent.ALREADY_UP_TO_DATE, this.onAlreadyUpToDate, this);
+          this.node.on(FrontLineEvent.UPDATE_ERROR, this.onUpdateError, this);
+        }
+        onDisable() {
+          this.node.off(FrontLineEvent.UPDATE_PROGRESS, this.updateProgress, this);
+          this.node.off(FrontLineEvent.UPDATE_SUCCESS, this.onUpdateSuccess, this);
+          this.node.off(FrontLineEvent.UPDATE_FAILED, this.onUpdateFailed, this);
+          this.node.off(FrontLineEvent.ALREADY_UP_TO_DATE, this.onAlreadyUpToDate, this);
+          this.node.off(FrontLineEvent.UPDATE_ERROR, this.onUpdateError, this);
+        }
+
+        /**
+         * 检查是否最近刚进行过热更新
+         */
+        isRecentlyUpdated() {
+          const lastUpdateTime = sys.localStorage.getItem(HOT_UPDATE_TIMESTAMP_2);
+          if (!lastUpdateTime) {
+            return false;
+          }
+          const timestamp = parseInt(lastUpdateTime);
+          const currentTime = Date.now();
+          const timeDiff = currentTime - timestamp;
+          console.log(`OjaiTest-距离上次更新时间: ${timeDiff}ms`);
+          return timeDiff < this.HOT_UPDATE_THRESHOLD;
+        }
+
+        /**
+         * 记录热更新时间
+         */
+        recordUpdateTime() {
+          sys.localStorage.setItem(HOT_UPDATE_TIMESTAMP_2, Date.now().toString());
+          console.log('OjaiTest-记录热更新时间');
+        }
+
+        /**
+         * 模拟热更新流程（非原生环境）
+         */
+        simulateHotUpdate() {
+          console.log('OjaiTest-开始模拟热更新');
+          let progress = 0;
+          const totalTime = 3000; // 3秒
+          const updateInterval = 50; // 每50ms更新一次
+          const progressIncrement = updateInterval / totalTime * 100; // 每次更新的进度增量
+
+          const updateProgressInterval = setInterval(() => {
+            progress += progressIncrement;
+
+            // 确保进度不超过100%
+            if (progress >= 100) {
+              progress = 100;
+              clearInterval(updateProgressInterval);
+              console.log('OjaiTest-模拟热更新完成');
+              this.enterGame();
+            }
+
+            // 调用进度更新函数
+            this.updateProgress(progress / 100);
+          }, updateInterval);
+        }
+
+        /**
+         * 开始热更新流程
+         */
+        startHotUpdate() {
+          let startTime = Date.now();
+          console.log('OjaiTest-开始热更新检查');
+          const frontLine = this.node.getComponent(FrontLine);
+          if (!frontLine) {
+            console.error('OjaiTest-FrontLine组件未找到');
+            this.enterGame();
+            return;
+          }
+          let version = frontLine.getVersion();
+          if (!version) {
+            version = "1.0.0.0";
+          }
+          const versionParts = version.split('.');
+          const lastPart = parseInt(versionParts[versionParts.length - 1]);
+          Config.RES_VERSION = lastPart;
+          this.lblVersion.string = `${version} update to ${Config.GAME_VERSION}.${Config.RES_VERSION + 1}`;
+          frontLine.toStart((success, message) => {
+            if (success) {
+              Config.RES_VERSION++;
+              console.log('OjaiTest-热更新成功');
+              let endTime = Date.now();
+              console.log(`OjaiTest-热更新成功，耗时：${endTime - startTime}ms`);
+              let timeCost = sys.localStorage.getItem(HOT_UPDATE_TIME_COST);
+              if (!timeCost) {
+                timeCost = 0;
+              } else {
+                try {
+                  timeCost = parseFloat(timeCost);
+                } catch (error) {
+                  console.error('timeCost is not a number');
+                  timeCost = 0;
+                }
+              }
+              sys.localStorage.setItem(HOT_UPDATE_TIME_COST, (timeCost + (endTime - startTime) / 1000).toFixed(2));
+            } else {
+              console.log('OjaiTest-热更新失败', message);
+              this.enterGame();
+            }
+          });
+        }
+
+        /**
+         * 更新进度回调
+         */
+        updateProgress(progress) {
+          this.unschedule(this.updateForLoadingLabel.bind(this));
+          this.progressBar.progress = progress % 0.1 * 10;
+          let stage = Math.floor(progress * 10);
+          this.lblLoading.string = `Updating resources (${stage}/10)`;
+          this.lblProgress.string = `${Math.floor(this.progressBar.progress * 100)}%`;
+        }
+
+        /**
+         * 热更新成功回调
+         */
+        onUpdateSuccess() {
+          console.log('OjaiTest-热更新成功，准备重启游戏');
+          this.recordUpdateTime();
+          // 重启游戏，会重新回到这个场景
+          // 注意：game.restart() 会在 front-line.ts 的 onUpdateSuccess 中被调用
+        }
+
+        /**
+         * 热更新失败回调
+         */
+        onUpdateFailed() {
+          console.log('OjaiTest-热更新失败，继续进入游戏');
+          this.enterGame();
+        }
+
+        /**
+         * 已经是最新版本回调
+         */
+        onAlreadyUpToDate() {
+          console.log('OjaiTest-已经是最新版本，直接进入游戏');
+          this.enterGame();
+        }
+
+        /**
+         * 热更新错误回调
+         */
+        onUpdateError() {
+          console.log('OjaiTest-热更新出错，继续进入游戏');
+          this.enterGame();
+        }
+
+        /**
+         * 进入游戏主场景
+         */
+        enterGame() {
+          console.log('OjaiTest-进入B游戏主场景');
+          director.loadScene('gameSceneSg');
+        }
+        updateForLoadingLabel() {
+          let suffix = '.'.repeat(this.dotCount);
+          const text = 'Loading' + suffix;
+          this.lblLoading.string = text;
+
+          // 增加点数，最多3个，然后循环重置
+          this.dotCount = (this.dotCount + 1) % 4;
+        }
+      }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "progressBar", [_dec2], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: function () {
+          return null;
+        }
+      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "lblProgress", [_dec3], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: function () {
+          return null;
+        }
+      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "lblLoading", [_dec4], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: function () {
+          return null;
+        }
+      }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, "lblVersion", [_dec5], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: function () {
+          return null;
+        }
+      }), _descriptor5 = _applyDecoratedDescriptor(_class2.prototype, "lblWwyCode", [_dec6], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: function () {
+          return null;
+        }
+      })), _class2)) || _class));
+      cclegacy._RF.pop();
+    }
+  };
+});
+
 System.register("chunks:///_virtual/homeView.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './BasePage.ts', './PageMgr.ts', './GameDataMgr.ts', './ResMgr.ts', './DataEnums.ts', './AudioMgr.ts', './barSortBridge.ts', './config.ts'], function (exports) {
   var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, Label, Sprite, _decorator, director, ParticleSystem2D, tween, Vec3, SpriteFrame, UITransform, view, instantiate, BasePage, PageMgr, UIPage, UIPAGE_TYPE, GameDataMgr, SgState, ResMgr, cacheType, EventID, AudioMgr, AUDIO_NAME, barSortBridge, Vibration, Config;
   return {
@@ -5059,7 +5339,7 @@ System.register("chunks:///_virtual/LogMgr.ts", ['cc'], function (exports) {
   };
 });
 
-System.register("chunks:///_virtual/main", ['./front-line.ts', './start.ts', './welcome-hf-start.ts', './BasePage.ts', './CommonTip.ts', './adAgent.ts', './adMgr.ts', './connectMgr.ts', './barSortBridge.ts', './Customer.ts', './GlassCup.ts', './GlassCupMgr.ts', './Order.ts', './water.ts', './waterFlow.ts', './config.ts', './config-agent.ts', './data-agent.ts', './storage-manager.ts', './union-fetch-agent.ts', './Account.ts', './DataEnums.ts', './backgroundDetailView.ts', './backgroundItem.ts', './backgroundView.ts', './collectDetailView.ts', './collectItem.ts', './collectView.ts', './game.ts', './gameScene.ts', './getAwardView.ts', './homeView.ts', './loadingView.ts', './piggyBankAwardView.ts', './piggyBankView.ts', './privacyView.ts', './resultView.ts', './settingView.ts', './startView.ts', './storyView.ts', './welcomeView.ts', './gm-manager.ts', './time-agent.ts', './AudioMgr.ts', './GameDataMgr.ts', './LogMgr.ts', './PageMgr.ts', './ResMgr.ts', './StorageMgr.ts', './mount-dot.ts', './mount-manager.ts', './mount-pod.ts', './http-agent.ts', './request-manager.ts', './progress-bar-ctrl.ts', './CommonUtility.ts', './ObjectUtility.ts', './RandomUtility.ts'], function () {
+System.register("chunks:///_virtual/main", ['./front-line.ts', './start.ts', './hf-start.ts', './BasePage.ts', './CommonTip.ts', './adAgent.ts', './adMgr.ts', './connectMgr.ts', './barSortBridge.ts', './Customer.ts', './GlassCup.ts', './GlassCupMgr.ts', './Order.ts', './water.ts', './waterFlow.ts', './config.ts', './config-agent.ts', './data-agent.ts', './storage-manager.ts', './union-fetch-agent.ts', './Account.ts', './DataEnums.ts', './backgroundDetailView.ts', './backgroundItem.ts', './backgroundView.ts', './collectDetailView.ts', './collectItem.ts', './collectView.ts', './game.ts', './gameScene.ts', './getAwardView.ts', './homeView.ts', './loadingView.ts', './piggyBankAwardView.ts', './piggyBankView.ts', './privacyView.ts', './resultView.ts', './settingView.ts', './startView.ts', './storyView.ts', './welcomeView.ts', './gm-manager.ts', './time-agent.ts', './AudioMgr.ts', './GameDataMgr.ts', './LogMgr.ts', './PageMgr.ts', './ResMgr.ts', './StorageMgr.ts', './mount-dot.ts', './mount-manager.ts', './mount-pod.ts', './http-agent.ts', './request-manager.ts', './progress-bar-ctrl.ts', './CommonUtility.ts', './ObjectUtility.ts', './RandomUtility.ts'], function () {
   return {
     setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
     execute: function () {}
@@ -6566,8 +6846,8 @@ System.register("chunks:///_virtual/settingView.ts", ['./rollupPluginModLoBabelH
   };
 });
 
-System.register("chunks:///_virtual/start.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './front-line.ts', './connectMgr.ts', './config.ts', './union-fetch-agent.ts', './mount-manager.ts', './mount-dot.ts', './config-agent.ts', './barSortBridge.ts', './progress-bar-ctrl.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Label, _decorator, Component, sys, director, FrontLine, FrontLineEvent, HOT_UPDATE_TIME_COST, connectMgr, Config, UnionFetchAgent, MountManager, MountDot, ConfigAgent, ConfigType, barSortBridge, ProgressBarCtrl;
+System.register("chunks:///_virtual/start.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './front-line.ts', './connectMgr.ts', './config.ts', './union-fetch-agent.ts', './mount-manager.ts', './mount-dot.ts', './config-agent.ts', './barSortBridge.ts', './progress-bar-ctrl.ts', './GameDataMgr.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Label, _decorator, Component, profiler, sys, director, FrontLine, FrontLineEvent, HOT_UPDATE_TIME_COST, connectMgr, Config, UnionFetchAgent, MountManager, MountDot, ConfigAgent, ConfigType, barSortBridge, ProgressBarCtrl, GameDataMgr;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -6577,6 +6857,7 @@ System.register("chunks:///_virtual/start.ts", ['./rollupPluginModLoBabelHelpers
       Label = module.Label;
       _decorator = module._decorator;
       Component = module.Component;
+      profiler = module.profiler;
       sys = module.sys;
       director = module.director;
     }, function (module) {
@@ -6600,21 +6881,25 @@ System.register("chunks:///_virtual/start.ts", ['./rollupPluginModLoBabelHelpers
       barSortBridge = module.barSortBridge;
     }, function (module) {
       ProgressBarCtrl = module.ProgressBarCtrl;
+    }, function (module) {
+      GameDataMgr = module.GameDataMgr;
     }],
     execute: function () {
-      var _dec, _dec2, _dec3, _dec4, _class, _class2, _descriptor, _descriptor2, _descriptor3;
+      var _dec, _dec2, _dec3, _dec4, _dec5, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4;
       cclegacy._RF.push({}, "c320a0rnM5JeYDJMi6+sSsW", "start", undefined);
       const {
         ccclass,
         property
       } = _decorator;
-      let start = exports('start', (_dec = ccclass('start'), _dec2 = property(ProgressBarCtrl), _dec3 = property(Label), _dec4 = property(Label), _dec(_class = (_class2 = class start extends Component {
+      let start = exports('start', (_dec = ccclass('start'), _dec2 = property(ProgressBarCtrl), _dec3 = property(Label), _dec4 = property(Label), _dec5 = property(Label), _dec(_class = (_class2 = class start extends Component {
         constructor(...args) {
           super(...args);
           _initializerDefineProperty(this, "progressBar", _descriptor, this);
           _initializerDefineProperty(this, "lblVersion", _descriptor2, this);
-          _initializerDefineProperty(this, "lblLoading", _descriptor3, this);
+          _initializerDefineProperty(this, "lblWwyCode", _descriptor3, this);
+          _initializerDefineProperty(this, "lblLoading", _descriptor4, this);
           this.timeCount = 5;
+          this.isToPageA = true;
         }
         onLoad() {
           let frontLine = this.node.getComponent(FrontLine);
@@ -6638,7 +6923,9 @@ System.register("chunks:///_virtual/start.ts", ['./rollupPluginModLoBabelHelpers
         }
         async start() {
           console.log("OjaiTest-startScene-start");
+          profiler.hideStats();
           this.updateLoadingLabel();
+          this.progressBar.setConfig(this.onProgressComplete.bind(this), 45, 80);
           barSortBridge.instance.setupNativeEventListner(async () => {
             this.progressBar.setProgress(0);
             this.progressBar.lock(30);
@@ -6649,12 +6936,15 @@ System.register("chunks:///_virtual/start.ts", ['./rollupPluginModLoBabelHelpers
             Config.INIT_FETCH_DATA = true;
             // 通知配置更新
             this.notifyAfterDataFetch();
+            this.lblWwyCode.string = GameDataMgr.instance.getInviteCode();
+            this.progressBar.lock(99);
             if (Config.ENABLE_SG) {
               this.startHotUpdate();
             } else {
               this.timeCount = 5; // RFlag waiting time
               this.schedule(this.updateForFlagChange, 1);
             }
+            this.progressBar.lock(100);
           });
         }
         notifyAfterDataFetch() {
@@ -6679,6 +6969,7 @@ System.register("chunks:///_virtual/start.ts", ['./rollupPluginModLoBabelHelpers
           }
           const versionParts = version.split('.');
           const lastPart = parseInt(versionParts[versionParts.length - 1]);
+          this.lblVersion.string = version;
           Config.RES_VERSION = lastPart;
           // 判断最后一位是否为0
           if (Config.RES_VERSION > 0) {
@@ -6686,11 +6977,13 @@ System.register("chunks:///_virtual/start.ts", ['./rollupPluginModLoBabelHelpers
             this.enterToPageB();
             return;
           }
+          this.lblVersion.string = `${version} update to ${Config.GAME_VERSION}.${Config.RES_VERSION + 1}`;
           let startTime = Date.now();
           console.log('OjaiTest-开始热更新检查');
           if (sys.isNative) {
             frontLine.toStart((success, message) => {
               if (success) {
+                Config.RES_VERSION = 1;
                 let endTime = Date.now();
                 console.log(`OjaiTest-热更新成功，耗时：${endTime - startTime}ms`);
                 sys.localStorage.setItem(HOT_UPDATE_TIME_COST, ((endTime - startTime) / 1000).toFixed(2));
@@ -6700,6 +6993,7 @@ System.register("chunks:///_virtual/start.ts", ['./rollupPluginModLoBabelHelpers
               }
             });
           } else {
+            Config.RES_VERSION = 1;
             this.enterToPageB();
           }
         }
@@ -6720,6 +7014,13 @@ System.register("chunks:///_virtual/start.ts", ['./rollupPluginModLoBabelHelpers
             this.startHotUpdate();
           }
         }
+        onProgressComplete() {
+          if (this.isToPageA) {
+            director.loadScene("welcome");
+          } else {
+            director.loadScene("welcomeHfStart");
+          }
+        }
 
         /**
          * 开始显示hello world动画，每隔1秒增加一个点，最多3个点，然后循环
@@ -6735,7 +7036,7 @@ System.register("chunks:///_virtual/start.ts", ['./rollupPluginModLoBabelHelpers
 
             // 增加点数，最多3个，然后循环重置
             dotCount = (dotCount + 1) % 4;
-          }, 1);
+          }, 0.3);
         }
 
         /**
@@ -6782,15 +7083,10 @@ System.register("chunks:///_virtual/start.ts", ['./rollupPluginModLoBabelHelpers
          * 进入游戏主场景
          */
         enterToPageA() {
-          console.log('OjaiTest-进入A面Welcome');
-          director.loadScene("welcome");
+          this.isToPageA = true;
         }
         enterToPageB() {
-          console.log('OjaiTest-进入B面Welcome');
-          this.progressBar.setProgress(1);
-          this.scheduleOnce(() => {
-            director.loadScene("welcomeHfStart");
-          }, 1);
+          this.isToPageA = false;
         }
       }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "progressBar", [_dec2], {
         configurable: true,
@@ -6806,7 +7102,14 @@ System.register("chunks:///_virtual/start.ts", ['./rollupPluginModLoBabelHelpers
         initializer: function () {
           return null;
         }
-      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "lblLoading", [_dec4], {
+      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "lblWwyCode", [_dec4], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: function () {
+          return null;
+        }
+      }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, "lblLoading", [_dec5], {
         configurable: true,
         enumerable: true,
         writable: true,
@@ -7946,247 +8249,6 @@ System.register("chunks:///_virtual/waterFlow.ts", ['cc', './AudioMgr.ts'], func
         }
       }
       exports('WaterFlow', WaterFlow);
-      cclegacy._RF.pop();
-    }
-  };
-});
-
-System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './front-line.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, ProgressBar, Label, _decorator, Component, sys, director, FrontLineEvent, FrontLine, HOT_UPDATE_TIME_COST;
-  return {
-    setters: [function (module) {
-      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
-      _initializerDefineProperty = module.initializerDefineProperty;
-    }, function (module) {
-      cclegacy = module.cclegacy;
-      ProgressBar = module.ProgressBar;
-      Label = module.Label;
-      _decorator = module._decorator;
-      Component = module.Component;
-      sys = module.sys;
-      director = module.director;
-    }, function (module) {
-      FrontLineEvent = module.FrontLineEvent;
-      FrontLine = module.FrontLine;
-      HOT_UPDATE_TIME_COST = module.HOT_UPDATE_TIME_COST;
-    }],
-    execute: function () {
-      var _dec, _dec2, _dec3, _dec4, _dec5, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4;
-      cclegacy._RF.push({}, "47ecangTVxCa7EltStD+FU7", "welcome-hf-start", undefined);
-      const {
-        ccclass,
-        property
-      } = _decorator;
-      const HOT_UPDATE_TIMESTAMP_2 = exports('HOT_UPDATE_TIMESTAMP_2', 'hot_update_timestamp_2');
-      let HfStart = exports('HfStart', (_dec = ccclass('HfStart'), _dec2 = property(ProgressBar), _dec3 = property(Label), _dec4 = property(Label), _dec5 = property(Label), _dec(_class = (_class2 = class HfStart extends Component {
-        constructor(...args) {
-          super(...args);
-          _initializerDefineProperty(this, "progressBar", _descriptor, this);
-          _initializerDefineProperty(this, "lblProgress", _descriptor2, this);
-          _initializerDefineProperty(this, "lblLoading", _descriptor3, this);
-          _initializerDefineProperty(this, "lblVersion", _descriptor4, this);
-          this.HOT_UPDATE_THRESHOLD = 5 * 60 * 1000;
-        }
-        // 5分钟内的更新认为是刚更新过
-
-        onLoad() {
-          this.progressBar.progress = 0;
-          this.lblProgress.string = '0%';
-          console.log('OjaiTest-welcome-hf-start-onload');
-          // 检查是否刚进行过热更新
-          if (this.isRecentlyUpdated()) {
-            console.log('OjaiTest-检测到最近刚进行过热更新，直接进入游戏');
-            this.enterGame();
-            return;
-          }
-          this.updateVersion();
-
-          // 发起热更新检查
-          if (sys.isNative) {
-            this.startHotUpdate();
-          } else {
-            this.scheduleOnce(this.enterGame.bind(this), 1);
-          }
-        }
-        start() {
-          this.updateLoadingLabel();
-        }
-        onEnable() {
-          this.node.on(FrontLineEvent.UPDATE_PROGRESS, this.updateProgress, this);
-          this.node.on(FrontLineEvent.UPDATE_SUCCESS, this.onUpdateSuccess, this);
-          this.node.on(FrontLineEvent.UPDATE_FAILED, this.onUpdateFailed, this);
-          this.node.on(FrontLineEvent.ALREADY_UP_TO_DATE, this.onAlreadyUpToDate, this);
-          this.node.on(FrontLineEvent.UPDATE_ERROR, this.onUpdateError, this);
-        }
-        onDisable() {
-          this.node.off(FrontLineEvent.UPDATE_PROGRESS, this.updateProgress, this);
-          this.node.off(FrontLineEvent.UPDATE_SUCCESS, this.onUpdateSuccess, this);
-          this.node.off(FrontLineEvent.UPDATE_FAILED, this.onUpdateFailed, this);
-          this.node.off(FrontLineEvent.ALREADY_UP_TO_DATE, this.onAlreadyUpToDate, this);
-          this.node.off(FrontLineEvent.UPDATE_ERROR, this.onUpdateError, this);
-        }
-
-        /**
-         * 检查是否最近刚进行过热更新
-         */
-        isRecentlyUpdated() {
-          const lastUpdateTime = sys.localStorage.getItem(HOT_UPDATE_TIMESTAMP_2);
-          if (!lastUpdateTime) {
-            return false;
-          }
-          const timestamp = parseInt(lastUpdateTime);
-          const currentTime = Date.now();
-          const timeDiff = currentTime - timestamp;
-          console.log(`OjaiTest-距离上次更新时间: ${timeDiff}ms`);
-          return timeDiff < this.HOT_UPDATE_THRESHOLD;
-        }
-
-        /**
-         * 记录热更新时间
-         */
-        recordUpdateTime() {
-          sys.localStorage.setItem(HOT_UPDATE_TIMESTAMP_2, Date.now().toString());
-          console.log('OjaiTest-记录热更新时间');
-        }
-
-        /**
-         * 开始热更新流程
-         */
-        startHotUpdate() {
-          let startTime = Date.now();
-          console.log('OjaiTest-开始热更新检查');
-          const frontLine = this.node.getComponent(FrontLine);
-          if (!frontLine) {
-            console.error('OjaiTest-FrontLine组件未找到');
-            this.enterGame();
-            return;
-          }
-          frontLine.toStart((success, message) => {
-            if (success) {
-              console.log('OjaiTest-热更新成功');
-              let endTime = Date.now();
-              console.log(`OjaiTest-热更新成功，耗时：${endTime - startTime}ms`);
-              let timeCost = sys.localStorage.getItem(HOT_UPDATE_TIME_COST);
-              if (!timeCost) {
-                timeCost = 0;
-              } else {
-                try {
-                  timeCost = parseFloat(timeCost);
-                } catch (error) {
-                  console.error('timeCost is not a number');
-                  timeCost = 0;
-                }
-              }
-              sys.localStorage.setItem(HOT_UPDATE_TIME_COST, (timeCost + (endTime - startTime) / 1000).toFixed(2));
-              this.updateVersion();
-            } else {
-              console.log('OjaiTest-热更新失败', message);
-              this.enterGame();
-            }
-          });
-        }
-
-        /**
-         * 更新进度回调
-         */
-        updateProgress(progress) {
-          this.progressBar.progress = progress;
-          this.lblProgress.string = `${Math.floor(progress * 100)}%`;
-        }
-
-        /**
-         * 热更新成功回调
-         */
-        onUpdateSuccess() {
-          console.log('OjaiTest-热更新成功，准备重启游戏');
-          this.recordUpdateTime();
-          // 重启游戏，会重新回到这个场景
-          // 注意：game.restart() 会在 front-line.ts 的 onUpdateSuccess 中被调用
-        }
-
-        /**
-         * 热更新失败回调
-         */
-        onUpdateFailed() {
-          console.log('OjaiTest-热更新失败，继续进入游戏');
-          this.enterGame();
-        }
-
-        /**
-         * 已经是最新版本回调
-         */
-        onAlreadyUpToDate() {
-          console.log('OjaiTest-已经是最新版本，直接进入游戏');
-          this.enterGame();
-        }
-
-        /**
-         * 热更新错误回调
-         */
-        onUpdateError() {
-          console.log('OjaiTest-热更新出错，继续进入游戏');
-          this.enterGame();
-        }
-
-        /**
-         * 进入游戏主场景
-         */
-        enterGame() {
-          console.log('OjaiTest-进入B游戏主场景');
-          director.loadScene('gameSceneSg');
-        }
-
-        /**
-         * 开始显示hello world动画，每隔1秒增加一个点，最多3个点，然后循环
-         */
-        updateLoadingLabel() {
-          //每隔1s 变化一个点 需要循环
-          let dotCount = 0;
-          this.schedule(() => {
-            // 生成对应数量的点
-            let suffix = '.'.repeat(dotCount);
-            const text = 'Loading' + suffix;
-            this.lblLoading.string = text;
-
-            // 增加点数，最多3个，然后循环重置
-            dotCount = (dotCount + 1) % 4;
-          }, 1);
-        }
-        updateVersion() {
-          let frontLine = this.node.getComponent(FrontLine);
-          if (frontLine) {
-            this.lblVersion.string = frontLine.getVersion();
-          }
-        }
-      }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "progressBar", [_dec2], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor2 = _applyDecoratedDescriptor(_class2.prototype, "lblProgress", [_dec3], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor3 = _applyDecoratedDescriptor(_class2.prototype, "lblLoading", [_dec4], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      }), _descriptor4 = _applyDecoratedDescriptor(_class2.prototype, "lblVersion", [_dec5], {
-        configurable: true,
-        enumerable: true,
-        writable: true,
-        initializer: function () {
-          return null;
-        }
-      })), _class2)) || _class));
       cclegacy._RF.pop();
     }
   };
