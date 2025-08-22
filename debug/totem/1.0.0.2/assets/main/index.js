@@ -6594,9 +6594,9 @@ System.register("chunks:///_virtual/log-util.ts", ['cc', './config.ts'], functio
   };
 });
 
-System.register("chunks:///_virtual/main", ['./front-line.ts', './progress-bar-ctrl.ts', './welcome-hf-pre.ts', './welcome-hf-start.ts', './ad-agent.ts', './ad-manager.ts', './bridge-event.ts', './bridge-manager.ts', './bridge-util.ts', './audio-effect-pool.ts', './audio-effect.ts', './audio-manager.ts', './audio-music.ts', './config-agent.ts', './data-agent.ts', './storage-manager.ts', './type-define.ts', './gm-manager.ts', './report-log-manager.ts', './time-agent.ts', './graph-manager.ts', './loading-flow.ts', './loading-manager.ts', './mount-manager.ts', './mount-pod.ts', './mount-point.ts', './http-agent.ts', './request-manager2.ts', './res-keeper.ts', './res-leak-checker.ts', './res-loader.ts', './res-util.ts', './bg-adapter.ts', './token-account.ts', './ui-manager.ts', './ui-screen-adapter.ts', './ui-view.ts', './action-chain.ts', './animation-util.ts', './array-util.ts', './bezier-util.ts', './common-util.ts', './log-util.ts', './object-util.ts', './random-util.ts', './string-util.ts', './svg-util.ts', './ui-util.ts', './config.ts', './ui-config.ts', './connect-agent.ts', './native-agent.ts', './sdk-agent.ts', './base-config.ts', './game-data-manager.ts', './game-data.ts', './local-data.ts', './main-config.ts', './player-data.ts', './storage-agent.ts', './storage-data.ts', './union-fetch-agent.ts', './animate-canvas.ts', './box-control.ts', './box-data.ts', './box-pool.ts', './column-control.ts', './column-data.ts', './game-constants.ts', './game-desk.ts', './guide-agent.ts', './layout-agent.ts', './move-agent.ts', './move-step.ts', './res-manager.ts', './skin-manager.ts', './stage-build-agent.ts', './stage-config-convertor.ts', './stage-constants.ts', './stage-data.ts', './stage-logic.ts', './http-agent2.ts', './request-manager.ts', './report-agent.ts', './map.ts', './stage-helper.ts', './stage.ts', './welcome.ts', './btn-tips-control.ts', './loading-view.ts', './prevent-touch-control.ts', './report-log-view.ts', './toast.ts', './report-log-item.ts', './round-rect-mask.ts', './streak-anim-star.ts', './streak-star.ts', './toggle-btn.ts', './tool-btn.ts', './win-streak-bar.ts', './win-streak-reward-item.ts', './gm-view.ts', './guide-tips.ts', './item-obtain-popup.ts', './level-win-popup.ts', './main-view.ts', './menu-popup.ts', './move-end-popup.ts', './policy-popup.ts', './rating-popup.ts', './win-streak-gift-popup.ts', './win-streak-reward-view.ts'], function () {
+System.register("chunks:///_virtual/main", ['./front-line.ts', './progress-bar-ctrl.ts', './round-rect-mask2.ts', './welcome-hf-pre.ts', './welcome-hf-start.ts', './ad-agent.ts', './ad-manager.ts', './bridge-event.ts', './bridge-manager.ts', './bridge-util.ts', './audio-effect-pool.ts', './audio-effect.ts', './audio-manager.ts', './audio-music.ts', './config-agent.ts', './data-agent.ts', './storage-manager.ts', './type-define.ts', './gm-manager.ts', './report-log-manager.ts', './time-agent.ts', './graph-manager.ts', './loading-flow.ts', './loading-manager.ts', './mount-manager.ts', './mount-pod.ts', './mount-point.ts', './http-agent.ts', './request-manager2.ts', './res-keeper.ts', './res-leak-checker.ts', './res-loader.ts', './res-util.ts', './bg-adapter.ts', './token-account.ts', './ui-manager.ts', './ui-screen-adapter.ts', './ui-view.ts', './action-chain.ts', './animation-util.ts', './array-util.ts', './bezier-util.ts', './common-util.ts', './log-util.ts', './object-util.ts', './random-util.ts', './string-util.ts', './svg-util.ts', './ui-util.ts', './config.ts', './ui-config.ts', './connect-agent.ts', './native-agent.ts', './sdk-agent.ts', './base-config.ts', './game-data-manager.ts', './game-data.ts', './local-data.ts', './main-config.ts', './player-data.ts', './storage-agent.ts', './storage-data.ts', './union-fetch-agent.ts', './animate-canvas.ts', './box-control.ts', './box-data.ts', './box-pool.ts', './column-control.ts', './column-data.ts', './game-constants.ts', './game-desk.ts', './guide-agent.ts', './layout-agent.ts', './move-agent.ts', './move-step.ts', './res-manager.ts', './skin-manager.ts', './stage-build-agent.ts', './stage-config-convertor.ts', './stage-constants.ts', './stage-data.ts', './stage-logic.ts', './http-agent2.ts', './request-manager.ts', './report-agent.ts', './map.ts', './stage-helper.ts', './stage.ts', './welcome.ts', './btn-tips-control.ts', './loading-view.ts', './prevent-touch-control.ts', './report-log-view.ts', './toast.ts', './report-log-item.ts', './round-rect-mask.ts', './streak-anim-star.ts', './streak-star.ts', './toggle-btn.ts', './tool-btn.ts', './win-streak-bar.ts', './win-streak-reward-item.ts', './gm-view.ts', './guide-tips.ts', './item-obtain-popup.ts', './level-win-popup.ts', './main-view.ts', './menu-popup.ts', './move-end-popup.ts', './policy-popup.ts', './rating-popup.ts', './win-streak-gift-popup.ts', './win-streak-reward-view.ts'], function () {
   return {
-    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
     execute: function () {}
   };
 });
@@ -9807,6 +9807,51 @@ System.register("chunks:///_virtual/round-rect-mask.ts", ['./rollupPluginModLoBa
     execute: function () {
       var _dec, _dec2, _class, _class2, _descriptor;
       cclegacy._RF.push({}, "0c785R/1cNGx5QHQaJEij1E", "round-rect-mask", undefined);
+      const {
+        ccclass,
+        property
+      } = _decorator;
+      let RoundRectMask = exports('RoundRectMask', (_dec = ccclass('RoundRectMask'), _dec2 = property(Number), _dec(_class = (_class2 = class RoundRectMask extends Component {
+        constructor(...args) {
+          super(...args);
+          _initializerDefineProperty(this, "cornerRadius", _descriptor, this);
+        }
+        start() {
+          const graphics = this.getComponent(Graphics);
+          graphics.lineWidth = 2;
+          let size = this.node.getComponent(UITransform).contentSize;
+          graphics.roundRect(0 - size.width / 2, 0 - size.height / 2, size.width, size.height, this.cornerRadius);
+          graphics.fill();
+        }
+      }, _descriptor = _applyDecoratedDescriptor(_class2.prototype, "cornerRadius", [_dec2], {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        initializer: function () {
+          return 40;
+        }
+      }), _class2)) || _class));
+      cclegacy._RF.pop();
+    }
+  };
+});
+
+System.register("chunks:///_virtual/round-rect-mask2.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, _decorator, Component, Graphics, UITransform;
+  return {
+    setters: [function (module) {
+      _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
+      _initializerDefineProperty = module.initializerDefineProperty;
+    }, function (module) {
+      cclegacy = module.cclegacy;
+      _decorator = module._decorator;
+      Component = module.Component;
+      Graphics = module.Graphics;
+      UITransform = module.UITransform;
+    }],
+    execute: function () {
+      var _dec, _dec2, _class, _class2, _descriptor;
+      cclegacy._RF.push({}, "9e419VxVIpN4JKcrv5V9QA/", "round-rect-mask", undefined);
       const {
         ccclass,
         property
