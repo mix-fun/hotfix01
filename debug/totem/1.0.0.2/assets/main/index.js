@@ -13788,8 +13788,8 @@ System.register("chunks:///_virtual/union-fetch-agent.ts", ['cc', './config.ts',
   };
 });
 
-System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './front-line.ts', './progress-bar-ctrl.ts', './bridge-manager.ts', './config.ts', './union-fetch-agent.ts', './game-data-manager.ts', './connect-agent.ts', './mount-manager.ts', './config-agent.ts', './mount-point.ts', './report-agent.ts', './time-agent.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Label, _decorator, Component, profiler, sys, director, FrontLine, FrontLineEvent, HOT_UPDATE_TIME_COST, ProgressBarCtrl, BridgeManager, Config, UnionFetchAgent, GameDataManager, ConnectAgent, MountManager, ConfigAgent, ConfigType, MountPoint, ReportAgent, CustomReportEvent, LoadingActionParam, TimeAgent;
+System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './front-line.ts', './progress-bar-ctrl.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Label, _decorator, Component, profiler, sys, director, FrontLine, FrontLineEvent, HOT_UPDATE_TIME_COST, ProgressBarCtrl;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -13808,29 +13808,6 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
       HOT_UPDATE_TIME_COST = module.HOT_UPDATE_TIME_COST;
     }, function (module) {
       ProgressBarCtrl = module.ProgressBarCtrl;
-    }, function (module) {
-      BridgeManager = module.BridgeManager;
-    }, function (module) {
-      Config = module.Config;
-    }, function (module) {
-      UnionFetchAgent = module.UnionFetchAgent;
-    }, function (module) {
-      GameDataManager = module.GameDataManager;
-    }, function (module) {
-      ConnectAgent = module.ConnectAgent;
-    }, function (module) {
-      MountManager = module.MountManager;
-    }, function (module) {
-      ConfigAgent = module.ConfigAgent;
-      ConfigType = module.ConfigType;
-    }, function (module) {
-      MountPoint = module.MountPoint;
-    }, function (module) {
-      ReportAgent = module.ReportAgent;
-      CustomReportEvent = module.CustomReportEvent;
-      LoadingActionParam = module.LoadingActionParam;
-    }, function (module) {
-      TimeAgent = module.TimeAgent;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _dec4, _dec5, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4;
@@ -13874,53 +13851,13 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
           profiler.hideStats();
           this.updateLoadingLabel();
           this.progressBar.setConfig(this.onProgressComplete.bind(this), 45, 80);
-          this.loadDataFromLocal();
-          BridgeManager.instance.setupNativeEventListner(async () => {
-            this.progressBar.setProgress(0);
-            this.progressBar.lock(30);
-
-            // init
-            let time0 = TimeAgent.instance.getTime();
-            this.reportLoading("init", "start", time0);
-            ConnectAgent.init();
-            let time1 = TimeAgent.instance.getTime();
-            this.reportLoading("init", "end", time0, time1);
-
-            // report after ConnectAgent.init
-            if (GameDataManager.instance.localData.isFirstLoading) {
-              GameDataManager.instance.localData.isFirstLoading = false;
-              ReportAgent.reportCustomEvent(CustomReportEvent.USER_LIFECYCLE_MILESTONE, {
-                action: 'loading_first'
-              });
-              ReportAgent.reportLoadingAction(LoadingActionParam.REGISTER);
-            }
-            ReportAgent.reportLoadingAction(LoadingActionParam.LAUNCH_APP);
-            ConnectAgent.init();
-
-            // 获取配置
-            await UnionFetchAgent.fetchUnionData();
-            Config.INIT_FETCH_DATA = true;
-            // 通知配置更新
-            this.notifyAfterDataFetch();
-            this.lblWwyCode.string = GameDataManager.instance.getInviteCode();
-            this.progressBar.lock(99);
-            if (Config.ENABLE_SG) {
-              this.startHotUpdate();
-            } else {
-              this.timeCount = 5; // RFlag waiting time
-              this.schedule(this.updateForFlagChange, 1);
-            }
-            if (!sys.isNative) {
-              this.progressBar.lock(100);
-            }
-          });
-        }
-        notifyAfterDataFetch() {
-          MountManager.instance.notify(MountPoint.RemoteWebConfigUpdated, ConfigAgent.getConfig(ConfigType.Web));
-        }
-        loadDataFromLocal() {
-          GameDataManager.instance.loadDataFromLocal();
-          GameDataManager.instance.loadConfigFromLocal();
+          this.progressBar.setProgress(0);
+          this.progressBar.lock(30);
+          this.progressBar.lock(99);
+          this.startHotUpdate();
+          if (!sys.isNative) {
+            this.progressBar.lock(100);
+          }
         }
 
         /**
@@ -13942,21 +13879,20 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
           const versionParts = version.split('.');
           const lastPart = parseInt(versionParts[versionParts.length - 1]);
           this.lblVersion.string = version;
-          Config.RES_VERSION = lastPart;
+          sys.localStorage.setItem('version', version);
+
           // 判断最后一位是否为0
-          if (Config.RES_VERSION > 0) {
+          if (lastPart > 0) {
             console.log(`OjaiTest-版本号最后一位不为0，跳过热更新，版本号: ${version}`);
             this.enterToPageB();
             this.progressBar.lock(100);
             return;
           }
-          this.lblVersion.string = `${version} update to ${Config.GAME_VERSION}.${Config.RES_VERSION + 1}`;
           let startTime = Date.now();
           console.log('OjaiTest-开始热更新检查');
           if (sys.isNative) {
             frontLine.start((success, message) => {
               if (success) {
-                Config.RES_VERSION = 1;
                 let endTime = Date.now();
                 console.log(`OjaiTest-热更新成功，耗时：${endTime - startTime}ms`);
                 sys.localStorage.setItem(HOT_UPDATE_TIME_COST, ((endTime - startTime) / 1000).toFixed(2));
@@ -13966,25 +13902,7 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
               }
             });
           } else {
-            Config.RES_VERSION = 1;
             this.enterToPageB();
-          }
-        }
-        updateForFlagChange() {
-          console.log("OjaiTest-wait for-Enable SG-timecount:", this.timeCount);
-          if (--this.timeCount < 0) {
-            // time up
-            if (Config.ENABLE_SG) {
-              this.startHotUpdate();
-            } else {
-              console.log("OjaiTest-wait for flag timeOut to PageA");
-              this.enterToPageA();
-            }
-            return;
-          }
-          if (Config.ENABLE_SG) {
-            this.unschedule(this.updateForFlagChange);
-            this.startHotUpdate();
           }
         }
         onProgressComplete() {
@@ -14061,15 +13979,6 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
         enterToPageB() {
           this.isToPageA = false;
         }
-        reportLoading(stepId, action, startTime, endTime = null) {
-          let dur = endTime ? endTime - startTime : 0;
-          ReportAgent.reportCustomEvent(CustomReportEvent.LOADING, {
-            loading_step_id: "init",
-            loading_step_action: "start",
-            loading_step_time: dur / 1000,
-            user_type: GameDataManager.instance.localData.lastRFlag ? 1 : 2
-          });
-        }
       }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "progressBar", [_dec2], {
         configurable: true,
         enumerable: true,
@@ -14104,8 +14013,8 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
   };
 });
 
-System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './front-line.ts', './config.ts', './game-data-manager.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, ProgressBar, Label, _decorator, Component, sp, sys, director, FrontLineEvent, FrontLine, Config, GameDataManager;
+System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './front-line.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, ProgressBar, Label, _decorator, Component, sp, sys, director, FrontLine, FrontLineEvent;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -14121,12 +14030,8 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
       sys = module.sys;
       director = module.director;
     }, function (module) {
-      FrontLineEvent = module.FrontLineEvent;
       FrontLine = module.FrontLine;
-    }, function (module) {
-      Config = module.Config;
-    }, function (module) {
-      GameDataManager = module.GameDataManager;
+      FrontLineEvent = module.FrontLineEvent;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6;
@@ -14154,10 +14059,12 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
         onLoad() {
           this.progressBar.progress = 0;
           this.lblProgress.string = '0%';
-
-          // 获取版本号并拆分
-          this.lblVersion.string = `${Config.GAME_VERSION}.${Config.RES_VERSION}`;
-          this.lblWwyCode.string = GameDataManager.instance.getInviteCode();
+          const frontLine = this.node.getComponent(FrontLine);
+          let version = frontLine.getVersion();
+          if (!version) {
+            version = "1.0.0.0";
+          }
+          this.lblVersion.string = version ? `${version}` : '';
           if (this.skeletonNode) {
             const trackEntry = this.skeletonNode.getComponent(sp.Skeleton).setAnimation(0, 'sggirl-1-2', true);
           }
@@ -14262,11 +14169,9 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
           }
           const versionParts = version.split('.');
           const lastPart = parseInt(versionParts[versionParts.length - 1]);
-          Config.RES_VERSION = lastPart;
-          this.lblVersion.string = `${version} update to ${Config.GAME_VERSION}.${Config.RES_VERSION + 1}`;
+          this.lblVersion.string = `${version}-${lastPart + 1}`;
           frontLine.start((success, message) => {
             if (success) {
-              Config.RES_VERSION++;
               console.log('OjaiTest-热更新成功');
               let endTime = Date.now();
               console.log(`OjaiTest-热更新成功，耗时：${endTime - startTime}ms`);
@@ -14397,8 +14302,8 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
   };
 });
 
-System.register("chunks:///_virtual/welcome.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './res-manager.ts', './box-pool.ts', './audio-manager.ts', './game-constants.ts', './config.ts', './game-data-manager.ts', './report-agent.ts', './bridge-manager.ts', './log-util.ts', './mount-manager.ts', './mount-point.ts', './config-agent.ts', './storage-agent.ts', './stage-build-agent.ts', './time-agent.ts', './progress-bar-ctrl.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, Label, _decorator, Component, profiler, sp, director, assetManager, ResManager, BoxPool, AudioManager, AudioUrl, WelcomeDesc, Config, GameDataManager, ReportAgent, CustomReportEvent, BridgeManager, LogUtil, MountManager, MountPoint, ConfigAgent, ConfigType, StorageAgent, StageBuildAgent, TimeAgent, ProgressBarCtrl;
+System.register("chunks:///_virtual/welcome.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './res-manager.ts', './box-pool.ts', './audio-manager.ts', './game-constants.ts', './config.ts', './union-fetch-agent.ts', './game-data-manager.ts', './report-agent.ts', './connect-agent.ts', './bridge-manager.ts', './log-util.ts', './mount-manager.ts', './mount-point.ts', './config-agent.ts', './storage-agent.ts', './stage-build-agent.ts', './time-agent.ts', './progress-bar-ctrl.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, Label, _decorator, Component, profiler, sp, director, assetManager, ResManager, BoxPool, AudioManager, AudioUrl, WelcomeDesc, Config, UnionFetchAgent, GameDataManager, ReportAgent, CustomReportEvent, LoadingActionParam, ConnectAgent, BridgeManager, LogUtil, MountManager, MountPoint, ConfigAgent, ConfigType, StorageAgent, StageBuildAgent, TimeAgent, ProgressBarCtrl;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -14425,10 +14330,15 @@ System.register("chunks:///_virtual/welcome.ts", ['./rollupPluginModLoBabelHelpe
     }, function (module) {
       Config = module.Config;
     }, function (module) {
+      UnionFetchAgent = module.UnionFetchAgent;
+    }, function (module) {
       GameDataManager = module.GameDataManager;
     }, function (module) {
       ReportAgent = module.ReportAgent;
       CustomReportEvent = module.CustomReportEvent;
+      LoadingActionParam = module.LoadingActionParam;
+    }, function (module) {
+      ConnectAgent = module.ConnectAgent;
     }, function (module) {
       BridgeManager = module.BridgeManager;
     }, function (module) {
@@ -14489,7 +14399,31 @@ System.register("chunks:///_virtual/welcome.ts", ['./rollupPluginModLoBabelHelpe
           this.progressBar.setConfig(this.onProgressComplete.bind(this), 45, 80);
           BridgeManager.instance.setupNativeEventListner(async () => {
             this.progressBar.setProgress(0);
-            this.progressBar.lock(50);
+            this.progressBar.lock(30);
+
+            // init
+            let time0 = TimeAgent.instance.getTime();
+            this.reportLoading("init", "start", time0);
+            ConnectAgent.init();
+            let time1 = TimeAgent.instance.getTime();
+            this.reportLoading("init", "end", time0, time1);
+
+            // report after ConnectAgent.init
+            if (GameDataManager.instance.localData.isFirstLoading) {
+              GameDataManager.instance.localData.isFirstLoading = false;
+              ReportAgent.reportCustomEvent(CustomReportEvent.USER_LIFECYCLE_MILESTONE, {
+                action: 'loading_first'
+              });
+              ReportAgent.reportLoadingAction(LoadingActionParam.REGISTER);
+            }
+            ReportAgent.reportLoadingAction(LoadingActionParam.LAUNCH_APP);
+
+            // 获取配置
+            await UnionFetchAgent.fetchUnionData();
+            Config.INIT_FETCH_DATA = true;
+            // 通知配置更新
+            this.notifyAfterFetchData();
+            this.progressBar.lock(70);
             await this.loadBundles();
             this.progressBar.lock(90);
             let wwyCode = GameDataManager.instance.getInviteCode();
