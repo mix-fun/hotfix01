@@ -105,7 +105,7 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
           }
         }
         fileVerify(path, asset) {
-          console.log('OjaiTest-fileVerify', path, asset.nativeUrl);
+          // console.log('OjaiTest-fileVerify', path, asset.nativeUrl);
           return true;
         }
         actionCheck() {
@@ -152,6 +152,7 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
         }
         onCheckEvent(event) {
           const eventCode = event.getEventCode();
+          console.log('OjaiTest-onCheckEvent-eventCode:' + eventCode);
           switch (eventCode) {
             case native.EventAssetsManager.ERROR_NO_LOCAL_MANIFEST:
             case native.EventAssetsManager.ERROR_DOWNLOAD_MANIFEST:
@@ -173,6 +174,7 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
         }
         onUpdateEvent(event) {
           const eventCode = event.getEventCode();
+          console.log('OjaiTest-onUpdateEvent-eventCode:' + eventCode);
           switch (eventCode) {
             case native.EventAssetsManager.ERROR_DOWNLOAD_MANIFEST:
             case native.EventAssetsManager.ERROR_PARSE_MANIFEST:

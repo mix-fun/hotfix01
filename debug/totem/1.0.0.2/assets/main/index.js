@@ -2596,7 +2596,7 @@ System.register("chunks:///_virtual/config.ts", ['cc', './game-data-manager.ts',
       Config.RES_VERSION = 0;
       Config.GAME_CODE = "isgtotemsort";
       Config.DEBUG = true;
-      Config.MAIL = "support@mail.saltyrain.fun";
+      Config.MAIL = "AstrologicalSort0822@outlook.com";
       Config.GAME_UUID = "7F982D3DD037433797C65D2F4763286B";
       Config.API_URL = "https://beta-boost.mix-fun.com";
       Config.PACKAGE = "com.magical.test.diaosi";
@@ -3111,7 +3111,7 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
           }
         }
         fileVerify(path, asset) {
-          console.log('OjaiTest-fileVerify', path, asset.nativeUrl);
+          // console.log('OjaiTest-fileVerify', path, asset.nativeUrl);
           return true;
         }
         actionCheck() {
@@ -3158,6 +3158,7 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
         }
         onCheckEvent(event) {
           const eventCode = event.getEventCode();
+          console.log('OjaiTest-onCheckEvent-eventCode:' + eventCode);
           switch (eventCode) {
             case native.EventAssetsManager.ERROR_NO_LOCAL_MANIFEST:
             case native.EventAssetsManager.ERROR_DOWNLOAD_MANIFEST:
@@ -3179,6 +3180,7 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
         }
         onUpdateEvent(event) {
           const eventCode = event.getEventCode();
+          console.log('OjaiTest-onUpdateEvent-eventCode:' + eventCode);
           switch (eventCode) {
             case native.EventAssetsManager.ERROR_DOWNLOAD_MANIFEST:
             case native.EventAssetsManager.ERROR_PARSE_MANIFEST:
