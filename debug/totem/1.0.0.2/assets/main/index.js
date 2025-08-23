@@ -3004,8 +3004,8 @@ System.register("chunks:///_virtual/data-agent.ts", ['cc', './config.ts', './tim
   };
 });
 
-System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Asset, _decorator, Component, native, game, sys;
+System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './res-version-config.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Asset, _decorator, Component, native, game, sys, res_version;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -3018,6 +3018,8 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
       native = module.native;
       game = module.game;
       sys = module.sys;
+    }, function (module) {
+      res_version = module.res_version;
     }],
     execute: function () {
       var _dec, _dec2, _class2, _class3, _descriptor;
@@ -3113,6 +3115,7 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
           return true;
         }
         actionCheck() {
+          console.log('OjaiTest-actionCheck');
           this._assetsManager.setEventCallback(this.onCheckEvent.bind(this));
           this._assetsManager.checkUpdate();
         }
@@ -3211,6 +3214,7 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
           }
         }
         onUpdateProgress(event) {
+          console.log('OjaiTest-onUpdateProgress-event:' + event.getMessage());
           let percent = event.getDownloadedBytes() / event.getTotalBytes();
           if (typeof percent === 'number' && percent > 0) {
             percent = Math.floor(percent * 100) / 100;
@@ -3264,40 +3268,47 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
         cleanUp() {
           this._assetsManager.setEventCallback(null);
         }
-        getVersion() {
-          if (!sys.isNative) {
-            return;
-          }
-          try {
-            // 获取可写路径下的version.manifest文件路径
-            const storagePath = native.fileUtils.getWritablePath() + this._localStorageFolderName;
-            const versionManifestPath = storagePath + '/version.manifest';
-            console.log(`OjaiTest-getVersion: 尝试读取文件 ${versionManifestPath}`);
 
-            // 检查文件是否存在
-            if (!native.fileUtils.isFileExist(versionManifestPath)) {
-              console.log('OjaiTest-getVersion: version.manifest文件不存在，尝试读取本地版本');
-              // 如果热更新版本不存在，尝试读取本地版本
-              return this.getLocalVersion();
-            }
+        // getVersion(): string {
+        //     if (!sys.isNative) {
+        //         return;
+        //     }
 
-            // 读取version.manifest文件内容
-            const fileContent = native.fileUtils.getStringFromFile(versionManifestPath);
-            if (!fileContent) {
-              console.log('OjaiTest-getVersion: 无法读取version.manifest文件内容');
-              return this.getLocalVersion();
-            }
+        //     try {
+        //         // 获取可写路径下的version.manifest文件路径
+        //         const versionManifestPath = this._storagePath + '/version.manifest';
 
-            // 解析JSON内容
-            const manifestData = JSON.parse(fileContent);
-            const version = manifestData.version;
-            console.log(`OjaiTest-getVersion: 成功解析版本号 ${version}`);
-            return version;
-          } catch (error) {
-            console.error('OjaiTest-getVersion: 解析version.manifest文件失败', error);
-            return this.getLocalVersion();
-          }
-        }
+        //         console.log(`OjaiTest-getVersion: 尝试读取文件 ${versionManifestPath}`);
+
+        //         // 检查文件是否存在
+        //         console.log('OjaiTest-version.manifest:: ' + versionManifestPath);
+        //         if (!native.fileUtils.isFileExist(versionManifestPath)) {
+        //             console.log('OjaiTest-getVersion: version.manifest文件不存在，尝试读取本地版本');
+        //             // 如果热更新版本不存在，尝试读取本地版本
+        //             return this.getLocalVersion();
+        //         }
+
+        //         // 读取version.manifest文件内容
+        //         const fileContent = native.fileUtils.getStringFromFile(versionManifestPath);
+        //         if (!fileContent) {
+        //             console.log('OjaiTest-getVersion: 无法读取version.manifest文件内容');
+        //             return this.getLocalVersion();
+        //         }
+
+        //         console.log('OjaiTest-version.manifest: ' + fileContent);
+
+        //         // 解析JSON内容
+        //         const manifestData = JSON.parse(fileContent);
+        //         const version = manifestData.version;
+
+        //         console.log(`OjaiTest-getVersion: 成功解析版本号 ${version}`);
+        //         return version;
+
+        //     } catch (error) {
+        //         console.error('OjaiTest-getVersion: 解析version.manifest文件失败', error);
+        //         return this.getLocalVersion();
+        //     }
+        // }
 
         /**
          * 获取本地版本号
@@ -3334,9 +3345,9 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
          * 可以在需要获取当前版本号的地方调用这个方法
          */
         logCurrentVersion() {
-          const currentVersion = this.getVersion();
+          const currentVersion = res_version;
           console.log(`OjaiTest-当前资源版本: ${currentVersion}`);
-          if (currentVersion) {
+          {
             // 可以将版本号保存到本地存储中
             sys.localStorage.setItem(HOT_UPDATE_VERSION, currentVersion);
           }
@@ -6533,9 +6544,9 @@ System.register("chunks:///_virtual/log-util.ts", ['cc', './config.ts'], functio
   };
 });
 
-System.register("chunks:///_virtual/main", ['./front-line.ts', './progress-bar-ctrl.ts', './round-rect-mask.ts', './welcome-hf-pre.ts', './welcome-hf-start.ts', './ad-agent.ts', './ad-manager.ts', './bridge-event.ts', './bridge-manager.ts', './bridge-util.ts', './audio-effect-pool.ts', './audio-effect.ts', './audio-manager.ts', './audio-music.ts', './config-agent.ts', './data-agent.ts', './storage-manager.ts', './type-define.ts', './gm-manager.ts', './report-log-manager.ts', './time-agent.ts', './graph-manager.ts', './loading-flow.ts', './loading-manager.ts', './mount-manager.ts', './mount-pod.ts', './mount-point.ts', './http-agent.ts', './request-manager2.ts', './res-keeper.ts', './res-leak-checker.ts', './res-loader.ts', './res-util.ts', './bg-adapter.ts', './token-account.ts', './ui-manager.ts', './ui-screen-adapter.ts', './ui-view.ts', './action-chain.ts', './animation-util.ts', './array-util.ts', './bezier-util.ts', './common-util.ts', './log-util.ts', './object-util.ts', './random-util.ts', './string-util.ts', './svg-util.ts', './ui-util.ts', './config.ts', './ui-config.ts', './connect-agent.ts', './native-agent.ts', './sdk-agent.ts', './base-config.ts', './game-data-manager.ts', './game-data.ts', './local-data.ts', './main-config.ts', './player-data.ts', './storage-agent.ts', './storage-data.ts', './union-fetch-agent.ts', './animate-canvas.ts', './box-control.ts', './box-data.ts', './box-pool.ts', './column-control.ts', './column-data.ts', './game-constants.ts', './game-desk.ts', './guide-agent.ts', './layout-agent.ts', './move-agent.ts', './move-step.ts', './res-manager.ts', './skin-manager.ts', './stage-build-agent.ts', './stage-config-convertor.ts', './stage-constants.ts', './stage-data.ts', './stage-logic.ts', './http-agent2.ts', './request-manager.ts', './report-agent.ts', './map.ts', './stage-helper.ts', './stage.ts', './welcome.ts', './btn-tips-control.ts', './loading-view.ts', './prevent-touch-control.ts', './report-log-view.ts', './toast.ts', './report-log-item.ts', './streak-anim-star.ts', './streak-star.ts', './toggle-btn.ts', './tool-btn.ts', './win-streak-bar.ts', './win-streak-reward-item.ts', './gm-view.ts', './guide-tips.ts', './item-obtain-popup.ts', './level-win-popup.ts', './main-view.ts', './menu-popup.ts', './move-end-popup.ts', './policy-popup.ts', './rating-popup.ts', './win-streak-gift-popup.ts', './win-streak-reward-view.ts'], function () {
+System.register("chunks:///_virtual/main", ['./front-line.ts', './progress-bar-ctrl.ts', './res-version-config.ts', './round-rect-mask.ts', './welcome-hf-pre.ts', './welcome-hf-start.ts', './ad-agent.ts', './ad-manager.ts', './bridge-event.ts', './bridge-manager.ts', './bridge-util.ts', './audio-effect-pool.ts', './audio-effect.ts', './audio-manager.ts', './audio-music.ts', './config-agent.ts', './data-agent.ts', './storage-manager.ts', './type-define.ts', './gm-manager.ts', './report-log-manager.ts', './time-agent.ts', './graph-manager.ts', './loading-flow.ts', './loading-manager.ts', './mount-manager.ts', './mount-pod.ts', './mount-point.ts', './http-agent.ts', './request-manager2.ts', './res-keeper.ts', './res-leak-checker.ts', './res-loader.ts', './res-util.ts', './bg-adapter.ts', './token-account.ts', './ui-manager.ts', './ui-screen-adapter.ts', './ui-view.ts', './action-chain.ts', './animation-util.ts', './array-util.ts', './bezier-util.ts', './common-util.ts', './log-util.ts', './object-util.ts', './random-util.ts', './string-util.ts', './svg-util.ts', './ui-util.ts', './config.ts', './ui-config.ts', './connect-agent.ts', './native-agent.ts', './sdk-agent.ts', './base-config.ts', './game-data-manager.ts', './game-data.ts', './local-data.ts', './main-config.ts', './player-data.ts', './storage-agent.ts', './storage-data.ts', './union-fetch-agent.ts', './animate-canvas.ts', './box-control.ts', './box-data.ts', './box-pool.ts', './column-control.ts', './column-data.ts', './game-constants.ts', './game-desk.ts', './guide-agent.ts', './layout-agent.ts', './move-agent.ts', './move-step.ts', './res-manager.ts', './skin-manager.ts', './stage-build-agent.ts', './stage-config-convertor.ts', './stage-constants.ts', './stage-data.ts', './stage-logic.ts', './http-agent2.ts', './request-manager.ts', './report-agent.ts', './map.ts', './stage-helper.ts', './stage.ts', './welcome.ts', './btn-tips-control.ts', './loading-view.ts', './prevent-touch-control.ts', './report-log-view.ts', './toast.ts', './report-log-item.ts', './streak-anim-star.ts', './streak-star.ts', './toggle-btn.ts', './tool-btn.ts', './win-streak-bar.ts', './win-streak-reward-item.ts', './gm-view.ts', './guide-tips.ts', './item-obtain-popup.ts', './level-win-popup.ts', './main-view.ts', './menu-popup.ts', './move-end-popup.ts', './policy-popup.ts', './rating-popup.ts', './win-streak-gift-popup.ts', './win-streak-reward-view.ts'], function () {
   return {
-    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+    setters: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
     execute: function () {}
   };
 });
@@ -9727,6 +9738,20 @@ System.register("chunks:///_virtual/res-util.ts", ['cc', './res-keeper.ts'], fun
         }
       }
       exports('ResUtil', ResUtil);
+      cclegacy._RF.pop();
+    }
+  };
+});
+
+System.register("chunks:///_virtual/res-version-config.ts", ['cc'], function (exports) {
+  var cclegacy;
+  return {
+    setters: [function (module) {
+      cclegacy = module.cclegacy;
+    }],
+    execute: function () {
+      cclegacy._RF.push({}, "c8cf4IX+gdBa72WKts0GkJB", "res-version-config", undefined);
+      const res_version = exports('res_version', '1.0.0.2');
       cclegacy._RF.pop();
     }
   };
@@ -13717,8 +13742,8 @@ System.register("chunks:///_virtual/union-fetch-agent.ts", ['cc', './config.ts',
   };
 });
 
-System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './front-line.ts', './progress-bar-ctrl.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Label, _decorator, Component, profiler, sys, director, FrontLine, FrontLineEvent, HOT_UPDATE_TIME_COST, ProgressBarCtrl;
+System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './front-line.ts', './progress-bar-ctrl.ts', './res-version-config.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Label, _decorator, Component, profiler, sys, director, FrontLine, FrontLineEvent, HOT_UPDATE_TIME_COST, ProgressBarCtrl, res_version;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -13737,6 +13762,8 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
       HOT_UPDATE_TIME_COST = module.HOT_UPDATE_TIME_COST;
     }, function (module) {
       ProgressBarCtrl = module.ProgressBarCtrl;
+    }, function (module) {
+      res_version = module.res_version;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _dec4, _dec5, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4;
@@ -13758,7 +13785,7 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
         onLoad() {
           let frontLine = this.node.getComponent(FrontLine);
           if (frontLine) {
-            this.lblVersion.string = frontLine.getVersion();
+            this.lblVersion.string = res_version;
           }
         }
         onEnable() {
@@ -13776,7 +13803,7 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
           this.node.off(FrontLineEvent.UPDATE_ERROR, this.onUpdateError, this);
         }
         async start() {
-          console.log("OjaiTest-startScene-start");
+          console.log("OjaiTest-HfPre-startScene-start");
           profiler.hideStats();
           this.updateLoadingLabel();
           this.progressBar.setConfig(this.onProgressComplete.bind(this), 45, 80);
@@ -13795,16 +13822,13 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
         startHotUpdate() {
           const frontLine = this.node.getComponent(FrontLine);
           if (!frontLine) {
-            console.error('OjaiTest-FrontLine组件未找到');
+            console.error('OjaiTest-HfPre-FrontLine组件未找到');
             this.enterToPageA();
             return;
           }
 
           // 获取版本号并拆分
-          let version = frontLine.getVersion();
-          if (!version) {
-            version = "1.0.0.0";
-          }
+          let version = res_version;
           const versionParts = version.split('.');
           const lastPart = parseInt(versionParts[versionParts.length - 1]);
           this.lblVersion.string = version;
@@ -13812,21 +13836,21 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
 
           // 判断最后一位是否为0
           if (lastPart > 0) {
-            console.log(`OjaiTest-版本号最后一位不为0，跳过热更新，版本号: ${version}`);
+            console.log(`OjaiTest-HfPre-版本号最后一位不为0，跳过热更新，版本号: ${version}`);
             this.enterToPageB();
             this.progressBar.lock(100);
             return;
           }
           let startTime = Date.now();
-          console.log('OjaiTest-开始热更新检查');
+          console.log('OjaiTest-HfPre-开始热更新检查');
           if (sys.isNative) {
             frontLine.start((success, message) => {
               if (success) {
                 let endTime = Date.now();
-                console.log(`OjaiTest-热更新成功，耗时：${endTime - startTime}ms`);
+                console.log(`OjaiTest-HfPre-热更新成功，耗时：${endTime - startTime}ms`);
                 sys.localStorage.setItem(HOT_UPDATE_TIME_COST, ((endTime - startTime) / 1000).toFixed(2));
               } else {
-                console.log('OjaiTest-热更新失败', message);
+                console.log('OjaiTest-HfPre-热更新失败', message);
                 this.enterToPageA();
               }
             });
@@ -13872,14 +13896,14 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
          * 热更新成功回调
          */
         onUpdateSuccess() {
-          console.log('OjaiTest-热更新成功，准备重启游戏');
+          console.log('OjaiTest-HfPre-热更新成功，准备重启游戏');
         }
 
         /**
          * 热更新失败回调
          */
         onUpdateFailed() {
-          console.log('OjaiTest-热更新失败，继续进入游戏');
+          console.log('OjaiTest-HfPre-热更新失败，继续进入游戏');
           this.enterToPageA();
         }
 
@@ -13887,7 +13911,7 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
          * 已经是最新版本回调
          */
         onAlreadyUpToDate() {
-          console.log('OjaiTest-已经是最新版本，直接进入游戏');
+          console.log('OjaiTest-HfPre-已经是最新版本，直接进入游戏');
           this.enterToPageB();
         }
 
@@ -13895,7 +13919,7 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
          * 热更新错误回调
          */
         onUpdateError() {
-          console.log('OjaiTest-热更新出错，继续进入游戏');
+          console.log('OjaiTest-HfPre-热更新出错，继续进入游戏');
           this.enterToPageA();
         }
 
@@ -13942,8 +13966,8 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
   };
 });
 
-System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './front-line.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, ProgressBar, Label, _decorator, Component, sp, sys, director, assetManager, FrontLine, FrontLineEvent;
+System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './front-line.ts', './res-version-config.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, ProgressBar, Label, _decorator, Component, sp, sys, director, assetManager, FrontLine, FrontLineEvent, res_version;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -13962,6 +13986,8 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
     }, function (module) {
       FrontLine = module.FrontLine;
       FrontLineEvent = module.FrontLineEvent;
+    }, function (module) {
+      res_version = module.res_version;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6;
@@ -13990,18 +14016,14 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
           this.progressBar.progress = 0;
           this.lblProgress.string = '0%';
           const frontLine = this.node.getComponent(FrontLine);
-          let version = frontLine.getVersion();
-          if (!version) {
-            version = "1.0.0.0";
-          }
-          this.lblVersion.string = version ? `${version}` : '';
+          this.lblVersion.string = res_version;
           if (this.skeletonNode) {
             const trackEntry = this.skeletonNode.getComponent(sp.Skeleton).setAnimation(0, 'sggirl-1-2', true);
           }
-          console.log('OjaiTest-welcome-hf-start-onload');
+          console.log('OjaiTest-HfStart-welcome-hf-start-onload');
           // 检查是否刚进行过热更新
           if (this.isRecentlyUpdated()) {
-            console.log('OjaiTest-检测到最近刚进行过热更新，直接进入游戏');
+            console.log('OjaiTest-HfStart-检测到最近刚进行过热更新，直接进入游戏');
             this.enterGame();
             return;
           }
@@ -14043,7 +14065,7 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
           const timestamp = parseInt(lastUpdateTime);
           const currentTime = Date.now();
           const timeDiff = currentTime - timestamp;
-          console.log(`OjaiTest-距离上次更新时间: ${timeDiff}ms`);
+          console.log(`OjaiTest-HfStart-距离上次更新时间: ${timeDiff}ms`);
           return timeDiff < this.HOT_UPDATE_THRESHOLD;
         }
 
@@ -14052,14 +14074,14 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
          */
         recordUpdateTime() {
           sys.localStorage.setItem(HOT_UPDATE_TIMESTAMP_2, Date.now().toString());
-          console.log('OjaiTest-记录热更新时间');
+          console.log('OjaiTest-HfStart-记录热更新时间');
         }
 
         /**
          * 模拟热更新流程（非原生环境）
          */
         simulateHotUpdate() {
-          console.log('OjaiTest-开始模拟热更新');
+          console.log('OjaiTest-HfStart-开始模拟热更新');
           let progress = 0;
           const totalTime = 3000; // 3秒
           const updateInterval = 50; // 每50ms更新一次
@@ -14072,7 +14094,7 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
             if (progress >= 100) {
               progress = 100;
               clearInterval(updateProgressInterval);
-              console.log('OjaiTest-模拟热更新完成');
+              console.log('OjaiTest-HfStart-模拟热更新完成');
               this.enterGame();
             }
 
@@ -14086,24 +14108,21 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
          */
         startHotUpdate() {
           let startTime = Date.now();
-          console.log('OjaiTest-开始热更新检查');
+          console.log('OjaiTest-HfStart-开始热更新检查');
           const frontLine = this.node.getComponent(FrontLine);
           if (!frontLine) {
-            console.error('OjaiTest-FrontLine组件未找到');
+            console.error('OjaiTest-HfStart-FrontLine组件未找到');
             return;
           }
-          let version = frontLine.getVersion();
-          if (!version) {
-            version = "1.0.0.0";
-          }
+          let version = res_version;
           const versionParts = version.split('.');
           this.res_version = parseInt(versionParts[versionParts.length - 1]);
           this.lblVersion.string = `${version}-${this.res_version + 1}`;
           frontLine.start((success, message) => {
             if (success) {
-              console.log('OjaiTest-热更新成功');
+              console.log('OjaiTest-HfStart-热更新成功');
               let endTime = Date.now();
-              console.log(`OjaiTest-热更新成功，耗时：${endTime - startTime}ms`);
+              console.log(`OjaiTest-HfStart-热更新成功，耗时：${endTime - startTime}ms`);
               let timeCost = sys.localStorage.getItem(HOT_UPDATE_TIME_COST);
               if (!timeCost) {
                 timeCost = 0;
@@ -14117,7 +14136,7 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
               }
               sys.localStorage.setItem(HOT_UPDATE_TIME_COST, (timeCost + (endTime - startTime) / 1000).toFixed(2));
             } else {
-              console.log('OjaiTest-热更新失败', message);
+              console.log('OjaiTest-HfStart-热更新失败', message);
               if (this.res_version > 1) {
                 this.enterGame();
               }
@@ -14140,7 +14159,7 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
          * 热更新成功回调
          */
         onUpdateSuccess() {
-          console.log('OjaiTest-热更新成功，准备重启游戏');
+          console.log('OjaiTest-HfStart-热更新成功，准备重启游戏');
           this.recordUpdateTime();
           // 重启游戏，会重新回到这个场景
           // 注意：game.restart() 会在 front-line.ts 的 onUpdateSuccess 中被调用
@@ -14150,7 +14169,7 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
          * 热更新失败回调
          */
         onUpdateFailed() {
-          console.log('OjaiTest-热更新失败，继续进入游戏');
+          console.log('OjaiTest-HfStart-热更新失败，继续进入游戏');
           if (this.res_version > 1) {
             this.enterGame();
           }
@@ -14160,7 +14179,7 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
          * 已经是最新版本回调
          */
         onAlreadyUpToDate() {
-          console.log('OjaiTest-已经是最新版本，直接进入游戏');
+          console.log('OjaiTest-HfStart-已经是最新版本，直接进入游戏');
           if (this.res_version > 1) {
             this.enterGame();
           }
@@ -14170,7 +14189,7 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
          * 热更新错误回调
          */
         onUpdateError() {
-          console.log('OjaiTest-热更新出错，继续进入游戏');
+          console.log('OjaiTest-HfStart-热更新出错，继续进入游戏');
           this.enterGame();
         }
 
@@ -14178,7 +14197,7 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
          * 进入游戏主场景
          */
         async enterGame() {
-          console.log('OjaiTest-进入B游戏主场景');
+          console.log('OjaiTest-HfStart-进入B游戏主场景');
           await this.loadBundles();
           director.loadScene('welcome');
         }
@@ -14259,8 +14278,8 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
   };
 });
 
-System.register("chunks:///_virtual/welcome.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './res-manager.ts', './box-pool.ts', './audio-manager.ts', './game-constants.ts', './config.ts', './union-fetch-agent.ts', './game-data-manager.ts', './report-agent.ts', './connect-agent.ts', './bridge-manager.ts', './log-util.ts', './mount-manager.ts', './mount-point.ts', './config-agent.ts', './storage-agent.ts', './stage-build-agent.ts', './time-agent.ts', './progress-bar-ctrl.ts'], function (exports) {
-  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, Label, _decorator, Component, profiler, sp, director, assetManager, ResManager, BoxPool, AudioManager, AudioUrl, WelcomeDesc, Config, UnionFetchAgent, GameDataManager, ReportAgent, CustomReportEvent, LoadingActionParam, ConnectAgent, BridgeManager, LogUtil, MountManager, MountPoint, ConfigAgent, ConfigType, StorageAgent, StageBuildAgent, TimeAgent, ProgressBarCtrl;
+System.register("chunks:///_virtual/welcome.ts", ['./rollupPluginModLoBabelHelpers.js', 'cc', './res-manager.ts', './box-pool.ts', './audio-manager.ts', './game-constants.ts', './config.ts', './union-fetch-agent.ts', './game-data-manager.ts', './report-agent.ts', './connect-agent.ts', './bridge-manager.ts', './log-util.ts', './mount-manager.ts', './mount-point.ts', './config-agent.ts', './storage-agent.ts', './stage-build-agent.ts', './time-agent.ts', './progress-bar-ctrl.ts', './res-version-config.ts'], function (exports) {
+  var _applyDecoratedDescriptor, _initializerDefineProperty, cclegacy, Node, Label, _decorator, Component, profiler, sp, director, assetManager, ResManager, BoxPool, AudioManager, AudioUrl, WelcomeDesc, Config, UnionFetchAgent, GameDataManager, ReportAgent, CustomReportEvent, LoadingActionParam, ConnectAgent, BridgeManager, LogUtil, MountManager, MountPoint, ConfigAgent, ConfigType, StorageAgent, StageBuildAgent, TimeAgent, ProgressBarCtrl, res_version;
   return {
     setters: [function (module) {
       _applyDecoratedDescriptor = module.applyDecoratedDescriptor;
@@ -14315,6 +14334,8 @@ System.register("chunks:///_virtual/welcome.ts", ['./rollupPluginModLoBabelHelpe
       TimeAgent = module.TimeAgent;
     }, function (module) {
       ProgressBarCtrl = module.ProgressBarCtrl;
+    }, function (module) {
+      res_version = module.res_version;
     }],
     execute: function () {
       var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _class, _class2, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6;
@@ -14348,7 +14369,7 @@ System.register("chunks:///_virtual/welcome.ts", ['./rollupPluginModLoBabelHelpe
           this.initDesc();
 
           // 获取版本号并拆分
-          this.lblVersion.string = `${Config.GAME_VERSION}.${Config.RES_VERSION}`;
+          this.lblVersion.string = res_version;
           if (this.skeletonNode) {
             const trackEntry = this.skeletonNode.getComponent(sp.Skeleton).setAnimation(0, 'sggirl-1-2', true);
           }
