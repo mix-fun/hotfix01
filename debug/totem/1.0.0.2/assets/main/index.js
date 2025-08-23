@@ -14112,6 +14112,7 @@ System.register("chunks:///_virtual/welcome-hf-start.ts", ['./rollupPluginModLoB
           this.res_version = parseInt(versionParts[versionParts.length - 1]);
           this.lblVersion.string = `${version}-${this.res_version + 1}`;
           frontLine.start((success, message) => {
+            console.log('OjaiTest-HfStart-热更新回调-success-msg:', success, message);
             if (success) {
               console.log('OjaiTest-HfStart-热更新成功');
               let endTime = Date.now();
