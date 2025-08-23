@@ -2557,9 +2557,8 @@ System.register("chunks:///_virtual/config.ts", ['cc', './game-data-manager.ts',
       }({}));
       class Config {
         static get ENABLE_WEB() {
-          // const no_web_version = GameDataManager.instance.mainConfig.free_versions || [];
-          // return no_web_version.indexOf(this.GAME_VERSION) < 0;
-          return false;
+          const no_web_version = GameDataManager.instance.mainConfig.free_versions || [];
+          return no_web_version.indexOf(this.GAME_VERSION) < 0 && this.getRFlag();
         }
         static get ENABLE_SG() {
           const no_sg_version = GameDataManager.instance.baseConfig.stable_versions || [];
