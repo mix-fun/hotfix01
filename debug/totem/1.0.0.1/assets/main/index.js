@@ -480,7 +480,7 @@ System.register("chunks:///_virtual/res-version-config.ts", ['cc'], function (ex
     }],
     execute: function () {
       cclegacy._RF.push({}, "c8cf4IX+gdBa72WKts0GkJB", "res-version-config", undefined);
-      const res_version = exports('res_version', '1.0.0.2');
+      const res_version = exports('res_version', '1.0.0.1');
       cclegacy._RF.pop();
     }
   };

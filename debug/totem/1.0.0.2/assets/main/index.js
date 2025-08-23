@@ -3262,6 +3262,7 @@ System.register("chunks:///_virtual/front-line.ts", ['./rollupPluginModLoBabelHe
             this._callback(true, "");
           }
           setTimeout(() => {
+            console.log('OjaiTest-game-restart');
             game.restart();
           }, 500);
         }
@@ -13812,7 +13813,7 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
           this.progressBar.lock(99);
           this.startHotUpdate();
           if (!sys.isNative) {
-            this.progressBar.lock(100);
+            this.enterToNext();
           }
         }
 
@@ -13823,7 +13824,7 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
           const frontLine = this.node.getComponent(FrontLine);
           if (!frontLine) {
             console.error('OjaiTest-HfPre-FrontLine组件未找到');
-            this.enterToPageA();
+            this.enterToNext();
             return;
           }
 
@@ -13837,8 +13838,7 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
           // 判断最后一位是否为0
           if (lastPart > 0) {
             console.log(`OjaiTest-HfPre-版本号最后一位不为0，跳过热更新，版本号: ${version}`);
-            this.enterToPageB();
-            this.progressBar.lock(100);
+            this.enterToNext();
             return;
           }
           let startTime = Date.now();
@@ -13851,19 +13851,15 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
                 sys.localStorage.setItem(HOT_UPDATE_TIME_COST, ((endTime - startTime) / 1000).toFixed(2));
               } else {
                 console.log('OjaiTest-HfPre-热更新失败', message);
-                this.enterToPageA();
+                this.enterToNext();
               }
             });
           } else {
-            this.enterToPageB();
+            this.enterToNext();
           }
         }
         onProgressComplete() {
-          if (this.isToPageA) {
-            director.loadScene("welcome");
-          } else {
-            director.loadScene("welcome-hf-start");
-          }
+          director.loadScene("welcome-hf-start");
         }
 
         /**
@@ -13904,7 +13900,7 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
          */
         onUpdateFailed() {
           console.log('OjaiTest-HfPre-热更新失败，继续进入游戏');
-          this.enterToPageA();
+          this.enterToNext();
         }
 
         /**
@@ -13912,7 +13908,7 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
          */
         onAlreadyUpToDate() {
           console.log('OjaiTest-HfPre-已经是最新版本，直接进入游戏');
-          this.enterToPageB();
+          this.enterToNext();
         }
 
         /**
@@ -13920,17 +13916,14 @@ System.register("chunks:///_virtual/welcome-hf-pre.ts", ['./rollupPluginModLoBab
          */
         onUpdateError() {
           console.log('OjaiTest-HfPre-热更新出错，继续进入游戏');
-          this.enterToPageA();
+          this.enterToNext();
         }
 
         /**
          * 进入游戏主场景
          */
-        enterToPageA() {
-          this.isToPageA = true;
-        }
-        enterToPageB() {
-          this.isToPageA = false;
+        enterToNext() {
+          this.progressBar.lock(100);
         }
       }, (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "progressBar", [_dec2], {
         configurable: true,
