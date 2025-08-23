@@ -25,18 +25,12 @@
         "d611aded-bba6-4081-938e-fca3b7502de2@6c48a",
         "d611aded-bba6-4081-938e-fca3b7502de2@f9941",
         "e6439536-78ff-42b1-a208-409b1057a2ef",
-        "ec895c7e-9c27-41bd-b3db-02977ccba9ba",
         "ee923f5f-30ea-40eb-af8b-6346ed22d52a",
         "ee923f5f-30ea-40eb-af8b-6346ed22d52a@6c48a",
         "ee923f5f-30ea-40eb-af8b-6346ed22d52a@f9941",
         "fd8ec536-a354-4a17-9c74-4f3883c378c8"
     ],
     "paths": {
-        "ec895c7e-9c27-41bd-b3db-02977ccba9ba": [
-            "db:/assets/hf_pre/welcome-hf-pre",
-            "cc.SceneAsset",
-            1
-        ],
         "920e0a01-81c3-4177-9317-2c5c345c4317": [
             "db:/assets/hf_start/welcome-hf-start",
             "cc.SceneAsset",
@@ -54,7 +48,6 @@
         ]
     },
     "scenes": {
-        "db://assets/hf_pre/welcome-hf-pre.scene": "ec895c7e-9c27-41bd-b3db-02977ccba9ba",
         "db://assets/hf_start/welcome-hf-start.scene": "920e0a01-81c3-4177-9317-2c5c345c4317"
     },
     "packs": {

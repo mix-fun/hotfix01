@@ -37,6 +37,9 @@
         "subpackages": [],
         "preloadBundles": [
             {
+                "bundle": "resources"
+            },
+            {
                 "bundle": "main"
             }
         ],
@@ -44,7 +47,10 @@
         "preloadAssets": [],
         "projectBundles": [
             "internal",
-            "main"
+            "resources",
+            "main",
+            "bundle-beyond",
+            "bundle-sg"
         ],
         "downloadMaxConcurrency": 15
     },
@@ -57,7 +63,7 @@
         ]
     },
     "launch": {
-        "launchScene": "db://assets/hf_pre/welcome-hf-pre.scene"
+        "launchScene": "db://assets/hf_start/welcome-hf-start.scene"
     },
     "screen": {
         "exactFitScreen": true,
